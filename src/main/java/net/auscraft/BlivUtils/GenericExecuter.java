@@ -4,13 +4,7 @@ import org.bukkit.*;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
-public class GenericExecuter
-    implements CommandExecutor
-{
-
-    public GenericExecuter()
-    {
-    }
+public class GenericExecuter implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[])
     {

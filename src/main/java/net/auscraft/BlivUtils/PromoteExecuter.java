@@ -9,6 +9,12 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 public class PromoteExecuter implements CommandExecutor {
+	
+    private static BlivUtils bplugin;
+    private Permission perms;
+    private Economy econ;
+    private HashMap<String, Integer> promoteCount;
+    private static final Logger log = Logger.getLogger("Minecraft");
 
     public PromoteExecuter(BlivUtils instance)
     {
@@ -84,7 +90,12 @@ public class PromoteExecuter implements CommandExecutor {
                     cc = a;
                     dd = a;
                 }
-                sender.sendMessage((new StringBuilder()).append(ChatColor.GOLD).append("Choose from the following ranks:\n").append(ChatColor.WHITE).append(" - ").append(ChatColor.GREEN).append(aa).append("$").append("25,000 ").append(ChatColor.RED).append(a).append("MagmaSlime\n").append(ChatColor.WHITE).append(" - ").append(ChatColor.GREEN).append(bb).append("$").append("50,000 ").append(ChatColor.RED).append(b).append("Blaze\n").append(ChatColor.WHITE).append(" - ").append(ChatColor.GREEN).append(cc).append("$").append("75,000 ").append(ChatColor.RED).append(c).append("PigZombie\n").append(ChatColor.WHITE).append(" - ").append(ChatColor.GREEN).append(dd).append("$").append("100,000 ").append(ChatColor.RED).append(d).append("Ghast\n").append(ChatColor.GOLD).append("/buyrank <rank>").toString());
+                sender.sendMessage(ChatColor.GOLD + "Choose from the following ranks:\n"
+                				+ ChatColor.WHITE + " - " + ChatColor.GREEN + aa + "$" + "25,000 " + ChatColor.RED + a + "MagmaSlime\n"
+                				+ ChatColor.WHITE + " - " + ChatColor.GREEN + bb + "$" + "50,000 " + ChatColor.RED + b + "Blaze\n"
+                				+ ChatColor.WHITE + " - " + ChatColor.GREEN + cc + "$" + "75,000 " + ChatColor.RED + c + "PigZombie\n"
+                				+ ChatColor.WHITE + " - " + ChatColor.GREEN + dd + "$" + "100,000 " + ChatColor.RED + d + "Ghast\n"
+                				+ ChatColor.GOLD + "/buyrank <rank>");
                 return true;
             }
             if(args.length > 0)
@@ -96,7 +107,7 @@ public class PromoteExecuter implements CommandExecutor {
                         return rankQuery(player, 1);
                     } else
                     {
-                        sender.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("You can't buy this at your rank! You can buy it at ").append(ChatColor.BLUE).append("Ocelot").toString());
+                        sender.sendMessage(ChatColor.GREEN + "You can't buy this at your rank! You can buy it at " + ChatColor.BLUE + "Ocelot");
                         return false;
                     }
                 if(args[0].equalsIgnoreCase("Blaze"))
@@ -106,7 +117,7 @@ public class PromoteExecuter implements CommandExecutor {
                         return rankQuery(player, 2);
                     } else
                     {
-                        sender.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("You can't buy this at your rank! You can buy it at ").append(ChatColor.RED).append("MagmaSlime only!").toString());
+                        sender.sendMessage(ChatColor.GREEN + "You can't buy this at your rank! You can buy it at " + ChatColor.RED + "MagmaSlime only!");
                         return false;
                     }
                 if(args[0].equalsIgnoreCase("PigZombie"))
@@ -116,7 +127,7 @@ public class PromoteExecuter implements CommandExecutor {
                         return rankQuery(player, 3);
                     } else
                     {
-                        sender.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("You can't buy this at your rank! You can buy it at ").append(ChatColor.RED).append("Blaze").toString());
+                        sender.sendMessage(ChatColor.GREEN + "You can't buy this at your rank! You can buy it at " + ChatColor.RED + "Blaze");
                         return false;
                     }
                 if(args[0].equalsIgnoreCase("Ghast"))
@@ -127,12 +138,12 @@ public class PromoteExecuter implements CommandExecutor {
                         return rankQuery(player, 4);
                     } else
                     {
-                        sender.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("You can't buy this at your rank! You can buy it at ").append(ChatColor.RED).append("PigZombie").toString());
+                        sender.sendMessage(ChatColor.GREEN + "You can't buy this at your rank! You can buy it at " + ChatColor.RED + "PigZombie");
                         return false;
                     }
                 } else
                 {
-                    sender.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("You didnt specify a valid rank!").toString());
+                    sender.sendMessage(ChatColor.GREEN + "You didnt specify a valid rank!");
                     return false;
                 }
             }
@@ -150,13 +161,13 @@ public class PromoteExecuter implements CommandExecutor {
                 if(econ.has(player, price))
                 {
                     econ.withdrawPlayer(player, price);
-                    sender.sendMessage((new StringBuilder()).append("You have been promoted to ").append(ChatColor.RED).append(rankString).toString());
+                    sender.sendMessage("You have been promoted to " + ChatColor.RED + rankString);
                     String groups[] = perms.getPlayerGroups(null, player);
                     for(int i = 0; i < groups.length; i++)
                         perms.playerRemoveGroup(null, player, groups[i]);
 
                     perms.playerAddGroup(null, player, rankString);
-                    log.info((new StringBuilder()).append("Player").append(sender.getName()).append(" has been promoted to ").append(rankString).toString());
+                    log.info("Player" + sender.getName() + " has been promoted to " + rankString);
                     promoteCount.put(playerName, Integer.valueOf(0));
                     return true;
                 } else
@@ -232,17 +243,17 @@ public class PromoteExecuter implements CommandExecutor {
         }
         String price;
         if(rank == 1)
-            price = (new StringBuilder()).append(b).append("$").append(ChatColor.GREEN).append(a).append("25,000").toString();
+            price =  b + "$" + ChatColor.GREEN + a + "25,000";
         else
         if(rank == 2)
-            price = (new StringBuilder()).append(b).append("$").append(ChatColor.GREEN).append(a).append("50,000").toString();
+            price =  b + "$" + ChatColor.GREEN + a + "50,000";
         else
         if(rank == 3)
-            price = (new StringBuilder()).append(b).append("$").append(ChatColor.GREEN).append(a).append("75,000").toString();
+            price =  b + "$" + ChatColor.GREEN + a + "75,000";
         else
         if(rank == 4)
         {
-            price = (new StringBuilder()).append(b).append("$").append(ChatColor.GREEN).append(a).append("100,000").toString();
+            price =  b + "$" + ChatColor.GREEN + a + "100,000";
         } else
         {
             price = "null";
@@ -270,8 +281,8 @@ public class PromoteExecuter implements CommandExecutor {
         {
             String rankName = getRankName(rank);
             String price = getRankPriceRead(rank, false);
-            player.sendMessage((new StringBuilder()).append("Are you sure you want to spend ").append(price).append(ChatColor.RESET).append(" on ").append(ChatColor.RED).append(rankName).append("?").toString());
-            player.sendMessage((new StringBuilder()).append("Type ").append(ChatColor.GREEN).append("/promoteme").append(ChatColor.RESET).append(" to Accept").toString());
+            player.sendMessage("Are you sure you want to spend " + price + ChatColor.RESET + " on " + ChatColor.RED + rankName + "?");
+            player.sendMessage("Type " + ChatColor.GREEN + "/promoteme" + ChatColor.RESET + " to Accept");
             changePlayerState(player, Integer.valueOf(rank));
             return true;
         }
@@ -284,11 +295,5 @@ public class PromoteExecuter implements CommandExecutor {
             return false;
         }
     }
-
-    private static BlivUtils bplugin;
-    private Permission perms;
-    private Economy econ;
-    private HashMap promoteCount;
-    private static final Logger log = Logger.getLogger("Minecraft");
 
 }
