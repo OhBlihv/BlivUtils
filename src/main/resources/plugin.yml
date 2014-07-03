@@ -1,0 +1,35 @@
+name: BlivUtils
+version: 0.1.0
+author: OhBlihv
+main: net.auscraft.BlivUtils.BlivUtils
+description: 'A collection of Utilities, which may be completely useless.'
+depend: [Vault]
+commands:
+  say:
+    description: 'Overrides /say to look decent.'
+    usage: 'Usage: /<command> <string>'
+  wstop:
+    description: 'Adds a delay to the /stop command. (Console Only!)'
+    usage: 'Usage in Console: /<command>'
+  sudo:
+    description: 'Does that thing that stops sinny from abusing.'
+    usage: 'Usage: /<command> <string>'
+  rank:
+    description: 'Shows simple help for a rank, with links to the wiki for more.'
+    usage: 'Usage: /<command> <rank>'
+    aliases: [ranks]
+  buyrank:
+    description: 'Opens the rank purchasing menu, and allows the user to purchase a rank they choose'
+  promoteme:
+    description: 'Confirms the purchase of a rank using /buyrank'
+permissions:
+  blivutils.*:
+    description: Access every useless utility!
+    default: op
+    children:
+      blivutils.say: true
+      blivutils.sudo: true
+      blivutils.promote.magmaslime: true
+      blivutils.promote.blaze: true
+      blivutils.promote.pigzombie: true
+      blivutils.promote.ghast: true
