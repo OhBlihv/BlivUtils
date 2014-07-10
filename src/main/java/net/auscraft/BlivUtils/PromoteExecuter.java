@@ -116,50 +116,50 @@ public class PromoteExecuter implements CommandExecutor {
                     if(sender.hasPermission("blivutils.promote.magmaslime") && !sender.hasPermission("blivutils.promote.blaze") && !sender.hasPermission("blivutils.promote.pigzombie") && !sender.hasPermission("blivutils.promote.ghast") || !(sender instanceof Player))
                     {
                         Player player = (Player)sender;
-                        return rankQuery(player, 1);
+                        rankQuery(player, 1);
                     } else
                     {
                         sender.sendMessage(ChatColor.GREEN + "You can't buy this at your rank! You can buy it at " + ChatColor.BLUE + "Ocelot");
                         return false;
                     }
-                if(args[0].equalsIgnoreCase("Blaze"))
+                else if(args[0].equalsIgnoreCase("Blaze"))
                     if(sender.hasPermission("blivutils.promote.blaze") && !sender.hasPermission("blivutils.promote.pigzombie") && !sender.hasPermission("blivutils.promote.ghast") || !(sender instanceof Player))
                     {
                         Player player = (Player)sender;
-                        return rankQuery(player, 2);
+                        rankQuery(player, 2);
                     } else
                     {
                         sender.sendMessage(ChatColor.GREEN + "You can't buy this at your rank! You can buy it at " + ChatColor.RED + "MagmaSlime only!");
                         return false;
                     }
-                if(args[0].equalsIgnoreCase("PigZombie"))
+                else if(args[0].equalsIgnoreCase("PigZombie"))
                     if(sender.hasPermission("blivutils.promote.pigzombie") && !sender.hasPermission("blivutils.promote.ghast") || !(sender instanceof Player))
                     {
                         Player player = (Player)sender;
-                        return rankQuery(player, 3);
+                        rankQuery(player, 3);
                     } else
                     {
                         sender.sendMessage(ChatColor.GREEN + "You can't buy this at your rank! You can buy it at " + ChatColor.RED + "Blaze");
                         return false;
                     }
-                if(args[0].equalsIgnoreCase("Ghast"))
+                else if(args[0].equalsIgnoreCase("Ghast"))
                 {
                     if(sender.hasPermission("blivutils.promote.ghast") && !sender.hasPermission("blivutils.promote.done") || !(sender instanceof Player))
                     {
                         Player player = (Player)sender;
-                        return rankQuery(player, 4);
+                        rankQuery(player, 4);
                     } else
                     {
                         sender.sendMessage(ChatColor.GREEN + "You can't buy this at your rank! You can buy it at " + ChatColor.RED + "PigZombie");
                         return false;
                     }
                 }
-                if(args[0].equalsIgnoreCase("Endermite"))
+                else if(args[0].equalsIgnoreCase("Endermite"))
                 {
                     if((sender.hasPermission("blivutils.promote.done") || !(sender instanceof Player)))
                     {
                         Player player = (Player)sender;
-                        return rankQuery(player, 5);
+                        rankQuery(player, 5);
                     } else
                     {
                         sender.sendMessage(ChatColor.GREEN + "You can't rent this at your rank! You can rent it at " + ChatColor.RED + "Ghast");
@@ -175,7 +175,8 @@ public class PromoteExecuter implements CommandExecutor {
         if(cmd.getName().equalsIgnoreCase("promoteme"))
         {
             String playerName = sender.getName();
-            if(promoteCount.containsKey(playerName) && promoteCount.get(playerName) != null)
+            if(promoteCount.containsKey(playerName) && (promoteCount.get(playerName) != 0) && ((promoteCount.get(playerName) == 1) || (promoteCount.get(playerName) == 2) ||
+            		(promoteCount.get(playerName) == 3) || (promoteCount.get(playerName) == 4) || (promoteCount.get(playerName) == 5)))
             {
                 int rank = promoteCount.get(playerName);
                 double price = 0.0;
@@ -224,7 +225,7 @@ public class PromoteExecuter implements CommandExecutor {
         	//Just shamelessly ripped this code, I don't even care: http://stackoverflow.com/questions/11357945/java-convert-seconds-into-day-hour-minute-and-seconds-using-timeunit
         	//Source: First Comment.
         	String days = "" ,hours = "" ,minutes = "" ,seconds = "";
-        	if (allseconds != -1) {
+        	if (allseconds >= 0) {
         		int day = (int)TimeUnit.SECONDS.toDays(allseconds);        
             	long hour = TimeUnit.SECONDS.toHours(allseconds) - (day *24);
             	long minute = TimeUnit.SECONDS.toMinutes(allseconds) - (TimeUnit.SECONDS.toHours(allseconds)* 60);
@@ -271,24 +272,22 @@ public class PromoteExecuter implements CommandExecutor {
     private String getRankName(int rank)
     {
         String name;
-        if(rank == 1)
+        if(rank == 1) {
             name = "MagmaSlime";
-        else
-        if(rank == 2)
+        }
+        else if(rank == 2) {
             name = "Blaze";
-        else
-        if(rank == 3)
+        }
+        else if(rank == 3) {
             name = "PigZombie";
-        else
-        if(rank == 4)
-        {
+        }
+        else if(rank == 4) {
             name = "Ghast";
         }
-        if(rank == 5)
-        {
+        else if(rank == 5) {
             name = "Endermite";
-        }else
-        {
+        }
+        else {
             name = "null";
             log.severe("Rank entered doesnt match a rank listed!");
         }
@@ -297,7 +296,7 @@ public class PromoteExecuter implements CommandExecutor {
 
     private double getRankPrice(int rank)
     {
-        double price = 0.0;
+        int price = 0;
         if(rank == 1) {
             price = 25000;
         }
@@ -312,6 +311,9 @@ public class PromoteExecuter implements CommandExecutor {
         }
         else if(rank == 5) {
             price = 100000;
+        }
+        else{
+        	price = -1;
         }
         return price;
     }
@@ -363,24 +365,37 @@ public class PromoteExecuter implements CommandExecutor {
     private boolean rankQuery(Player player, int rank)
     {
         boolean a = checkifNull(player);
+        log.info("Rank = " + rank);
         if(a = true)
         {
             String rankName = getRankName(rank);
             String price = getRankPriceRead(rank, false);
-            if((rank == 1) || (rank == 2) || (rank == 3) || (rank == 4)) {
+            if((rankName == "null") || (price == "-1")) {
+            	player.sendMessage("Could not purchase rank");
+            	log.severe("Player " + player.getName() + " tried to purchase rank " +  rankName + " but failed. (Due to rankname/price being null)");
+            }
+            else if((rank == 1) || (rank == 2) || (rank == 3) || (rank == 4)) {
             	player.sendMessage("Sure you want to spend " + price + ChatColor.RESET + " on " + ChatColor.RED + rankName + "?");
             	player.sendMessage("Type " + ChatColor.GREEN + "/promoteme" + ChatColor.RESET + " to Accept");
+            	changePlayerState(player, rank);
+            	return true;
             }
             else if(rank == 5) {
             	player.sendMessage("Sure you want to spend " + price + ChatColor.RESET + " on " + ChatColor.DARK_PURPLE + rankName + " (15 Days)?");
                 player.sendMessage("Type " + ChatColor.GREEN + "/promoteme" + ChatColor.RESET + " to Accept");
+                changePlayerState(player, rank);
+                return true;
             }
-            changePlayerState(player, Integer.valueOf(rank));
-            return true;
+            else{
+            	player.sendMessage("Could not purchase rank");
+            	log.severe("Player " + player.getName() + " tried to purchase rank " +  rankName + " but failed.");
+            	return false;
+            }
         }
         if(a = false)
         {
             player.sendMessage("Could not purchase rank.");
+            log.severe("Player " + player.getName() + " tried to purchase rank, but permissions/economy was not active.");
             return false;
         } else
         {
