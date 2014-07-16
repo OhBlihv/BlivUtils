@@ -30,7 +30,7 @@ public class PromoteExecuter implements CommandExecutor {
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String args[])
     {
-        if(cmd.getName().equalsIgnoreCase("buyrank"))
+        if(cmd.getName().equalsIgnoreCase("buyrank") && (sender instanceof Player))
         {
             if(args.length == 0)
             {
@@ -172,7 +172,7 @@ public class PromoteExecuter implements CommandExecutor {
                 }
             }
         }
-        if(cmd.getName().equalsIgnoreCase("promoteme"))
+        if(cmd.getName().equalsIgnoreCase("promoteme") && (sender instanceof Player))
         {
             String playerName = sender.getName();
             if(promoteCount.containsKey(playerName) && (promoteCount.get(playerName) != 0) && ((promoteCount.get(playerName) == 1) || (promoteCount.get(playerName) == 2) ||
@@ -218,37 +218,45 @@ public class PromoteExecuter implements CommandExecutor {
                 return false;
             }
         }
-        if(cmd.getName().equalsIgnoreCase("timeleft"))
+        if(cmd.getName().equalsIgnoreCase("timeleft") && (sender instanceof Player))
         {
         	Player p = (Player) sender;
-        	int allseconds = BlivUtils.getTimeLeft(p);
-        	//Just shamelessly ripped this code, I don't even care: http://stackoverflow.com/questions/11357945/java-convert-seconds-into-day-hour-minute-and-seconds-using-timeunit
-        	//Source: First Comment.
-        	String days = "" ,hours = "" ,minutes = "" ,seconds = "";
-        	if (allseconds >= 0) {
-        		int day = (int)TimeUnit.SECONDS.toDays(allseconds);        
-            	long hour = TimeUnit.SECONDS.toHours(allseconds) - (day *24);
-            	long minute = TimeUnit.SECONDS.toMinutes(allseconds) - (TimeUnit.SECONDS.toHours(allseconds)* 60);
-            	long second = TimeUnit.SECONDS.toSeconds(allseconds) - (TimeUnit.SECONDS.toMinutes(allseconds) *60);
-            	//String them together, then cut them down if they're 0
-            	if(day != 0) {
-            		days = day + " Day(s) ";
+        	String rank = BlivUtils.getActiveRank(p);
+        	log.info("Rank = " + rank);
+        	if(rank != "") {
+        		int allseconds = BlivUtils.getTimeLeft(p, rank);
+            	//Just shamelessly ripped this code, I don't even care: http://stackoverflow.com/questions/11357945/java-convert-seconds-into-day-hour-minute-and-seconds-using-timeunit
+            	//Source: First Comment. (And I also edited it a bit, so its not just blatantly ripped from StackOverflow...)
+            	String days = "" ,hours = "" ,minutes = "" ,seconds = "";
+            	if (allseconds >= 0) {
+            		int day = (int)TimeUnit.SECONDS.toDays(allseconds);        
+                	long hour = TimeUnit.SECONDS.toHours(allseconds) - (day *24);
+                	long minute = TimeUnit.SECONDS.toMinutes(allseconds) - (TimeUnit.SECONDS.toHours(allseconds)* 60);
+                	long second = TimeUnit.SECONDS.toSeconds(allseconds) - (TimeUnit.SECONDS.toMinutes(allseconds) *60);
+                	//String them together, then cut them down if they're 0
+                	if(day != 0) {
+                		days = day + " Day(s) ";
+                	}
+                	if(hour != 0) {
+                		hours = hour + " Hour(s) ";
+                	}
+                	if(minute != 0) {
+                		minutes = minute + " Minutes(s) ";
+                	}
+                	if(second != 0) {
+                		seconds = second + " Second(s) ";
+                	}
+                	String print = ChatColor.GOLD + "" + days + hours + minutes + seconds + "Remaining of " + rank;
+                	sender.sendMessage(print);
+                	return true;
             	}
-            	if(hour != 0) {
-            		hours = hour + " Hour(s) ";
+            	else {
+            		sender.sendMessage(ChatColor.GOLD + "You dont have an active rank!");
+            		return true;
             	}
-            	if(minute != 0) {
-            		minutes = minute + " Minutes(s) ";
-            	}
-            	if(second != 0) {
-            		seconds = second + " Second(s) ";
-            	}
-            	String print = ChatColor.GOLD + "" + days + hours + minutes + seconds + "Remaining";
-            	sender.sendMessage(print);
-            	return true;
         	}
         	else {
-        		sender.sendMessage(ChatColor.GOLD + "Your rank isnt active!");
+        		sender.sendMessage(ChatColor.GOLD + "You dont have an active rank!");
         		return true;
         	}
         }

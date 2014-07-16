@@ -1,9 +1,9 @@
 name: BlivUtils
-version: 0.1.0
+version: 0.1.2
 author: OhBlihv
 main: net.auscraft.BlivUtils.BlivUtils
 description: 'A collection of Utilities, which may be completely useless.'
-depend: [Vault]
+softdepend: [Vault, PermissionsEx]
 commands:
   say:
     description: 'Overrides /say to look decent.'
@@ -22,6 +22,8 @@ commands:
     description: 'Opens the rank purchasing menu, and allows the user to purchase a rank they choose'
   promoteme:
     description: 'Confirms the purchase of a rank using /buyrank'
+  timeleft:
+    description: 'Checks the players time left of a rank'
 permissions:
   blivutils.*:
     description: Access every useless utility!
