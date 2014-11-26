@@ -11,11 +11,13 @@ which were made to improve and ease the Admin/Playerbase.
         * Shows the version of BlivUtils that is running
     * /bu reload
         * Reloads a few things (mainly the rank checker)
+
 **/say**
 * Usage:
     * /say <message>
     * /say I hate you all
         * Prints the message put after /say
+
 **/wstop**
 * Usage:
     * /wstop
