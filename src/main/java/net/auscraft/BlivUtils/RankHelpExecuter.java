@@ -37,7 +37,7 @@ public class RankHelpExecuter implements CommandExecutor
                         				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Squid < Click Me!");
                         return true;
                     }
-                    if(args[0].equalsIgnoreCase("Chicken"))
+                    else if(args[0].equalsIgnoreCase("Chicken"))
                     {
                         sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
                         				+ ChatColor.DARK_GREEN + "Chicken: " + ChatColor.GRAY + "(2 Minutes Playtime)\n"
@@ -45,7 +45,7 @@ public class RankHelpExecuter implements CommandExecutor
                         				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Chicken < Click Me!");
                         return true;
                     }
-                    if(args[0].equalsIgnoreCase("Sheep"))
+                    else if(args[0].equalsIgnoreCase("Sheep"))
                     {
                         sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
                         				+ ChatColor.DARK_GREEN + "Sheep: " + ChatColor.GRAY + "(12 Hours Playtime)\n"
@@ -53,7 +53,7 @@ public class RankHelpExecuter implements CommandExecutor
                         				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Sheep < Click Me!");
                         return true;
                     }
-                    if(args[0].equalsIgnoreCase("Pig"))
+                    else if(args[0].equalsIgnoreCase("Pig"))
                     {
                         sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
                         				+ ChatColor.DARK_GREEN + "Pig: " + ChatColor.GRAY + "(1 Day Playtime)\n"
@@ -61,7 +61,7 @@ public class RankHelpExecuter implements CommandExecutor
                         				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Pig < Click Me!");
                         return true;
                     }
-                    if(args[0].equalsIgnoreCase("Cow"))
+                    else if(args[0].equalsIgnoreCase("Cow"))
                     {
                         sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
                         				+ ChatColor.DARK_GREEN + "Cow: " + ChatColor.GRAY + "(2 Days Playtime)\n"
@@ -69,7 +69,7 @@ public class RankHelpExecuter implements CommandExecutor
                         				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Cow < Click Me!");
                         return true;
                     }
-                    if(args[0].equalsIgnoreCase("Mooshroom"))
+                    else if(args[0].equalsIgnoreCase("Mooshroom"))
                     {
                         sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
                         				+ ChatColor.DARK_GREEN + "Mooshroom: " + ChatColor.GRAY + "(3 Days Playtime)\n"
@@ -77,7 +77,7 @@ public class RankHelpExecuter implements CommandExecutor
                         				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Mooshroom < Click Me!");
                         return true;
                     }
-                    if(args[0].equalsIgnoreCase("Slime"))
+                    else if(args[0].equalsIgnoreCase("Slime"))
                     {
                         sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
                         				+ ChatColor.DARK_GREEN + "Slime: " + ChatColor.GRAY + "(4 Days Playtime)\n"
@@ -85,7 +85,7 @@ public class RankHelpExecuter implements CommandExecutor
                         				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Slime < Click Me!");
                         return true;
                     }
-                    if(args[0].equalsIgnoreCase("Ocelot"))
+                    else if(args[0].equalsIgnoreCase("Ocelot"))
                     {
                         sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
                         				+ ChatColor.DARK_GREEN + "Ocelot: " + ChatColor.GRAY + "(5 Days Playtime)\n"
@@ -93,7 +93,7 @@ public class RankHelpExecuter implements CommandExecutor
                         				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Ocelot < Click Me!");
                         return true;
                     }
-                    if(args[0].equalsIgnoreCase("MagmaSlime"))
+                    else if(args[0].equalsIgnoreCase("MagmaSlime"))
                     {
                         sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
                         				+ ChatColor.DARK_GREEN + "MagmaSlime: " + ChatColor.GRAY + "$25,000 ingame (/buyrank MagmaSlime)\n"
@@ -101,29 +101,57 @@ public class RankHelpExecuter implements CommandExecutor
                         				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#MagmaSlime < Click Me!");
                         return true;
                     }
-                    if(args[0].equalsIgnoreCase("Blaze"))
+                    else if(args[0].equalsIgnoreCase("Blaze"))
                     {
                         sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
-                    + ChatColor.DARK_GREEN + "Blaze: " + ChatColor.GRAY + "$50,000 ingame (/buyrank Blaze)\n"
-                        		+ ChatColor.GREEN + "Access to /feed\nAbility to add a /hat to your player\nAble to change the colour of your chat:\n/warp colourshop\n"
-                    + ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Blaze < Click Me!");
+                        				+ ChatColor.DARK_GREEN + "Blaze: " + ChatColor.GRAY + "$50,000 ingame (/buyrank Blaze)\n"
+                        				+ ChatColor.GREEN + "Access to /feed\nAbility to add a /hat to your player\nAble to change the colour of your chat:\n/warp colourshop\n"
+                        				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Blaze < Click Me!");
                         return true;
                     }
-                    if(args[0].equalsIgnoreCase("PigZombie"))
+                    else if(args[0].equalsIgnoreCase("PigZombie"))
                     {
                         sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
-                    + ChatColor.DARK_GREEN + "PigZombie: " + ChatColor.GRAY + "$75,000 ingame (/buyrank PigZombie)\n"
-                        		+ ChatColor.GREEN + "Access to:\nA portable Crafting Table - /craft\nA portable Ender Chest - /enderchest\nChanging your personal time - /ptime\n"
-                    + ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#PigZombie < Click Me!");
+                        				+ ChatColor.DARK_GREEN + "PigZombie: " + ChatColor.GRAY + "$75,000 ingame (/buyrank PigZombie)\n"
+                        				+ ChatColor.GREEN + "Access to:\nA portable Crafting Table - /craft\nA portable Ender Chest - /enderchest\nChanging your personal time - /ptime\n"
+                        				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#PigZombie < Click Me!");
                         return true;
                     }
-                    if(args[0].equalsIgnoreCase("PigZombie"))
+                    else if(args[0].equalsIgnoreCase("Ghast"))
                     {
                         sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
                         				+ ChatColor.DARK_GREEN + "Ghast: " + ChatColor.GRAY + "$100,000 ingame (/buyrank Ghast)\n"
                         				+ ChatColor.GREEN + "Access to instant teleportation - /tp\nReduced Cooldowns/Warmups on spawn teleportation and warping!\n"
-                        				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#PigZombie < Click Me!");
+                        				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Ghast < Click Me!");
                         return true;
+                    }
+                    else if(args[0].equalsIgnoreCase("Endermite"))
+                    {
+                        sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
+                        				+ ChatColor.DARK_GREEN + "Endermite: " + ChatColor.GRAY + "$100,000 ingame every 15 days (/buyrank Endermite)\n"
+                        				+ ChatColor.GREEN + "Access to most Ender rank features,\nwhich the whole list of can be found below.\n"
+                        				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Endermite < Click Me!");
+                        return true;
+                    }
+                    else if(args[0].equalsIgnoreCase("Enderman"))
+                    {
+                        sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
+                        				+ ChatColor.DARK_GREEN + "Enderman: " + ChatColor.GRAY + "$5 AUD per Month\n"
+                        				+ ChatColor.GREEN + "Inherits all Free rank perks,\nAlso including fly, mobdisguise, trails and pets!\n"
+                        				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#Enderman < Click Me!");
+                        return true;
+                    }
+                    else if(args[0].equalsIgnoreCase("EnderDragon"))
+                    {
+                        sender.sendMessage(ChatColor.YELLOW + "----- " + ChatColor.GOLD + "AusCraft Rank Help" + ChatColor.YELLOW + " -----\n"
+                        				+ ChatColor.DARK_GREEN + "EnderDragon: " + ChatColor.GRAY + "$10 AUD per Month\n"
+                        				+ ChatColor.GREEN + "Inherits all Endermite perks,\nAlso including all remaining Pets and all remaining Trails\n"
+                        				+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " http://wiki.aus-craft.net/ranks#EnderDragon < Click Me!");
+                        return true;
+                    }
+                    else {
+                    	sender.sendMessage(ChatColor.GOLD + "That rank doesnt exist, or does not currently have documentation for it.");
+                    	return true;
                     }
                 }
                 return true;

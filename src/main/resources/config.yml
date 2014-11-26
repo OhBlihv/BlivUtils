@@ -1,0 +1,13 @@
+#---------------------------------------
+#			BlivUtils Config
+#---------------------------------------
+options:
+    scheduler:
+        #Is this server a server which should be counting the rank times?
+        #(Only enable this on a main server if on a proxy)
+        enabled: 1
+        #Which unit to count by?
+        #Valid Options: seconds, minutes, hours (Case-Sensitive)
+        unit: hours
+        #Time to check whether ranks have run out in minutes (Default 60 Minutes)
+        time: 1
