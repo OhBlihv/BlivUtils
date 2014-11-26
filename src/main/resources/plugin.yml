@@ -25,10 +25,15 @@ commands:
   promoadmin:
     description: 'Promotes an existing player to Admin for 30 days'
     usage: 'Usage: /<command> <player> <amount> [day(s) OR month(s)]'
+  updateadmin:
+    description: 'Adds or removes time from an Admins rank'
+    usage: 'Usage: /<command> <player> <amount> [day(s) OR month(s)]'
   promoteme:
     description: 'Confirms the purchase of a rank using /buyrank'
   timeleft:
     description: 'Checks the players time left of a rank'
+  prefix:
+    description: 'Change your own prefix'
   chat:
     description: 'Access to the chat colour changing utility'
   colourme:
@@ -46,4 +51,6 @@ permissions:
       blivutils.promote.ghast: true
       blivutils.promote.admin: true
       blivutils.promote.admin.check: true
+      blivutils.promote.admin.update: true
       blivutils.chat.use: true
+      blivutils.prefix: true

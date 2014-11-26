@@ -55,8 +55,12 @@ which were made to improve and ease the Admin/Playerbase.
 **/promoadmin**
 * Usage:
     * /promoadmin <player> <#> <day(s)/month(s)>
-        * Format (All required, or just the player and amount (assumes months). Might work, I can't guarantee anything.
         * Promotes a player to the Admin rank for the specified time.
+
+**/updateadmin**
+* Usage:
+    * /promoadmin <player> <#> <day(s)/month(s)>
+        * Adds/Removes time from an Admins rank for the specified time.
 
 **/timeleft**
 * Usage:
@@ -65,10 +69,10 @@ which were made to improve and ease the Admin/Playerbase.
     * /timeleft <name>
         * Checks the timeleft on the highest priority rank that the chosen player has.
 
-**/prefixchange** (this will change later)
+**/prefix** (this will change later)
 * Usage:
-    * /prefixchange <something else
-        * Not done.
+    * /prefix <prefix>
+        * For Admin (or anyone else with the blivutils.prefix permission) and up to change their prefix.
 
 **/chat**
 * Usage:
