@@ -3,9 +3,11 @@ package net.auscraft.BlivUtils;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.Reader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,12 +16,20 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.auscraft.BlivUtils.config.ConfigAccessor;
+import net.auscraft.BlivUtils.config.ConfigSetup;
+import net.auscraft.BlivUtils.executors.ColourExecutor;
+import net.auscraft.BlivUtils.executors.CreditExecutor;
+import net.auscraft.BlivUtils.executors.GenericExecutor;
+import net.auscraft.BlivUtils.executors.RankHelpExecutor;
+import net.auscraft.BlivUtils.promotions.PromoteExecuter;
+import net.auscraft.BlivUtils.purchases.Broadcast;
+import net.auscraft.BlivUtils.rewards.ChristmasExecutor;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import ru.tehkode.permissions.PermissionManager;
@@ -30,24 +40,44 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public final class BlivUtils extends JavaPlugin
 {
-
+	
 	private Logger log;
 	private static BlivUtils plugin;
 	private static HashMap<String, Integer> promoteCount = new HashMap<String, Integer>();
 	private static HashMap<String, String> colourSave = new HashMap<String, String>();
 	private static PermissionManager pex;
-	private FileConfiguration Config = null;
-	private File ConfigFile = null;
+	private ConfigSetup configSetup;
+	private ConfigAccessor cfg;
+	//private FileConfiguration configfile = null;
+
 
 	@Override
 	public void onEnable()
 	{
+		//Get in there early to claim the economy!
+		
+		// Other Stuff
+		log = getLogger();
+		pex = PermissionsEx.getPermissionManager();
+		plugin = this;
+		configSetup = new ConfigSetup(this);
+		//configfile = configSetup.getConfig();
+		cfg = new ConfigAccessor(this);
+		// Scheduling
+		checkRankScheduler();
+		//MySQL Setup
+		setupMySQL();
+		//loadRewards();
+		
+		
+		// Some of the commands require the above set up before they can appear to function.
 		// Command Declaration
-		getCommand("bu").setExecutor(new GenericExecuter());
-		getCommand("rank").setExecutor(new RankHelpExecuter());
-		getCommand("say").setExecutor(new GenericExecuter());
-		getCommand("wstop").setExecutor(new GenericExecuter());
-		getCommand("sudo").setExecutor(new GenericExecuter());
+		getCommand("bu").setExecutor(new GenericExecutor());
+		getCommand("rank").setExecutor(new RankHelpExecutor());
+		getCommand("say").setExecutor(new GenericExecutor());
+		getCommand("wstop").setExecutor(new GenericExecutor());
+		getCommand("sudo").setExecutor(new GenericExecutor());
+		getCommand("servers").setExecutor(new GenericExecutor());
 		getCommand("buyrank").setExecutor(new PromoteExecuter(this));
 		getCommand("promoadmin").setExecutor(new PromoteExecuter(this));
 		getCommand("updateadmin").setExecutor(new PromoteExecuter(this));
@@ -56,28 +86,70 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("prefix").setExecutor(new PromoteExecuter(this));
 		getCommand("chat").setExecutor(new ColourExecutor(this));
 		getCommand("colourme").setExecutor(new ColourExecutor(this));
-		
-		// Other Stuff
-		log = getLogger();
-		pex = PermissionsEx.getPermissionManager();
-		plugin = this;
-		setupConfig();
-		// Scheduling
-		checkScheduler();
+		getCommand("credits").setExecutor(new CreditExecutor(this));
+		getCommand("present").setExecutor(new ChristmasExecutor(this));
+		getCommand("purch").setExecutor(new Broadcast(this));
 	}
 
 	@Override
 	public void onDisable()
 	{
-		//Yep, this is blank.
+		log.info("BlivUtils disabling...");
 	}
+	
+	//Setup for MySQL
+	private void setupMySQL()
+	{
+		//Read these in from the config so I dont have to put the database info on GitHub :L
+		String user = cfg.getString("options.mysql.user");
+		String pass = cfg.getString("options.mysql.pass");
+		String url = cfg.getString("options.mysql.url");
+		
+		String setup = cfg.getString("options.mysql.setup");
+		if(setup.equals("0"))
+		{
+			log.info("Table not set up. First run.");
+			//Set the setup variable to 1, so it attempts to setup the CreditsDB table
+			configSetup.setValue("options.mysql.setup", "1");
+			log.info("setup should now be 1");
+		}
+		else if(setup.equals("1"))
+		{
+			try
+			{
+				log.info("Setting up Credits Table...");
+				//Initial creation of Table
+				Connection conn = DriverManager.getConnection(url, user, pass);
+				PreparedStatement sampleQueryStatement = conn.prepareStatement("CREATE TABLE IF NOT EXISTS CreditsDB (playerName VARCHAR(50) PRIMARY KEY, value INT)");
+				sampleQueryStatement.executeUpdate();
+				sampleQueryStatement.close();
+				conn.close();
+				log.info("Successfully set up Credits Table");
+				//Set the setup variable to 2, so it doesn't attempt to setup the CreditsDB table anymore.
+				configSetup.setValue("options.mysql.setup", "2");
+			}
+			catch(SQLException e)
+			{
+				e.printStackTrace(); //For now, I'll fix this later.
+				log.severe("Failed setting up Credits Table");
+				log.severe("Disabling...");
+				Bukkit.getPluginManager().disablePlugin(this);
+			}
+		}
+		else  //Setup = 2
+		{
+			log.info("Credits table already set up. Skipping...");
+		}
 
-	public void checkScheduler() {
-		int enabled = getInt("options.scheduler.enabled");
+		
+	}
+	
+	public void checkRankScheduler() {
+		int enabled = cfg.getInt("options.scheduler.enabled");
 		if ((enabled != -1) && (enabled != 0))
 		{
 			log.info("Rank Checking Scheduler enabled");
-			startScheduler();
+			startRankScheduler();
 		}
 		else
 		{
@@ -85,11 +157,11 @@ public final class BlivUtils extends JavaPlugin
 		}
 	}
 
-	private void startScheduler()
+	private void startRankScheduler()
 	{
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		String unit = getString("options.scheduler.unit");
-		int looptime = getConversion(unit);
+		String unit = cfg.getString("options.scheduler.unit");
+		int looptime = getConversion(unit, "options.scheduler.time");
 		scheduler.scheduleSyncRepeatingTask(this, new Runnable()
 		{
 			public void run()
@@ -148,10 +220,10 @@ public final class BlivUtils extends JavaPlugin
 		}
 	}
 
-	private int getConversion(String unit)
+	private int getConversion(String unit, String yamlStructure)
 	{
 		int conversion;
-		int time = getInt("options.scheduler.time");
+		int time = cfg.getInt(yamlStructure);
 		if (unit.equals("seconds"))
 		{
 			conversion = time * 20;
@@ -177,16 +249,14 @@ public final class BlivUtils extends JavaPlugin
 
 	public Permission setupPermissions()
 	{
-		RegisteredServiceProvider<Permission> rsp = getServer()
-				.getServicesManager().getRegistration(Permission.class);
+		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
 		Permission perms = (Permission) rsp.getProvider();
 		return perms;
 	}
 
 	public Economy setupEconomy()
 	{
-		RegisteredServiceProvider<Economy> rsp = getServer()
-				.getServicesManager().getRegistration(Economy.class);
+		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 		if (rsp != null)
 			;
 		Economy econ = (Economy) rsp.getProvider();
@@ -206,6 +276,11 @@ public final class BlivUtils extends JavaPlugin
 	public static BlivUtils getPlugin()
 	{
 		return plugin;
+	}
+	
+	public ConfigAccessor getCfg()
+	{
+		return cfg;
 	}
 
 	public static int getTimeLeft(String playerName, String rank)
@@ -248,83 +323,15 @@ public final class BlivUtils extends JavaPlugin
 		}
 		return rank;
 	}
-
-	// Config Setup Time
-
-	public boolean setupConfig()
+	
+	public void printSuccess(CommandSender sender, String message)
 	{
-		boolean success = false;
-		FileConfiguration a = getConfig();
-		saveDefaultConfig();
-		if (a != null) 
-		{
-			success = true;
-		}
-		return success;
+		sender.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "SUCCESS: " + ChatColor.GREEN + message);
 	}
-
-	public void setValue(String path, String value)
+	
+	public void printError(CommandSender sender, String message)
 	{
-		this.getConfig().set(path, value);
-	}
-
-	public int getInt(String path)
-	{
-		int value = this.getConfig().getInt(path);
-		return value;
-	}
-
-	public String getString(String path) {
-		String value = this.getConfig().getString(path);
-		return value;
-	}
-
-	public boolean getBoolean(String path) {
-		boolean value = this.getConfig().getBoolean(path);
-		return value;
-	}
-
-	public FileConfiguration getConfig() {
-		if (Config == null) {
-			reloadConfig();
-		}
-		return Config;
-	}
-
-	public void saveConfig() {
-		if (Config == null || ConfigFile == null) {
-			return;
-		}
-		try {
-			getConfig().save(ConfigFile);
-		} catch (IOException ex) {
-			plugin.log.severe("Could not save config to " + ConfigFile + ex);
-		}
-	}
-
-	public void saveDefaultConfig() {
-		if (ConfigFile == null) {
-			ConfigFile = new File(plugin.getDataFolder(), "config.yml");
-		}
-		if (!ConfigFile.exists()) {
-			plugin.saveResource("config.yml", false);
-		}
-	}
-
-	public void reloadConfig() {
-		if (ConfigFile == null) {
-			ConfigFile = new File(plugin.getDataFolder(), "config.yml");
-		}
-		Config = YamlConfiguration.loadConfiguration(ConfigFile);
-
-		// Look for defaults in the jar
-		Reader defConfigStream = new InputStreamReader(
-				plugin.getResource("config.yml"));
-		if (defConfigStream != null) {
-			YamlConfiguration defConfig = YamlConfiguration
-					.loadConfiguration(defConfigStream);
-			Config.setDefaults(defConfig);
-		}
+		sender.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "ERROR: " + ChatColor.RED + message);
 	}
 
 }

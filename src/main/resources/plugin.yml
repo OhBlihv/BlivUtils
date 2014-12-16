@@ -10,6 +10,9 @@ commands:
   say:
     description: 'Overrides /say to look decent.'
     usage: 'Usage: /<command> <string>'
+  purch:
+    description: 'A printout of the recent purchase on the AusCraft Store. (CONSOLE)'
+    usage: 'Usage: /<command> <string>'
   wstop:
     description: 'Adds a delay to the /stop command. (Console Only!)'
     usage: 'Usage in Console: /<command>'
@@ -38,6 +41,14 @@ commands:
     description: 'Access to the chat colour changing utility'
   colourme:
     description: 'Confirmation command for the /chat menu'
+  credits:
+    description: 'Utility and balance displays for Credits'
+    usage: 'Usage: /<command> [arg]'
+  servers:
+    description: 'Provides information on the available servers'
+    usage: 'Usage: /<command> [args]'
+  present:
+    description: 'A bit of Christmas fun!'
 permissions:
   blivutils.*:
     description: Access every useless utility!
@@ -54,3 +65,4 @@ permissions:
       blivutils.promote.admin.update: true
       blivutils.chat.use: true
       blivutils.prefix: true
+      blivutils.credits.admin: true

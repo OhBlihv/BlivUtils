@@ -1,9 +1,10 @@
-package net.auscraft.BlivUtils;
+package net.auscraft.BlivUtils.executors;
 
 import java.util.HashMap;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import net.auscraft.BlivUtils.BlivUtils;
 import net.milkbowl.vault.economy.Economy;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -27,7 +28,6 @@ public class ColourExecutor implements CommandExecutor
 		bplugin = instance;
 		econ = bplugin.setupEconomy();
 		colourSave = BlivUtils.getSuffixColour();
-
 	}
 
 	@Override
@@ -38,15 +38,13 @@ public class ColourExecutor implements CommandExecutor
 			// If no args, assume main menu
 			if (args.length == 0)
 			{
-				String hasPermToUse = ""; // Start this off as blank, so it wont
-											// show up if the player has
-											// permission
+				String hasPermToUse = ""; // Start this off as blank, so it wont show up if the player has permission
 				if (!sender.hasPermission("blivutils.chat"))
 				{
 					hasPermToUse = (ChatColor.RED + "You don't have permission to use this!\n Rank " + ChatColor.RED + "Blaze " + ChatColor.RED + "and above.\n");
 				}
 				sender.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Chat Colour Menu\n"
-						+ hasPermToUse // Blank line here to simulate the other	// line being here.
+						+ hasPermToUse // Blank line here to simulate the other line being here.
 						+ ChatColor.GOLD + "Cost: "	+ ChatColor.WHITE + "$"	+ ChatColor.DARK_GREEN + "200" + ChatColor.YELLOW + " per colour change\n"
 						// List here
 						+ ChatColor.GOLD + "| " + ChatColor.DARK_GRAY + " DarkGray" + ChatColor.GOLD + " Gold" + ChatColor.AQUA + " Aqua" + ChatColor.YELLOW + " Yellow\n"
@@ -194,7 +192,8 @@ public class ColourExecutor implements CommandExecutor
 		sender.sendMessage(prefix + p.getDisplayName() + ": " + choice + "Test Message -- #12345\n" + ChatColor.GOLD + "Like it? Type /colourme to confirm.");
 		colourSave.put(p.getName(), colour);
 	}
-
+	
+	//TODO: Move to its own utilities class (I use this in more than one place!)
 	private String translateColours(Player p)
 	{
 		PermissionUser user = PermissionsEx.getUser(p);

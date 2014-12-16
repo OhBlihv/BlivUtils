@@ -4,7 +4,10 @@ BlivUtils
 BlivUtils is a plugin made for AusCraft (aus-craft.net) which adds simple menus and helpful commands
 which were made to improve and ease the Admin/Playerbase.
 
-##Commands:
+###Commands:
+
+##Operator Commands:
+
 **/bu**
 * Usage:
     * /bu version
@@ -30,6 +33,25 @@ which were made to improve and ease the Admin/Playerbase.
         * You can't use it.
         * Aww yiss.
 
+**/promoadmin**
+* Usage:
+    * /promoadmin <player> <#> <day(s)/month(s)>
+        * Promotes a player to the Admin rank for the specified time.
+
+**/updateadmin**
+* Usage:
+    * /promoadmin <player> <#> <day(s)/month(s)>
+        * Adds/Removes time from an Admins rank for the specified time.
+
+##Admin Commands:
+
+**/prefix** (this will change later)
+* Usage:
+    * /prefix <prefix>
+        * For Admin (or anyone else with the blivutils.prefix permission) and up to change their prefix.
+        
+##Player Commands:
+
 **/rank**
 * Usage:
     * /rank
@@ -52,15 +74,7 @@ which were made to improve and ease the Admin/Playerbase.
         * No Parameters.
         * Confirmation command that deducts money and promotes user to the rank they chose.
 
-**/promoadmin**
-* Usage:
-    * /promoadmin <player> <#> <day(s)/month(s)>
-        * Promotes a player to the Admin rank for the specified time.
 
-**/updateadmin**
-* Usage:
-    * /promoadmin <player> <#> <day(s)/month(s)>
-        * Adds/Removes time from an Admins rank for the specified time.
 
 **/timeleft**
 * Usage:
@@ -69,10 +83,6 @@ which were made to improve and ease the Admin/Playerbase.
     * /timeleft <name>
         * Checks the timeleft on the highest priority rank that the chosen player has.
 
-**/prefix** (this will change later)
-* Usage:
-    * /prefix <prefix>
-        * For Admin (or anyone else with the blivutils.prefix permission) and up to change their prefix.
 
 **/chat**
 * Usage:

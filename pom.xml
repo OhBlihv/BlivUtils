@@ -2,11 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.auscraft</groupId>
   <artifactId>BlivUtils</artifactId>
-  <version>0.1.9</version>
+  <version>0.2.1</version>
+  
   <repositories>
        <repository>
-           <id>bukkit-repo</id>
-           <url>http://repo.bukkit.org/content/groups/public/</url>
+     	    <id>md_5-snapshots</id>
+      		<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
        </repository>
        <repository>
 			<id>vault-repo</id>
@@ -16,14 +17,18 @@
    			 <id>pex-repo</id>
    			 <url>http://pex-repo.zachsthings.com</url>
 		</repository>
+		<repository>
+    		 <id>ac-repo</id>
+      		<url>https://raw.github.com/mazentheamazin/AccountsClient/mvn-repo/</url>
+  		 </repository>
+		
    </repositories>
    <dependencies>
-       <dependency>
-           <groupId>org.bukkit</groupId>
-           <artifactId>bukkit</artifactId>
-           <version>1.7.9-R0.3-SNAPSHOT</version>
-           <type>jar</type>
-           <scope>provided</scope>
+       	<dependency>
+      		<groupId>org.bukkit</groupId>
+      		<artifactId>bukkit</artifactId>
+      		<version>1.8-R0.1-SNAPSHOT</version>
+      		<scope>provided</scope>
        </dependency>
        <dependency>
             <groupId>net.milkbowl.vault</groupId>
@@ -33,12 +38,25 @@
         <dependency>
     		<groupId>ru.tehkode</groupId>
     		<artifactId>PermissionsEx</artifactId>
-   			<version>1.22</version>
+   			<version>1.23</version>
 		</dependency>
+		<dependency>
+         <groupId>com.mojang</groupId>
+         <artifactId>AccountsClient</artifactId>
+         <scope>compile</scope>
+         <version>1.0</version>
+      </dependency>
+		<dependency>
+            <groupId>com.minecraftdimensions</groupId>
+            <artifactId>bungeesuitechat</artifactId>
+            <version>0.60</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/BungeeSuiteChat.jar</systemPath>
+        </dependency>
    </dependencies>
   <build>
   	  <defaultGoal>clean package install</defaultGoal>
-      <finalName>${artifactId}-${version}</finalName>
+      <finalName>${project.artifactId}-${project.version}</finalName>
       <resources>
 			<resource>
 				<directory>src/main/resources</directory>

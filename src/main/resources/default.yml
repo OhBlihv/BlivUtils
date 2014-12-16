@@ -51,21 +51,6 @@ options:
     save:
         time: 5
         unit: minutes
-    rewards:
-        #Move me later
-        # <NAME>,<ENCHANTNAME:LEVEL:VARIANCE [ ENCHANTNAME:LEVEL:VARIANCE...]>,<ITEM ID>,<LORE>
-        # <NAME> -- Can include spaces and any other character but ','
-        # <ENCHANTNAME:LEVEL:VARIANCE> - List of enchantments coming soon, Base level, Number of levels different from the base the enchant level can be.
-        # <ITEM ID> - ID of the reward
-        # <LORE> - Lore to display on the item
-        pool1:
-        - Christmas Stone,1
-        - Christmas Grass,2,1:1:0
-        - Christmas Shovel,269,1:5:2,Shovel!
-        pool2: {}
-        pool3: {}
-        pool4: {}
-        pool5: {}
     mysql:
         setup: '0'
         user: minecraft

@@ -1,10 +1,11 @@
-package net.auscraft.BlivUtils;
+package net.auscraft.BlivUtils.promotions;
 
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import net.auscraft.BlivUtils.BlivUtils;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -350,6 +351,7 @@ public class PromoteExecuter implements CommandExecutor
 					{
 						//Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + player.getName() + " group add Endermite \"\" 1296000");
 						PermissionUser user = PermissionsEx.getUser(sender.getName());
+						user.addGroup("Endermite", null);
 						user.setOption("group-Endermite-until", "1296000");
 					}
 					log.info("Player " + sender.getName() + " has been promoted to " + rankString);
@@ -448,10 +450,11 @@ public class PromoteExecuter implements CommandExecutor
 							playerName = args[0];
 							enteredPrefix = args[1];
 							successfulSet = ChatColor.GREEN + "Successfully set " + playerName + ChatColor.GREEN + "'s prefix to ";
-						} 
+							
+						}
 						else
 						{
-							sender.sendMessage(ChatColor.RED + "You don't have permission to change other's prefixes!");
+							bplugin.printError(sender, "You don't have permission to change other's prefixes!");
 							return true;
 						}
 					} 
@@ -459,7 +462,30 @@ public class PromoteExecuter implements CommandExecutor
 					{
 						enteredPrefix = args[0];
 						playerName = sender.getName();
-						successfulSet = ChatColor.GREEN + "Successfully set your prefix to ";
+						if(!(enteredPrefix.length() >= 50))
+						{
+							if((enteredPrefix.contains("Admin")) || (enteredPrefix.contains("Mod")) || (enteredPrefix.contains("Musketeer")))
+							{
+								if(sender.hasPermission("blivutils.prefix.other"))
+								{
+									successfulSet = ChatColor.GREEN + "Successfully set your prefix to ";
+								}
+								else
+								{
+									bplugin.printError(sender, "You don't have permission to use one of those words!");
+									return true;
+								}
+							}
+							else
+							{
+								successfulSet = ChatColor.GREEN + "Successfully set your prefix to ";
+							}
+						}
+						else
+						{
+							bplugin.printError(sender, "Your prefix is too long! Keep it under 50 Characters.");
+						}
+						
 					}
 
 					if ((enteredPrefix.contains("[")) && (enteredPrefix.contains("]"))) // Correct formatting.
@@ -469,23 +495,24 @@ public class PromoteExecuter implements CommandExecutor
 						
 						user.setPrefix(enteredPrefix, null);
 						sender.sendMessage(successfulSet + ChatColor.WHITE + translateColours(enteredPrefix));
+						log.info(playerName + "'s prefix has been set to " + enteredPrefix);
 						bplugin.logtoFile(playerName + "'s prefix has been set to " + enteredPrefix);
 						return true;
 					} 
 					else // Prefix tags not included.
 					{
-						sender.sendMessage(ChatColor.RED + "Your entered prefix didn't include brackets! '[' and ']' are required.");
+						bplugin.printError(sender, "Your entered prefix didn't include brackets! '[' and ']' are required.");
 						return true;
 					}
 				}
 				else 
 				{
-					sender.sendMessage(ChatColor.RED + "Enter a prefix");
+					bplugin.printError(sender, "Enter a prefix!");
 				}
 			}
 			else 
 			{
-				sender.sendMessage(ChatColor.RED + "Only Admin and above can change their own prefix!");
+				bplugin.printError(sender, "You don't have permission to change your prefix!");
 				return true;
 			}
 		}
@@ -751,5 +778,5 @@ public class PromoteExecuter implements CommandExecutor
 		fixedString = chatColorPattern.matcher(toFix).replaceAll("\u00A7$1"); // And  here too
 		return fixedString;
 	}
-
+	
 }

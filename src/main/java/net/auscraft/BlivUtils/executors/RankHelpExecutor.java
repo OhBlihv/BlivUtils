@@ -1,13 +1,13 @@
-package net.auscraft.BlivUtils;
+package net.auscraft.BlivUtils.executors;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
-public class RankHelpExecuter implements CommandExecutor 
+public class RankHelpExecutor implements CommandExecutor 
 {
 
-	public RankHelpExecuter()
+	public RankHelpExecutor()
 	{
 		//Yep, it's empty.
 	}

@@ -1,2 +1,6 @@
-target/
-BlivUtils/
+/target
+/BlivUtils
+/build.xml
+/.classpath
+/.project
+/.settings
