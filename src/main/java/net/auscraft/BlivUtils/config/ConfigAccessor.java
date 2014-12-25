@@ -1,30 +1,40 @@
 package net.auscraft.BlivUtils.config;
 
+import java.io.File;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import com.sun.swing.internal.plaf.basic.resources.basic;
 
 import net.auscraft.BlivUtils.BlivUtils;
+import net.auscraft.BlivUtils.executors.CreditExecutor;
+import net.auscraft.BlivUtils.promotions.PromoteExecuter;
+import net.auscraft.BlivUtils.rewards.ChristmasExecutor;
 import net.auscraft.BlivUtils.rewards.RewardContainer;
 
 public class ConfigAccessor {
 	
 	private FileConfiguration config;
-	private BlivUtils plugin;
+	private BlivUtils b;
 	private String user, pass, url; //MySQL Setup Variables
 	private RewardContainer[][] rewardsTable;
 	private Logger log;
 	
 	public ConfigAccessor(BlivUtils instance)
 	{
-		plugin = instance;
-		config = plugin.getConfig();
-		log = plugin.getLogger();
+		b = instance;
+		config = b.getConfig();
+		log = b.getLogger();
 	}
 
 	public RewardContainer[][] loadRewards()
 	{
+		reloadConfig();
 		
 		int ii = 0; //Counts number of rewards in a pool.
 		int iii = 0; //Counts total number of rewards
@@ -44,13 +54,14 @@ public class ConfigAccessor {
 		{
 			ii = 0;
 			List<String> pool = getStringList("options.rewards.pool" + (j+1));
-			log.info("Reading Pool: " + (j+1));
+			//log.info("Reading Pool: " + (j+1));
 			for(String i : pool)
 			{
-				log.info("Entry Number: " + ii);
+				//log.info("Entry Number: " + ii);
 				String name = "", itemid = "", lore = "";
 				String enchantsList = "";
-				int[][] enchants = new int[1][3];; //5 Enchantments per item, 3 Available Enchantment Variables
+				double chance = 1.0;
+				int[][] enchants = {{-1,-1,-1},{-1,-1,-1},{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}}; //5 Enchantments per item, 3 Available Enchantment Variables
 				//Initialize the array to invalid values, so if they are not set it wont error.
 				/*for(int encInit = 0;encInit < 5;encInit++)
 				{
@@ -62,44 +73,55 @@ public class ConfigAccessor {
 				
 				try
 				{
-					String[] rewards = i.split(",");
+					String[] rewards = i.split("[,]");
 					
-					if(rewards.length == 4) //4 Variables
+					if(rewards.length == 5) //4 Variables
 					{
-						name = rewards[0];
-						itemid = rewards[1];
-					    enchantsList = rewards[2];
+						chance = Double.parseDouble(rewards[0]);
+						name = rewards[1];
+						itemid = rewards[2];
+					    enchantsList = rewards[3];
 					    
 					    
 					    if(!enchantsList.contains("-"))
 					    {
 					    	String[] encSets = enchantsList.split("[|]");
-					    	enchants = new int[encSets.length][3];
-					    	log.info("Reading Enchantments...");
-					    	//log.info("encSets[0] = " + encSets[0]);
-					    	for(int encAmount = 0;encAmount < encSets.length;encAmount++)
+					    	//log.info("encSets.length = " + encSets.length);
+					    	//log.info("Reading Enchantments...");
+					    	/*for(int encAmount = 0;encAmount < encSets.length;encAmount++)
 					    	{
 					    		log.info("encSets[" + encAmount + "] = " + encSets[encAmount]);
-					    	}
+					    	}*/
 					    	int encCount = 0;
 					    	//One set of enchantment variables.
-					    	log.info("encSets.length = " + encSets.length);
+					    	//log.info("encSets.length = " + encSets.length);
 					    	String[] encVars;
-					    	for(int encGroup = 0;encGroup < (encSets.length / 3);encGroup++)
+					    	for(int encGroup = 0;encGroup < (encSets.length);encGroup++)
 					    	{
+					    		//log.info("Enchantment Number: " + (encGroup + 1) + " / " + (encSets.length));
 					    		encVars = encSets[encGroup].split("[:]");
-					    		log.info("encVars[0] = " + encVars[0]);
-					    		log.info("encVars.length = " + encVars.length);
+					    		//log.info("encVars[0] = " + encVars[0]);
+					    		//log.info("encVars.length = " + encVars.length);
+					    		//log.info("" + Integer.parseInt(encVars[encCount]));
 					    		enchants[encGroup][0] = Integer.parseInt(encVars[encCount++]);
+					    		//log.info("" + Integer.parseInt(encVars[encCount]));
 					    		enchants[encGroup][1] = Integer.parseInt(encVars[encCount++]);
+					    		//log.info("" + Integer.parseInt(encVars[encCount]));
 					    		enchants[encGroup][2] = Integer.parseInt(encVars[encCount++]);
-					    		log.info(enchants[encGroup][0] + ":" + enchants[encGroup][1] + ":" + enchants[encGroup][2]);
+					    		
+					    		//log.info(enchants[encGroup][0] + ":" + enchants[encGroup][1] + ":" + enchants[encGroup][2]);
+					    		encCount = 0;
 					    	}
+					    }
+					    else
+					    {
+					    	enchants = null;
+					    	//log.info("No Enchantments Defined. Skipping...");
 					    }
 					    
 					    if(!rewards[3].contains("-"))
 					    {
-						    lore = rewards[3];
+						    lore = rewards[4];
 					    }
 					    else
 					    {
@@ -122,11 +144,14 @@ public class ConfigAccessor {
 					return null;
 				}
 			    
-				if(enchants[0][0] != -1)
+				if(enchants != null)
 				{
-					for(int encLoop = 0;encLoop < 5;encLoop++)
+					int encLoop = 0;
+					int[] defaultEnc = {0,0,0};
+					while((enchants[encLoop] != defaultEnc) && (encLoop < 4))
 					{
 						enchantsList += enchants[encLoop][0] + ":" + enchants[encLoop][1] + ":" + enchants[encLoop][2] + " ";
+						encLoop++;
 					}
 				}
 				else
@@ -134,8 +159,8 @@ public class ConfigAccessor {
 					enchantsList = "NONE_GIVEN";
 				}
 				
-				log.info("Entry " + ii + ": " + name + " " + itemid + " " + enchantsList + " " + lore);
-				RewardContainer reward = new RewardContainer(name, itemid, enchants, lore);
+				//log.info("Entry " + ii + ": " + chance + " " + name + " " + itemid + " " + enchantsList + " " + lore);
+				RewardContainer reward = new RewardContainer(chance, name, itemid, enchants, lore);
 				rewardsTable[j][ii] = reward;
 				
 				ii++;
@@ -144,7 +169,10 @@ public class ConfigAccessor {
 			    name = "";
 			    itemid = "";
 			    enchantsList = "";
-			    enchants[0][0] = -1;
+			    if(enchants != null)
+			    {
+			    	enchants = null;
+			    }
 			    lore = "";
 	
 			}
@@ -154,7 +182,7 @@ public class ConfigAccessor {
 		
 		if(iii > 0)
 		{
-			log.info("Loaded " + iii + " rewards.");
+			log.info("Loaded " + iii + " rewards.\n-----------------------------");
 		}
 		else
 		{
@@ -164,9 +192,10 @@ public class ConfigAccessor {
 		catch(Exception e)
 		{
 			//fallback to let the plugin load properly.
+			e.printStackTrace();
 		}
-		//int poolloop = 0, rewardloop = 0;
-		/*try
+		/*int poolloop = 0, rewardloop = 0;
+		try
 		{
 			for(poolloop = 0;poolloop < rewardsTable.length;poolloop++)
 			{
@@ -175,6 +204,13 @@ public class ConfigAccessor {
 					try
 					{
 						log.info(rewardsTable[poolloop][rewardloop].getName());
+						for(int enchantLoop = 0;enchantLoop < rewardsTable[poolloop][rewardloop].getEnchants().length;enchantLoop++)
+						{
+							log.info(" - " + rewardsTable[poolloop][rewardloop].getEnchants()[enchantLoop][0]);
+							log.info(" - " + rewardsTable[poolloop][rewardloop].getEnchants()[enchantLoop][1]);
+							log.info(" - " + rewardsTable[poolloop][rewardloop].getEnchants()[enchantLoop][2]);
+						}
+						
 					}
 					catch(NullPointerException e)
 					{
@@ -202,9 +238,24 @@ public class ConfigAccessor {
 		return vars;
 	}
 	
+	public int[] getEnabledCommands()
+	{
+		//Disabled by default (in-case of outdated config or lack of config).
+		int[] toggle = {0,0,0,0,0};
+		
+		toggle[0] = getInt("options.toggle.rankpromotion");
+		toggle[1] = getInt("options.toggle.credits");
+		toggle[2] = getInt("options.toggle.presents");
+		
+		return toggle;
+	}
+	
+	public void reloadConfig()
+	{
+		b.getConfigSetup().reloadConfig();
+	}
+	
 	// Basic Configuration Alteration/Accessing
-	
-	
 
 	public int getInt(String path)
 	{

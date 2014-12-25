@@ -259,69 +259,6 @@ public class PromoteExecuter implements CommandExecutor
 			}
 		}
 
-		// This method should grab the current Admin expiry date, and add the
-		// intended time onto it.
-		// If an expiry date is not found, or the expiry date has already
-		// happened, it will not update.
-		if (cmd.getName().equalsIgnoreCase("updateadmin") && (sender instanceof Player))
-		{
-			if (sender.hasPermission("blivutils.promote.admin.update")) 
-			{
-				if (args.length == 3) // 2 Arguments - /updateadmin <name> <#> <day(s)/month(s)>
-				{
-					PermissionUser user = PermissionsEx.getUser(args[0]);
-
-					int timeLeft = Integer.parseInt(user.getOption("group-Admin-until"));
-					int length = 0;
-					String timeFormat = "";
-
-					if (args[2].contains("day"))
-					{
-						// Seconds multiplied by that smaller number to get args[1] day(s)
-						length = (Integer.parseInt(args[1])) * 86400;
-						if (args[1] == "1")
-						{
-							timeFormat = "1 day";
-						} 
-						else 
-						{
-							timeFormat = args[1] + " days";
-						}
-					} 
-					else if (args[2].contains("month")) 
-					{
-						// Seconds multiplied by that giant number to get args[1] month(s)
-						length = (Integer.parseInt(args[1])) * 2592000;
-						if (args[1] == "1")
-						{
-							timeFormat = "1 month";
-						}
-						else
-						{
-							timeFormat = args[1] + " months";
-						}
-					}
-
-					timeLeft += length;
-					String sTimeLeft = "" + timeLeft;
-					user.setOption("group-Admin-until", sTimeLeft);
-					sender.sendMessage(ChatColor.GREEN + "Successfully updated " + args[0] + "'s Admin Time by " + timeFormat);
-
-				} 
-				else 
-				{
-					sender.sendMessage("Invalid format!");
-					return false;
-				}
-			} 
-			else
-			{
-				sender.sendMessage(ChatColor.RED + "You don't have permission for this!");
-				return true;
-			}
-			return true;
-		}
-
 		if (cmd.getName().equalsIgnoreCase("promoteme") && (sender instanceof Player))
 		{
 			String playerName = sender.getName();
@@ -432,6 +369,92 @@ public class PromoteExecuter implements CommandExecutor
 				{
 					sender.sendMessage(ChatColor.RED + "You don't have permission to check other player's time!");
 				}
+			}
+		}
+		
+		
+		//This will grab the player's current rank timeleft, and add time to it.
+		//If the expiry date has already passed, or the rank was never active, it will not update.
+		//Merged from /updateadmin, in order to save space.
+		if (cmd.getName().equalsIgnoreCase("updatetime") && (sender instanceof Player))
+		{
+			if (sender.hasPermission("blivutils.promote.admin.update"))
+			{
+				if (args.length == 4) // 3 Arguments - /updatetime <name> <rank> <#> <day(s)/month(s)>
+				{
+					PermissionUser user = PermissionsEx.getUser(args[0]);
+					String rank = "";
+					
+					//Should probably mush this all together, but it doesnt really hurt to do this.
+					if(args[1].equalsIgnoreCase("Endermite"))
+					{
+						rank = "Endermite";
+					}
+					else if(args[1].equalsIgnoreCase("Enderman"))
+					{
+						rank = "Enderman";
+					}
+					else if(args[1].equalsIgnoreCase("EnderDragon"))
+					{
+						rank = "Enderdragon";
+					}
+					else if(args[1].equalsIgnoreCase("Admin"))
+					{
+						rank = "Admin";
+					}
+					else
+					{
+						//Rank not found
+						bplugin.printError(sender, "That is not a valid timed rank!");
+						return true;
+					}
+					
+					int timeLeft = Integer.parseInt(user.getOption("group-" + rank + "-until"));
+					int length = 0;
+					String timeFormat = "";
+
+					if (args[2].contains("day"))
+					{
+						// Seconds multiplied by that smaller number to get args[1] day(s)
+						length = (Integer.parseInt(args[1])) * 86400;
+						if (args[1] == "1")
+						{
+							timeFormat = "1 day";
+						} 
+						else 
+						{
+							timeFormat = args[1] + " days";
+						}
+					} 
+					else if (args[2].contains("month")) 
+					{
+						// Seconds multiplied by that giant number to get args[1] month(s)
+						length = (Integer.parseInt(args[1])) * 2592000;
+						if (args[1] == "1")
+						{
+							timeFormat = "1 month";
+						}
+						else
+						{
+							timeFormat = args[1] + " months";
+						}
+					}
+
+					timeLeft += length;
+					String sTimeLeft = "" + timeLeft;
+					user.setOption("group-" + rank + "-until", sTimeLeft);
+					sender.sendMessage(ChatColor.GREEN + "Successfully updated " + args[0] + "'s " + rank + " Time by " + timeFormat);
+
+				} 
+				else 
+				{
+					sender.sendMessage("Invalid format!");
+					return false;
+				}
+			}
+			else
+			{
+				bplugin.printError(sender, "You don't have permission to do this!");
 			}
 		}
 
@@ -774,7 +797,7 @@ public class PromoteExecuter implements CommandExecutor
 	private String translateColours(String toFix) 
 	{
 		String fixedString;
-		Pattern chatColorPattern = Pattern.compile("(?i)&([0-9A-Fa-f])"); // Credit to t3hk0d3 in ChatManager (With slight edits)
+		Pattern chatColorPattern = Pattern.compile("(?i)&([0-9A-Fa-fL-Ol-o])"); // Credit to t3hk0d3 in ChatManager (With slight edits)
 		fixedString = chatColorPattern.matcher(toFix).replaceAll("\u00A7$1"); // And  here too
 		return fixedString;
 	}

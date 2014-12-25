@@ -27,21 +27,15 @@ which were made to improve and ease the Admin/Playerbase.
         * No Parameters
         * Prints a message in chat (fancy and nice), then stops the server after 10 seconds.
 
-**/sudo**
-* Usage:
-    * /sudo
-        * You can't use it.
-        * Aww yiss.
-
 **/promoadmin**
 * Usage:
     * /promoadmin <player> <#> <day(s)/month(s)>
         * Promotes a player to the Admin rank for the specified time.
 
-**/updateadmin**
+**/updatetime**
 * Usage:
-    * /promoadmin <player> <#> <day(s)/month(s)>
-        * Adds/Removes time from an Admins rank for the specified time.
+    * /updatetime <player> <rank> <#> <day(s)/month(s)>
+        * Adds/Removes time from an player's rank for the specified time.
 
 ##Admin Commands:
 

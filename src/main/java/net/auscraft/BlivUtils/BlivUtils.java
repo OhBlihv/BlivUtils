@@ -27,9 +27,11 @@ import net.auscraft.BlivUtils.executors.ColourExecutor;
 import net.auscraft.BlivUtils.executors.CreditExecutor;
 import net.auscraft.BlivUtils.executors.GenericExecutor;
 import net.auscraft.BlivUtils.executors.RankHelpExecutor;
+import net.auscraft.BlivUtils.executors.VoteExecuter;
 import net.auscraft.BlivUtils.promotions.PromoteExecuter;
 import net.auscraft.BlivUtils.purchases.Broadcast;
 import net.auscraft.BlivUtils.rewards.ChristmasExecutor;
+import net.auscraft.BlivUtils.timed.TimedCommands;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import ru.tehkode.permissions.PermissionManager;
@@ -72,23 +74,58 @@ public final class BlivUtils extends JavaPlugin
 		
 		// Some of the commands require the above set up before they can appear to function.
 		// Command Declaration
-		getCommand("bu").setExecutor(new GenericExecutor());
+		
+		//Always enabled commands
+		getCommand("bu").setExecutor(new GenericExecutor(this));
 		getCommand("rank").setExecutor(new RankHelpExecutor());
-		getCommand("say").setExecutor(new GenericExecutor());
-		getCommand("wstop").setExecutor(new GenericExecutor());
-		getCommand("sudo").setExecutor(new GenericExecutor());
-		getCommand("servers").setExecutor(new GenericExecutor());
-		getCommand("buyrank").setExecutor(new PromoteExecuter(this));
-		getCommand("promoadmin").setExecutor(new PromoteExecuter(this));
-		getCommand("updateadmin").setExecutor(new PromoteExecuter(this));
-		getCommand("promoteme").setExecutor(new PromoteExecuter(this));
+		getCommand("say").setExecutor(new GenericExecutor(this));
+		getCommand("wstop").setExecutor(new GenericExecutor(this));
+		getCommand("servers").setExecutor(new GenericExecutor(this));
+		getCommand("purch").setExecutor(new Broadcast(this));
+		getCommand("voteprint").setExecutor(new VoteExecuter(this));
+		getCommand("timedadd").setExecutor(new TimedCommands(this));
 		getCommand("timeleft").setExecutor(new PromoteExecuter(this));
 		getCommand("prefix").setExecutor(new PromoteExecuter(this));
 		getCommand("chat").setExecutor(new ColourExecutor(this));
 		getCommand("colourme").setExecutor(new ColourExecutor(this));
-		getCommand("credits").setExecutor(new CreditExecutor(this));
-		getCommand("present").setExecutor(new ChristmasExecutor(this));
-		getCommand("purch").setExecutor(new Broadcast(this));
+		getCommand("promoadmin").setExecutor(new PromoteExecuter(this));
+		getCommand("updateadmin").setExecutor(new PromoteExecuter(this));
+		getCommand("updatetime").setExecutor(new PromoteExecuter(this));
+		
+		//Toggleable commands
+		int toggle[] = cfg.getEnabledCommands();
+		
+		if(toggle[0] == 1)
+		{
+			getCommand("buyrank").setExecutor(new PromoteExecuter(this));
+			getCommand("promoteme").setExecutor(new PromoteExecuter(this));
+			log.info("Rank Purchasing Enabled.");
+		}
+		else
+		{
+			log.info("Rank Purchasing Disabled.");
+		}
+		
+		if(toggle[1] == 1)
+		{
+			getCommand("credits").setExecutor(new CreditExecutor(this));
+			log.info("Credit System Enabled.");
+		}
+		else
+		{
+			log.info("Credits System Disabled.");
+		}
+		
+		if(toggle[2] == 1)
+		{
+			getCommand("present").setExecutor(new ChristmasExecutor(this));
+			log.info("Rewards Enabled...");
+		}
+		else
+		{
+			log.info("Rewards Disabled.");
+		}
+		
 	}
 
 	@Override
@@ -219,6 +256,40 @@ public final class BlivUtils extends JavaPlugin
 			e.printStackTrace();
 		}
 	}
+	
+	public void logReward(String message)
+	{
+		try
+		{
+			File dataFolder = getDataFolder();
+
+			if (!dataFolder.exists())
+			{
+				dataFolder.mkdir();
+			}
+
+			File saveTo = new File(getDataFolder(), "rewardslog.txt");
+
+			if (!saveTo.exists())
+			{
+				saveTo.createNewFile();
+			}
+
+			FileWriter fw = new FileWriter(saveTo, true);
+			PrintWriter pw = new PrintWriter(fw);
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+			Date date = new Date();
+
+			System.out.println();
+			pw.println("[" + dateFormat.format(date) + "] " + message);
+			pw.flush();
+			pw.close();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
 
 	private int getConversion(String unit, String yamlStructure)
 	{
@@ -276,6 +347,11 @@ public final class BlivUtils extends JavaPlugin
 	public static BlivUtils getPlugin()
 	{
 		return plugin;
+	}
+	
+	public ConfigSetup getConfigSetup()
+	{
+		return configSetup;
 	}
 	
 	public ConfigAccessor getCfg()

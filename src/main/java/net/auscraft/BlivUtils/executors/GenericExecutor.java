@@ -7,12 +7,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 public class GenericExecutor implements CommandExecutor
 {
-
+	
+	private BlivUtils b;
+	
+	public GenericExecutor(BlivUtils instance)
+	{
+		b = instance;
+	}
+	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) 
 	{
 		if (cmd.getName().equalsIgnoreCase("bu")) 
@@ -26,7 +32,7 @@ public class GenericExecutor implements CommandExecutor
 				if (args[0].equalsIgnoreCase("version"))
 				{
 					BlivUtils plugin = BlivUtils.getPlugin();
-					sender.sendMessage(ChatColor.GOLD + "Running BlivUtils Version " + plugin.getDescription().getVersion());
+					sender.sendMessage(ChatColor.GOLD + "Running BlivUtils Version " + ChatColor.WHITE +plugin.getDescription().getVersion());
 				}
 				if (args[0].equalsIgnoreCase("reload")) 
 				{
@@ -34,7 +40,11 @@ public class GenericExecutor implements CommandExecutor
 					{
 						BlivUtils plugin = BlivUtils.getPlugin();
 						plugin.reloadConfig();
-						sender.sendMessage(ChatColor.GOLD + "BlivUtils successfully reloaded\n(Although currently, this has nothing to reload)");
+						sender.sendMessage(ChatColor.GOLD + "BlivUtils successfully reloaded.");
+					}
+					else
+					{
+						b.printError(sender, "You don't have sufficient permissions!");
 					}
 				}
 			}
@@ -65,7 +75,7 @@ public class GenericExecutor implements CommandExecutor
 			}
 			else
 			{
-				sender.sendMessage(ChatColor.DARK_RED + "You don't have sufficient permissions!");
+				b.printError(sender, "You don't have sufficient permissions!");
 				return false;
 			}
 		}
@@ -87,19 +97,7 @@ public class GenericExecutor implements CommandExecutor
 				e.printStackTrace();
 			}
 		}
-		if (cmd.getName().equalsIgnoreCase("sudo"))
-		{
-			if (sender.hasPermission("blivutils.sudo") || !(sender instanceof Player))
-			{
-				sender.sendMessage(ChatColor.DARK_RED + "/sudo is disabled!");
-				return true;
-			}
-			else 
-			{
-				sender.sendMessage(ChatColor.DARK_RED + "You don't have sufficient permissions!");
-				return false;
-			}
-		}
+		
 		if (cmd.getName().equalsIgnoreCase("servers"))
 		{
 			if(args.length == 0)

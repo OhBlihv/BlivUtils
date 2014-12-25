@@ -1,4 +1,10 @@
-Fix loading enchantments on ChristmasExecutor
+Voting
+	If player is offline/slightly misspelt, then try to fix it.
+
+Currently Online Staff, with AFK Status.
+
+(LOW PRIORITY) - Add Utilities class with translateColours(String) and other useful things that I keep repeating
+						- b.printError and b.printSuccess?
 
 (LOW PRIORITY) - One time nickname change on join -- No colours.
 

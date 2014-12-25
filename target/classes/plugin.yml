@@ -30,7 +30,10 @@ commands:
     usage: 'Usage: /<command> <player> <amount> [day(s) OR month(s)]'
   updateadmin:
     description: 'Adds or removes time from an Admins rank'
-    usage: 'Usage: /<command> <player> <amount> [day(s) OR month(s)]'
+    usage: 'Usage: /<command> <player> <amount> <day(s) OR month(s)>'
+  updatetime:
+    description: 'Adds or removes time from a players rank (defined in command)'
+    usage: 'Usage: /<command> <player> <rank> <amount> <day(s) OR month(s)>'
   promoteme:
     description: 'Confirms the purchase of a rank using /buyrank'
   timeleft:
@@ -49,6 +52,12 @@ commands:
     usage: 'Usage: /<command> [args]'
   present:
     description: 'A bit of Christmas fun!'
+  voteprint:
+    description: 'Prints out a vote message, nicely formatted and translated'
+    usage: 'Usage: /<command> <name> <reward> <service>'
+  timedadd:
+    description: 'Adds a command to a player for a defined amount of time'
+    usage: 'Usage: /<command> <player> <time> <second[s]/minute[s]/hour[s]/day[s]> <command>'
 permissions:
   blivutils.*:
     description: Access every useless utility!

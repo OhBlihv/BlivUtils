@@ -30,26 +30,37 @@ public class Broadcast implements CommandExecutor
 	{
 		if (cmd.getName().equalsIgnoreCase("purch")	&& (sender.hasPermission("blivutils.purch"))) //Only for Console
 		{
-			String message = "";
-			if (args.length > 1) // /purch <isrank> <name> <word [word [word...]]> 
+			
+			if (args.length > 1) // /purch <isrank> <name> <package> <price>
 			{
-				String as[] = args;
-				Player p = (Player) Bukkit.getOfflinePlayer(as[1]);
+				//String as[] = args;
+				Player p = (Player) Bukkit.getOfflinePlayer(args[1]);
+				String message = "% &r&ahas purchased &6@ &afor &2$&f#&a!";
 				
-				if(as[0].equals("true")) //Is a rank upgrade, requires name colour change
+				if(args[0].equals("true")) //Is a rank upgrade, requires name colour change
 				{
 					Nicknames nick = new Nicknames(b);
 					nick.nickPlayer(p);
 				}
 				
-				int i = as.length;
+				if(args[3].equals("0.00")) //If the package is free, change the wording to suit 'redeeming'
+				{
+					message = "% &r&ahas redeemed &6@&a.";
+				}
+				
+				if(args[2].equalsIgnoreCase("donate"))
+				{
+					message = "% &r&ahas donated $&f#&a.";
+				}
+				
+				/*int i = as.length;
 				for (int j = 2; j < i; j++)
 				{
 					String data = as[j];
 					message = (message += data + " ");
-				}
+				}*/
 				
-				message = translatePlayer(message, p);
+				message = translateVariables(message, p, args[2], args[3]);
 				message = translateColours(message);
 				
 				Bukkit.broadcastMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "|| " + ChatColor.GRAY + "[" + ChatColor.GREEN	+ ChatColor.BOLD + "Thanks!" + ChatColor.RESET
@@ -75,8 +86,18 @@ public class Broadcast implements CommandExecutor
 		return fixedString;
 	}
 	
-	private String translatePlayer(String toFix, Player p)
+	private String translateVariables(String fixedString, Player p, String packageName, String price)
 	{
+		//Package name is first, since the second function replaces underscores, and the player name has not been added yet.
+		//Replace @ with package name
+		Pattern packagePattern = Pattern.compile("[@]");
+		fixedString = packagePattern.matcher(fixedString).replaceAll(packageName);
+				
+		//Replace underscores with spaces (for multi worded packages).
+		Pattern spacePattern = Pattern.compile("[_]");
+		fixedString = spacePattern.matcher(fixedString).replaceAll(" ");
+		
+		//Replace % with player name
 		BSPlayer bsp = PlayerManager.getPlayer(p);
 		Pattern namePattern = Pattern.compile("[%]");
 		String playerName = p.getName();
@@ -84,7 +105,12 @@ public class Broadcast implements CommandExecutor
 		{
 			playerName = bsp.getNickname();
 		}
-		String fixedString = namePattern.matcher(toFix).replaceAll(playerName);
+		fixedString = namePattern.matcher(fixedString).replaceAll(playerName);
+		
+		//Replace # with price (if applicable).
+		Pattern pricePattern = Pattern.compile("[#]");
+		fixedString = pricePattern.matcher(fixedString).replaceAll(price);
+		
 		
 		return fixedString;
 	}

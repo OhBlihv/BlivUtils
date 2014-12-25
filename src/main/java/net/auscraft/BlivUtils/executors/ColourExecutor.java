@@ -15,6 +15,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
+import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
+
 public class ColourExecutor implements CommandExecutor
 {
 
@@ -188,8 +191,14 @@ public class ColourExecutor implements CommandExecutor
 	private void displayChoice(String colour, ChatColor choice,	CommandSender sender)
 	{
 		Player p = (Player) sender;
+		BSPlayer bsp = PlayerManager.getPlayer(p);
+		String playerName = p.getName();
+		if(bsp.hasNickname())
+		{
+			playerName = bsp.getNickname();
+		}
 		String prefix = translateColours(p);
-		sender.sendMessage(prefix + p.getDisplayName() + ": " + choice + "Test Message -- #12345\n" + ChatColor.GOLD + "Like it? Type /colourme to confirm.");
+		sender.sendMessage(prefix + playerName + ": " + choice + "Test Message -- #12345\n" + ChatColor.GOLD + "Like it? Type /colourme to confirm.");
 		colourSave.put(p.getName(), colour);
 	}
 	
