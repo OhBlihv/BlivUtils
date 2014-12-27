@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.logging.Logger;
 
 import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.config.ConfigAccessor;
+import net.auscraft.BlivUtils.utils.Utilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,13 +20,13 @@ import org.bukkit.entity.Player;
 public class CreditExecutor implements CommandExecutor
 {
 	private String user, pass, url; //MySQL Variables, read in from config.
-	private BlivUtils b;
-	private static final Logger log = Logger.getLogger("Minecraft");
+	private Logger log;
+	private Utilities util;
 	
 	public CreditExecutor(BlivUtils instance)
 	{
-		b = instance;
-		String[] vars = b.getCfg().getSQLVars();
+		util = instance.getUtil();
+		String[] vars = instance.getCfg().getSQLVars();
 		user = vars[0];
 		pass = vars[1];
 		url = vars[2];
@@ -88,7 +88,7 @@ public class CreditExecutor implements CommandExecutor
 						{
 							creditDebit = "debited ";
 						}
-						b.printSuccess((CommandSender) p, "You have been " + creditDebit + ChatColor.WHITE + Math.abs(creditChange) + ChatColor.GREEN + " credits.");
+						util.printSuccess((CommandSender) p, "You have been " + creditDebit + ChatColor.WHITE + Math.abs(creditChange) + ChatColor.GREEN + " credits.");
 					}
 					catch(NullPointerException e)
 					{
@@ -143,7 +143,7 @@ public class CreditExecutor implements CommandExecutor
 			{
 				try
 				{
-					b.printSuccess((CommandSender) p, "Your credit value is now: " + ChatColor.WHITE + value);
+					util.printSuccess((CommandSender) p, "Your credit value is now: " + ChatColor.WHITE + value);
 				}
 				catch(NullPointerException e)
 				{
@@ -167,7 +167,7 @@ public class CreditExecutor implements CommandExecutor
 			int creditValue = getCreditsSingle(sender.getName());
 			if(creditValue < 0)
 			{
-				b.printError(sender, "An unexpected error occured.");
+				util.printError(sender, "An unexpected error occured.");
 			}
 			else
 			{
@@ -248,7 +248,7 @@ public class CreditExecutor implements CommandExecutor
 		}
 		else
 		{
-			b.printError(sender, "Problem getting data");
+			util.printError(sender, "Problem getting data");
 		}
 	}
 	
@@ -278,7 +278,7 @@ public class CreditExecutor implements CommandExecutor
 						try
 						{
 							int creditValue = getCreditsSingle(args[1]);
-							b.printSuccess(sender, args[1] + "'s "+ ChatColor.GREEN + "Balance" + ChatColor.WHITE +  ": " + creditValue + " Credits");
+							util.printSuccess(sender, args[1] + "'s "+ ChatColor.GREEN + "Balance" + ChatColor.WHITE +  ": " + creditValue + " Credits");
 							//sender.sendMessage(args[1] + "'s "+ ChatColor.GREEN + "Balance" + ChatColor.WHITE +  ": " + creditValue + " Credits");
 							return true;
 						}
@@ -312,7 +312,7 @@ public class CreditExecutor implements CommandExecutor
 										credits = 0;
 									}
 									setCreditsSingle(args[1], Integer.parseInt(args[2]));
-									b.printSuccess(sender, ChatColor.GREEN + "Set " + ChatColor.WHITE + args[1] + "'s" + ChatColor.GREEN +  " credits to " + ChatColor.WHITE + credits);
+									util.printSuccess(sender, ChatColor.GREEN + "Set " + ChatColor.WHITE + args[1] + "'s" + ChatColor.GREEN +  " credits to " + ChatColor.WHITE + credits);
 									//sender.sendMessage(ChatColor.GREEN + "Set " + ChatColor.WHITE + args[1] + "'s" + ChatColor.GREEN +  " credits to " + ChatColor.WHITE + credits);
 								}
 								catch(SQLException e)
@@ -322,17 +322,17 @@ public class CreditExecutor implements CommandExecutor
 							}
 							else
 							{
-								b.printError(sender, "Enter amount to set to.");
+								util.printError(sender, "Enter amount to set to.");
 							}
 						}
 						else
 						{
-							b.printError(sender, "Enter a player and amount to set to.");
+							util.printError(sender, "Enter a player and amount to set to.");
 						}
 					}
 					else
 					{
-						b.printError(sender, "You don't have permission to do this!");
+						util.printError(sender, "You don't have permission to do this!");
 					}
 				}
 				
@@ -350,8 +350,7 @@ public class CreditExecutor implements CommandExecutor
 							{
 								if((args[2].equals("0")) || (args[2].equals("-0")))
 								{
-									b.printError(sender, "Nothing to be done.");
-									//sender.sendMessage(ChatColor.RED + "Nothing to be done.");
+									util.printInfo(sender, "Nothing to be done.");
 								}
 								else
 								{
@@ -374,17 +373,17 @@ public class CreditExecutor implements CommandExecutor
 											{
 												fixedcreditAmount = creditAmount;
 											}
-											b.printSuccess(sender, addSubtract + ChatColor.WHITE + fixedcreditAmount + ChatColor.GREEN +  " credits " + toFrom + ChatColor.WHITE +  args[1] + "'s" + ChatColor.GREEN + " account");
-											//sender.sendMessage(ChatColor.GREEN + addSubtract + ChatColor.WHITE + fixedcreditAmount + ChatColor.GREEN +  " credits " + toFrom + ChatColor.WHITE +  args[1] + "'s" + ChatColor.GREEN + " account");
+											
+											util.printSuccess(sender, addSubtract + ChatColor.WHITE + fixedcreditAmount + ChatColor.GREEN +  " credits " + toFrom + ChatColor.WHITE +  args[1] + "'s" + ChatColor.GREEN + " account");
 											}
 										else
 										{
-											b.printError(sender, "An unexpected error occured.");
+											util.printError(sender, "An unexpected error occured.");
 										}
 									}
 									catch(NumberFormatException e)
 									{
-										b.printError(sender, "Not a valid number.");
+										util.printError(sender, "Not a valid number.");
 									}
 									catch(SQLException e)
 									{
@@ -394,19 +393,17 @@ public class CreditExecutor implements CommandExecutor
 							}
 							else
 							{
-								b.printError(sender, "Enter amount to modify by.");
-								//sender.sendMessage(ChatColor.RED + "Enter an amount to modify by.");
+								util.printInfo(sender, "Enter amount to modify by.");
 							}
 						}
 						else
 						{
-							b.printError(sender, "Enter a player and amount to modify by.");
-							//sender.sendMessage(ChatColor.RED + "Enter a name and amount to modify by.");
+							util.printInfo(sender, "Enter a player and amount to modify by.");
 						}
 					}
 					else
 					{
-						b.printError(sender, "You don't have permission to do this!");
+						util.printError(sender, "You don't have permission to do this!");
 					}
 					return true;
 				}
@@ -434,7 +431,7 @@ public class CreditExecutor implements CommandExecutor
 					}
 					else
 					{
-						b.printError(sender, "Nice try.");
+						util.printError(sender, "Nice try.");
 					}
 				}
 				

@@ -1,10 +1,9 @@
 package net.auscraft.BlivUtils.executors;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import net.auscraft.BlivUtils.BlivUtils;
+import net.auscraft.BlivUtils.utils.Utilities;
 import net.milkbowl.vault.economy.Economy;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -21,16 +20,15 @@ import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
 public class ColourExecutor implements CommandExecutor
 {
 
-	private BlivUtils bplugin;
 	private HashMap<String, String> colourSave;
 	private Economy econ;
-	private static final Logger log = Logger.getLogger("Minecraft");
+	private Utilities util;
 
 	public ColourExecutor(BlivUtils instance)
 	{
-		bplugin = instance;
-		econ = bplugin.setupEconomy();
-		colourSave = BlivUtils.getSuffixColour();
+		util = instance.getUtil();
+		econ = instance.setupEconomy();
+		colourSave = instance.getSuffixColour();
 	}
 
 	@Override
@@ -140,7 +138,7 @@ public class ColourExecutor implements CommandExecutor
 					}
 					else
 					{
-						sender.sendMessage(ChatColor.RED + "Thats not a valid colour! (Did you spell it right?)");
+						util.printError(sender, "Thats not a valid colour! (Did you spell it right?)");
 					}
 					// Check if the colour was modified, and if so, follow
 					// through.
@@ -152,7 +150,7 @@ public class ColourExecutor implements CommandExecutor
 				}
 				else 
 				{
-					sender.sendMessage(ChatColor.RED + "You dont have permission to set a chat colour!\nBlaze rank and above only!");
+					util.printError(sender, "You dont have permission to set a chat colour!\nBlaze rank and above only!");
 					return true;
 				}
 			}
@@ -170,18 +168,18 @@ public class ColourExecutor implements CommandExecutor
 					PermissionUser user = PermissionsEx.getUser(p);
 					String suffix = "&" + colourSave.get(p.getName());
 					user.setSuffix(suffix, null);
-					sender.sendMessage(ChatColor.GOLD + "Successfully set to " + getColour(colourSave.get(p.getName())));
-					log.info(ChatColor.GOLD + "Successfully set " + p.getName()	+ "'s chat colour to " + getColour(colourSave.get(p.getName())));
+					util.printSuccess(sender, "Set to " + getColour(colourSave.get(p.getName())));
+					util.logInfo(ChatColor.GOLD + "Successfully set " + p.getName()	+ "'s chat colour to " + getColour(colourSave.get(p.getName())));
 				} 
 				else
 				{
-					sender.sendMessage(ChatColor.RED + "You can't afford this! ($200 required)");
+					util.printError(sender, "You can't afford this! ($200 required)");
 				}
 			} 
 			else
 			{
 				//sender.sendMessage("The name: " + p.getName() + " was not found in the HashMap.");
-				sender.sendMessage(ChatColor.RED + "You need to pick a colour first! -- Use " + ChatColor.GREEN + "/chat");
+				util.printError(sender, "You need to pick a colour first! -- Use " + ChatColor.GREEN + "/chat");
 			}
 			return true;
 		}
@@ -197,19 +195,11 @@ public class ColourExecutor implements CommandExecutor
 		{
 			playerName = bsp.getNickname();
 		}
-		String prefix = translateColours(p);
+		PermissionUser user = PermissionsEx.getUser(p);
+		String toFix = user.getPrefix();
+		String prefix = util.translateColours(toFix);
 		sender.sendMessage(prefix + playerName + ": " + choice + "Test Message -- #12345\n" + ChatColor.GOLD + "Like it? Type /colourme to confirm.");
 		colourSave.put(p.getName(), colour);
-	}
-	
-	//TODO: Move to its own utilities class (I use this in more than one place!)
-	private String translateColours(Player p)
-	{
-		PermissionUser user = PermissionsEx.getUser(p);
-		String toFix = user.getPrefix(), fixedString;
-		Pattern chatColorPattern = Pattern.compile("(?i)&([0-9A-Fa-f])"); // Credit to t3hk0d3 in ChatManager(With slight edits)
-		fixedString = chatColorPattern.matcher(toFix).replaceAll("\u00A7$1"); // And here too
-		return fixedString;
 	}
 
 	private String getColour(String colour)
@@ -217,8 +207,7 @@ public class ColourExecutor implements CommandExecutor
 		String printCol;
 		switch (colour)
 		{
-			// case "1": printCol = "Blue"; break; //I'm pretty sure this one isnt
-			// included.
+			// case "1": printCol = "Blue"; break; //I'm pretty sure this one isnt included.
 			case "2":
 				printCol = "DarkGreen";
 				break;

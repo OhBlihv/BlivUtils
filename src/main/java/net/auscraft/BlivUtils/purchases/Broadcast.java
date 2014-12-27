@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import net.auscraft.BlivUtils.BlivUtils;
+import net.auscraft.BlivUtils.utils.Utilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -17,13 +18,13 @@ import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
 
 public class Broadcast implements CommandExecutor
 {
-	BlivUtils b;
-	Logger log;
+	private Logger log;
+	private Utilities util;
 	
 	public Broadcast(BlivUtils instance)
 	{
-		b = instance;
-		log = b.getLogger();
+		log = instance.getLogger();
+		util = instance.getUtil();
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) 
@@ -39,7 +40,7 @@ public class Broadcast implements CommandExecutor
 				
 				if(args[0].equals("true")) //Is a rank upgrade, requires name colour change
 				{
-					Nicknames nick = new Nicknames(b);
+					Nicknames nick = new Nicknames(log);
 					nick.nickPlayer(p);
 				}
 				
@@ -53,15 +54,8 @@ public class Broadcast implements CommandExecutor
 					message = "% &r&ahas donated $&f#&a.";
 				}
 				
-				/*int i = as.length;
-				for (int j = 2; j < i; j++)
-				{
-					String data = as[j];
-					message = (message += data + " ");
-				}*/
-				
 				message = translateVariables(message, p, args[2], args[3]);
-				message = translateColours(message);
+				message = util.translateColours(message);
 				
 				Bukkit.broadcastMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "|| " + ChatColor.GRAY + "[" + ChatColor.GREEN	+ ChatColor.BOLD + "Thanks!" + ChatColor.RESET
 						+ ChatColor.GRAY + "]" + " " + ChatColor.YELLOW	+ ChatColor.ITALIC + ChatColor.BOLD + message);
@@ -74,16 +68,9 @@ public class Broadcast implements CommandExecutor
 		}
 		else
 		{
-			b.printError(sender, "You can't do this!");
+			util.printError(sender, "You can't do this!");
 		}
 		return false;
-	}
-	
-	private String translateColours(String toFix)
-	{
-		Pattern chatColorPattern = Pattern.compile("(?i)&([0-9A-Fa-f-l-oL-OrR])"); // Credit to t3hk0d3 in ChatManager(With slight edits)
-		String fixedString = chatColorPattern.matcher(toFix).replaceAll("\u00A7$1"); // And here too
-		return fixedString;
 	}
 	
 	private String translateVariables(String fixedString, Player p, String packageName, String price)

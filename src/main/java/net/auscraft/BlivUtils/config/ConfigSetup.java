@@ -4,24 +4,24 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.logging.Logger;
 
 import net.auscraft.BlivUtils.BlivUtils;
+import net.auscraft.BlivUtils.utils.Utilities;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfigSetup {
 	
-	private Logger log;
 	private FileConfiguration Config = null;
 	private File ConfigFile = null;
-	private BlivUtils plugin;
+	private BlivUtils b;
+	private Utilities util;
 
 	public ConfigSetup(BlivUtils instance)
 	{
-		plugin = instance;
-		log = plugin.getLogger();
+		b = instance;
+		util = instance.getUtil();
 	}
 	
 	// Config Setup Time
@@ -70,17 +70,17 @@ public class ConfigSetup {
 			}
 			catch (IOException ex) 
 			{
-				plugin.getLogger().severe("Could not save config to " + ConfigFile + ex);
+				util.logSevere("Could not save config to " + ConfigFile + ex);
 			}
 		}
 
 		public void saveDefaultConfig()
 		{
 			if (ConfigFile == null) {
-				ConfigFile = new File(plugin.getDataFolder(), "config.yml");
+				ConfigFile = new File(b.getDataFolder(), "config.yml");
 			}
 			if (!ConfigFile.exists()) {
-				plugin.saveResource("config.yml", false);
+				b.saveResource("config.yml", false);
 			}
 		}
 
@@ -88,12 +88,12 @@ public class ConfigSetup {
 		{
 			if (ConfigFile == null)
 			{
-				ConfigFile = new File(plugin.getDataFolder(), "config.yml");
+				ConfigFile = new File(b.getDataFolder(), "config.yml");
 			}
 			Config = YamlConfiguration.loadConfiguration(ConfigFile);
 
 			// Look for defaults in the jar
-			Reader defConfigStream = new InputStreamReader(plugin.getResource("config.yml"));
+			Reader defConfigStream = new InputStreamReader(b.getResource("config.yml"));
 			if (defConfigStream != null)
 			{
 				YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
@@ -107,11 +107,11 @@ public class ConfigSetup {
 			try
 			{
 				this.getConfig().save(ConfigFile);
-				log.info("Config Saved.");
+				util.logInfo("Config Saved.");
 			}
 			catch(IOException e)
 			{
-				log.severe("Error saving config");
+				util.logSevere("Error saving config");
 				e.printStackTrace();
 			}
 		}

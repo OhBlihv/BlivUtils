@@ -1,15 +1,20 @@
 package net.auscraft.BlivUtils.executors;
 
+import net.auscraft.BlivUtils.BlivUtils;
+import net.auscraft.BlivUtils.utils.Utilities;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 public class RankHelpExecutor implements CommandExecutor 
 {
+	
+	private Utilities util;
 
-	public RankHelpExecutor()
+	public RankHelpExecutor(BlivUtils instance)
 	{
-		//Yep, it's empty.
+		util = instance.getUtil();
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[])
@@ -163,7 +168,7 @@ public class RankHelpExecutor implements CommandExecutor
 			}
 			else
 			{
-				sender.sendMessage(ChatColor.GOLD + "M8, u rnt a playr. Git owt.");
+				util.printError(sender, "M8, u rnt a playr. Git owt.");
 				return true;
 			}
 		}

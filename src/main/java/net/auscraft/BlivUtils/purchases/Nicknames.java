@@ -9,17 +9,17 @@ import org.bukkit.entity.Player;
 import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
 import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
 
-import net.auscraft.BlivUtils.BlivUtils;
-
 public class Nicknames {
 	
 	private Logger log;
-	private BlivUtils b;
 	
-	public Nicknames(BlivUtils instance)
+	//When I need this, add it back in.
+	//private Utilities util;
+	
+	public Nicknames(Logger inLog)
 	{
-		b = instance;
-		log = b.getLogger();
+		log = inLog;
+		//util = inUtil;
 	}
 	
 	//public static void nicknamePlayer( String name, String otherplayer, String nickname, boolean command ) {

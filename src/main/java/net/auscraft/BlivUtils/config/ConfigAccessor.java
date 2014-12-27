@@ -1,35 +1,25 @@
 package net.auscraft.BlivUtils.config;
 
-import java.io.File;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-
-import com.sun.swing.internal.plaf.basic.resources.basic;
 
 import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.executors.CreditExecutor;
-import net.auscraft.BlivUtils.promotions.PromoteExecuter;
-import net.auscraft.BlivUtils.rewards.ChristmasExecutor;
 import net.auscraft.BlivUtils.rewards.RewardContainer;
+import net.auscraft.BlivUtils.utils.Utilities;
 
 public class ConfigAccessor {
 	
 	private FileConfiguration config;
-	private BlivUtils b;
 	private String user, pass, url; //MySQL Setup Variables
 	private RewardContainer[][] rewardsTable;
-	private Logger log;
+	private Utilities util;
+	private BlivUtils b;
 	
 	public ConfigAccessor(BlivUtils instance)
 	{
-		b = instance;
-		config = b.getConfig();
-		log = b.getLogger();
+		util = instance.getUtil();
+		config = instance.getConfig();
 	}
 
 	public RewardContainer[][] loadRewards()
@@ -45,7 +35,7 @@ public class ConfigAccessor {
 		//Retrieve the list of rewards for each category.
 		//Only pool one exists right now, so just do pool 1. :)
 		int rewardPoolNum = getInt("options.rewards.count");
-		log.info("Pool Count: " + rewardPoolNum);
+		util.logInfo("Pool Count: " + rewardPoolNum);
 		
 		try
 		{
@@ -131,14 +121,14 @@ public class ConfigAccessor {
 					}
 					else //2 variables are required to input into the table. Might as well cut them off and make them fix it.
 					{
-						log.warning("[2] Syntax error in rewards config. Disabling rewards features.");
+						util.logError("[2] Syntax error in rewards config. Disabling rewards features.");
 						rewardsTable = null;
 						return null;
 					}
 				}
 				catch(ArrayIndexOutOfBoundsException e)
 				{
-					log.warning("[3] Syntax error in rewards config. Disabling rewards features.");
+					util.logError("[3] Syntax error in rewards config. Disabling rewards features.");
 					rewardsTable = null;
 					e.printStackTrace();
 					return null;
@@ -182,11 +172,11 @@ public class ConfigAccessor {
 		
 		if(iii > 0)
 		{
-			log.info("Loaded " + iii + " rewards.\n-----------------------------");
+			util.logInfo("Loaded " + iii + " rewards.\n-----------------------------");
 		}
 		else
 		{
-			log.info("No Rewards Loaded. Config invalid, or are there no rewards?");
+			util.logInfo("No Rewards Loaded. Config invalid, or are there no rewards?");
 		}
 		}
 		catch(Exception e)

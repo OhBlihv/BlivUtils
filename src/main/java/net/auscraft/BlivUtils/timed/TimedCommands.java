@@ -7,15 +7,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.auscraft.BlivUtils.BlivUtils;
+import net.auscraft.BlivUtils.utils.Utilities;
 
 public class TimedCommands implements CommandExecutor
 {
 
-	private BlivUtils b;
+	private Utilities util;
 	
 	public TimedCommands(BlivUtils instance)
 	{
-		b = instance;
+		util = instance.getUtil();
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[])
@@ -57,14 +58,14 @@ public class TimedCommands implements CommandExecutor
 					}
 					else
 					{
-						b.printError(sender, "Invalid Syntax: /timedadd <player> <time> <second[s]/minute[s]/hour[s]/day[s]> <command>");
+						util.printError(sender, "Invalid Syntax: /timedadd <player> <time> <second[s]/minute[s]/hour[s]/day[s]> <command>");
 						return true;
 					}
 					
 					
 					//Set up the command string
 					String command = "";
-					int length = args.length;
+					//int length = args.length;
 					//Start at the second element, first is the player name.
 					for (int i = 1; i < i; i++)
 					{
@@ -75,13 +76,13 @@ public class TimedCommands implements CommandExecutor
 				}
 				else
 				{
-					b.printError(sender, "Invalid Syntax: /timedadd <player> <time> <second[s]/minute[s]/hour[s]/day[s]> <command>");
+					util.printError(sender, "Invalid Syntax: /timedadd <player> <time> <second[s]/minute[s]/hour[s]/day[s]> <command>");
 					return true;
 				}
 			}
 			else
 			{
-				b.printError(sender, "You don't have sufficient permissions!");
+				util.printError(sender, "You don't have sufficient permissions!");
 			}
 		}
 		return true;
@@ -104,11 +105,11 @@ public class TimedCommands implements CommandExecutor
 			
 			
 			
-			b.printSuccess(sender, "Added command to " + player + " for " + unitTime + " " + timeframe);
+			util.printSuccess(sender, "Added command to " + player + " for " + unitTime + " " + timeframe);
 		}
 		else
 		{
-			b.printError(sender, "Player is not online!");
+			util.printError(sender, "Player is not online!");
 		}
 		
 		

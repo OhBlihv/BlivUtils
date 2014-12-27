@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import net.auscraft.BlivUtils.BlivUtils;
 import net.auscraft.BlivUtils.config.ConfigAccessor;
+import net.auscraft.BlivUtils.utils.Utilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,18 +42,16 @@ public class ChristmasExecutor implements CommandExecutor
 	
 	
 	private RewardContainer[][] rewardsTable;
-	private BlivUtils b;
-	private Logger log;
 	private ConfigAccessor cfg;
+	private Utilities util;
 	
 	//Gift specific global variables
 	private int[] totalGiftPool = {0,0,0,0,0}; //Initialize the counts to 0, and add to them in the constructor.
 	
 	public ChristmasExecutor(BlivUtils instance)
 	{
-		b = instance;
-		log = b.getLogger();
-		cfg = b.getCfg();		
+		util = instance.getUtil();
+		cfg = instance.getCfg();
 		
 		loadRewards(); 
 	}
@@ -95,9 +94,11 @@ public class ChristmasExecutor implements CommandExecutor
 		{
 			e.printStackTrace();
 		}
-		log.info((totalGiftPool[0] + totalGiftPool[1] + totalGiftPool[2] + totalGiftPool[3] + totalGiftPool[4]) + " rewards imported");
+		util.logInfo((totalGiftPool[0] + totalGiftPool[1] + totalGiftPool[2] + totalGiftPool[3] + totalGiftPool[4]) + " rewards imported");
 	}
 	
+	
+	//TODO: Genericify, and put in the Utilities class
 	private String translateChristmasPrefix(String string)
 	{
 		String fixedString;
@@ -130,7 +131,7 @@ public class ChristmasExecutor implements CommandExecutor
 			PermissionUser user = PermissionsEx.getUser(sender.getName());
 			if(user.has("blivutils.present.christmas.done"))
 			{
-				b.printError(sender, "You can only open one Christmas Present!");
+				util.printError(sender, "You can only open one Christmas Present!");
 				return true;
 			}
 			else
@@ -186,7 +187,7 @@ public class ChristmasExecutor implements CommandExecutor
 										if(reroll < chance)
 										{
 											won = true;
-											log.info("Reward: " + rolledGift[i].getName() + " was won! Congratulations!");
+											util.logInfo("Reward: " + rolledGift[i].getName() + " was won! Congratulations!");
 										}
 										else
 										{
@@ -195,8 +196,6 @@ public class ChristmasExecutor implements CommandExecutor
 										if(numRolls >= 20)
 										{
 											//Too many rolls.
-											//TODO: Handle this situation with a special/default gift.
-											//Default to the first element?
 											rolledGift[i] = rewardsTable[i][0];
 											won = true;
 										}
@@ -204,7 +203,7 @@ public class ChristmasExecutor implements CommandExecutor
 									} while((!won));
 									
 									//if(rand.nextInt((int) Math.floor(10 - (rolledGift[i].getChance() * 10))) == 0)
-									log.info(rolledGift[i].getName());
+									util.logInfo(rolledGift[i].getName());
 									if(hyphen == ChatColor.DARK_RED)
 									{
 										hyphen = ChatColor.DARK_GREEN;
@@ -220,16 +219,16 @@ public class ChristmasExecutor implements CommandExecutor
 							rewardString = translateChristmasPrefix(rewardString);
 							
 							sender.sendMessage(ChatColor.YELLOW + "Congratulations!" + ChatColor.GREEN + " You've won:\n" + rewardString);
-							b.logReward(rewardString);
-							b.logReward("------------------------------------------\n" + sender.getName() + "has won:");
+							util.logReward(rewardString);
+							util.logReward("------------------------------------------\n" + sender.getName() + "has won:");
 							
 							user.addPermission("blivutils.present.christmas.done"); //Player can no longer type /present open
 						}
 						catch(NullPointerException e)
 						{
 							e.printStackTrace();
-							b.logtoFile("Player " + sender.getName() + " had problems with their present.");
-							b.printError(sender, "Oops! Your present had trouble opening. Send a /modreq for the Musketeers.");
+							util.logtoFile("Player " + sender.getName() + " had problems with their present.");
+							util.printError(sender, "Oops! Your present had trouble opening. Send a /modreq for the Musketeers.");
 						}
 						
 						giveRewards(sender, rolledGift);
@@ -261,14 +260,14 @@ public class ChristmasExecutor implements CommandExecutor
 		{
 			try
 			{
-			log.info("Giving Reward: " + rolledGift[i].getName());
+			util.logInfo("Giving Reward: " + rolledGift[i].getName());
 			if(rolledGift[i].getAction().startsWith("-"))	//Reward is a command
 			{
 				String action = rolledGift[i].getAction().substring(1, rolledGift[i].getAction().length());
 				action = action.replaceAll("%", p.getName()); //Replace % with players name
 				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), action);
 				//p.sendMessage("Reward given!");
-				log.info("Command: '" + action + "'");
+				util.logInfo("Command: '" + action + "'");
 			}
 			else	// Reward is an item
 			{
@@ -461,7 +460,7 @@ public class ChristmasExecutor implements CommandExecutor
 			}
 			catch(CommandException e)
 			{
-				log.severe("Error giving rewards! Check the config for misplaced ','");
+				util.logSevere("Error giving rewards! Check the config for misplaced ','");
 				e.printStackTrace();
 			}
 			

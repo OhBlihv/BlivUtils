@@ -1,6 +1,7 @@
 package net.auscraft.BlivUtils.executors;
 
 import net.auscraft.BlivUtils.BlivUtils;
+import net.auscraft.BlivUtils.utils.Utilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,11 +13,11 @@ import org.bukkit.entity.Player;
 public class GenericExecutor implements CommandExecutor
 {
 	
-	private BlivUtils b;
+	private Utilities util;
 	
 	public GenericExecutor(BlivUtils instance)
 	{
-		b = instance;
+		util = instance.getUtil();
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) 
@@ -25,14 +26,14 @@ public class GenericExecutor implements CommandExecutor
 		{
 			if (args.length == 0) 
 			{
-				sender.sendMessage(ChatColor.GOLD + "Use one of the following inputs:\n/bu version\n/bu reload");
+				util.printInfo(sender, ChatColor.GOLD + "Use one of the following inputs:\n/bu version\n/bu reload");
 			} 
 			else if (args.length > 0)
 			{
 				if (args[0].equalsIgnoreCase("version"))
 				{
 					BlivUtils plugin = BlivUtils.getPlugin();
-					sender.sendMessage(ChatColor.GOLD + "Running BlivUtils Version " + ChatColor.WHITE +plugin.getDescription().getVersion());
+					util.printInfo(sender, ChatColor.GOLD + "Running BlivUtils Version " + ChatColor.WHITE +plugin.getDescription().getVersion());
 				}
 				if (args[0].equalsIgnoreCase("reload")) 
 				{
@@ -40,11 +41,11 @@ public class GenericExecutor implements CommandExecutor
 					{
 						BlivUtils plugin = BlivUtils.getPlugin();
 						plugin.reloadConfig();
-						sender.sendMessage(ChatColor.GOLD + "BlivUtils successfully reloaded.");
+						util.printInfo(sender, ChatColor.GOLD + "BlivUtils successfully reloaded.");
 					}
 					else
 					{
-						b.printError(sender, "You don't have sufficient permissions!");
+						util.printError(sender, "You don't have sufficient permissions!");
 					}
 				}
 			}
@@ -75,7 +76,7 @@ public class GenericExecutor implements CommandExecutor
 			}
 			else
 			{
-				b.printError(sender, "You don't have sufficient permissions!");
+				util.printError(sender, "You don't have sufficient permissions!");
 				return false;
 			}
 		}

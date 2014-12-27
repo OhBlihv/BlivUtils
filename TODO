@@ -3,6 +3,8 @@ Voting
 
 Currently Online Staff, with AFK Status.
 
+(LOW PRIORITY) - Add Scheduled ASync events instead of clogging up the main thread.
+
 (LOW PRIORITY) - Add Utilities class with translateColours(String) and other useful things that I keep repeating
 						- b.printError and b.printSuccess?
 
