@@ -1,12 +1,9 @@
-Voting
-	If player is offline/slightly misspelt, then try to fix it.
-
 Currently Online Staff, with AFK Status.
 
-(LOW PRIORITY) - Add Scheduled ASync events instead of clogging up the main thread.
+Timed Commands/Permissions
+	- MUST Read and Write to file, to persist through restarts.
 
-(LOW PRIORITY) - Add Utilities class with translateColours(String) and other useful things that I keep repeating
-						- b.printError and b.printSuccess?
+(LOW PRIORITY) - Add Scheduled ASync events instead of clogging up the main thread.
 
 (LOW PRIORITY) - One time nickname change on join -- No colours.
 

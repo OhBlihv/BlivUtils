@@ -316,7 +316,7 @@ public class PromoteExecuter implements CommandExecutor
 			}
 		}
 
-		if (cmd.getName().equalsIgnoreCase("timeleft") && (sender instanceof Player)) 
+		if (cmd.getName().equalsIgnoreCase("timeleft")) 
 		{
 			if (args.length == 0) // Self
 			{ 
