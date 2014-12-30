@@ -7,12 +7,12 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -21,12 +21,10 @@ import net.auscraft.BlivUtils.BlivUtils;
 public class Utilities {
 	
 	private BlivUtils b;
-	private Logger log;
 	
 	public Utilities(BlivUtils instance)
 	{
 		b = instance;
-		log = b.getLogger();
 	}
 	
 	//------------------------------------------------------------------------------------------------------
@@ -39,6 +37,22 @@ public class Utilities {
 		Pattern chatColorPattern = Pattern.compile("(?i)&([0-9A-Fa-f-l-oL-OrR])"); // Credit to t3hk0d3 in ChatManager(With slight edits)
 		String fixedString = chatColorPattern.matcher(toFix).replaceAll("\u00A7$1"); // And here too
 		return fixedString;
+	}
+	
+	//------------------------------------------------------------------------------------------------------
+	//Nickname Operations
+	//------------------------------------------------------------------------------------------------------
+	
+	//Update the nick map from outside the class
+	public HashMap<Player, Integer> updateMap(HashMap<Player, Integer> inMap)
+	{
+		b.setNickMap(inMap);
+		return inMap;
+	}
+	
+	public HashMap<Player, Integer> getMap()
+	{
+		return b.getMap();
 	}
 	
 	//------------------------------------------------------------------------------------------------------
@@ -162,12 +176,12 @@ public class Utilities {
 		int enabled = b.getCfg().getInt("options.scheduler.enabled");
 		if ((enabled != -1) && (enabled != 0))
 		{
-			log.info("Rank Checking Scheduler enabled");
+			logInfo("Rank Checking Scheduler enabled");
 			b.startRankScheduler();
 		}
 		else
 		{
-			log.info("Rank Checking Scheduler disabled");
+			logInfo("Rank Checking Scheduler disabled");
 		}
 	}
 	
@@ -228,27 +242,28 @@ public class Utilities {
 	
 	public void logSuccess(String message)
 	{
-		log.log(Level.INFO, ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "SUCCESS: " + ChatColor.GREEN + message);
+		//b.getServer().getConsoleCommandSender().sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "SUCCESS: " + ChatColor.GREEN + message);
+		b.getServer().getConsoleSender().sendMessage("[BlivUtils] " + ChatColor.DARK_GREEN + "SUCCESS: " + ChatColor.GREEN + message);
 	}
 	
 	public void logPlain(String message)
 	{
-		log.log(Level.INFO, message);
+		b.getServer().getConsoleSender().sendMessage("[BlivUtils] " + message);
 	}
 	
 	public void logInfo(String message)
 	{
-		log.log(Level.INFO, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "INFO: " + ChatColor.BLUE + message);
+		b.getServer().getConsoleSender().sendMessage("[BlivUtils] " + ChatColor.DARK_AQUA + "" + "INFO: " + ChatColor.BLUE + message);
 	}
 	
 	public void logError(String message)
 	{
-		log.log(Level.WARNING, ChatColor.DARK_RED + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "ERROR: " + ChatColor.RED + message);
+		b.getServer().getConsoleSender().sendMessage("[BlivUtils] " + ChatColor.DARK_RED + "ERROR: " + ChatColor.RED + message);
 	}
 	
 	public void logSevere(String message)
 	{
-		log.log(Level.SEVERE, ChatColor.DARK_RED + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "SEVERE: " + ChatColor.RED + message);
+		b.getServer().getConsoleSender().sendMessage("[BlivUtils] " + ChatColor.DARK_RED + "SEVERE: " + ChatColor.RED + message);
 	}
 	
 	//------------------------------------------------------------------------------------------------------
