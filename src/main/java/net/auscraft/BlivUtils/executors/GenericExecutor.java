@@ -9,14 +9,20 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
+
+import ru.tehkode.permissions.PermissionUser;
 
 public class GenericExecutor implements CommandExecutor
 {
 	
 	private Utilities util;
+	private BlivUtils b;
 	
 	public GenericExecutor(BlivUtils instance)
 	{
+		b = instance;
 		util = instance.getUtil();
 	}
 	
@@ -82,21 +88,23 @@ public class GenericExecutor implements CommandExecutor
 		}
 		if (cmd.getName().equalsIgnoreCase("wstop")	&& !(sender instanceof Player))
 		{
-			try 
-			{
-				sender.sendMessage(ChatColor.GOLD + "Waiting 10 seconds before stopping the server.");
-				Bukkit.broadcastMessage(ChatColor.DARK_RED + "|| "	+ ChatColor.GRAY + "[" + ChatColor.GOLD	+ ChatColor.BOLD + "Restart" + ChatColor.RESET
+			sender.sendMessage(ChatColor.GOLD + "Waiting 10 seconds before stopping the server.");
+			Bukkit.broadcastMessage(ChatColor.DARK_RED + "|| "	+ ChatColor.GRAY + "[" + ChatColor.GOLD	+ ChatColor.BOLD + "Restart" + ChatColor.RESET
 						+ ChatColor.GRAY + "]" + " " + ChatColor.YELLOW	+ ChatColor.ITALIC + "Server Restarting in 10 Seconds!");
-				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "save-all");
-				Thread.sleep(10000L);
-				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "kickall Restart");
-				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "stop");
-				return true;
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
-			}
+			Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "save-all");
+				
+			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+		    scheduler.scheduleSyncDelayedTask(b, new Runnable() 
+		    {
+		        @Override
+		        public void run()
+		        {
+		        	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "kickall Restart");
+					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "stop");
+		        }
+		    }, 200L);
+		    
+			return true;
 		}
 		
 		if (cmd.getName().equalsIgnoreCase("servers"))
@@ -137,10 +145,10 @@ public class GenericExecutor implements CommandExecutor
 				else if(args[0].equalsIgnoreCase("Vanilla"))
 				{
 					sender.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Servers Menu - - - - -\n"
-									+ ChatColor.GOLD + "Vanilla " + ChatColor.WHITE + "is a currently unreleased whitelist server.\n"
+									+ ChatColor.GOLD + "Vanilla " + ChatColor.WHITE + "is a vanilla whitelist server.\n"
 									+ "   Providing the vanilla experience without any of the\n"
 									+ "   features of regular Survival, providing a tougher challenge.\n"
-									+ "Connect: " + ChatColor.DARK_RED + "N/A" + ChatColor.WHITE + " OR " + ChatColor.DARK_RED + "N/A");
+									+ "Connect: " + ChatColor.DARK_RED + "/van");
 					return true;
 				}
 				else if(args[0].equalsIgnoreCase("Minigames"))

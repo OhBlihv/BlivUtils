@@ -38,7 +38,8 @@ public class AFKManager implements CommandExecutor
 			User user = e.getUser(sender.getName());
 			
 			BSPlayer bsp = PlayerManager.getPlayer((Player) sender);
-			
+		
+			//This may cause two AFK notifications to show up in chat, I hope this isn't the case.
 			//Double up on the AFKs, since Essentials will be the server-specific afk manager, and BSuite will be the global AFK setting.
 			if(bsp.isAFK())
 			{
@@ -56,7 +57,7 @@ public class AFKManager implements CommandExecutor
 		{
 			//TODO: Move me to an automated scheduled ASync task, every 5 minutes or so to reduce lag.
 			Collection<BSPlayer> onPlayers = PlayerManager.getOnlinePlayers();
-			BSPlayer[] onlineAdmins = new Player[100];
+			BSPlayer[] onlineAdmins = new BSPlayer[100];
 			int num = 0;
 			
 			for(BSPlayer p : onPlayers)
@@ -99,6 +100,8 @@ public class AFKManager implements CommandExecutor
 						util.logError("Player not in any of the listed groups for /modlist");
 					}
 				}
+				
+				String onlineList = bAdmin + Mod + Admin + Musketeer;
 				
 				sender.sendMessage("Online Admins:\n" + onlineList);
 				

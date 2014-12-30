@@ -14,13 +14,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import net.auscraft.BlivUtils.config.ConfigAccessor;
 import net.auscraft.BlivUtils.config.ConfigSetup;
+import net.auscraft.BlivUtils.credits.CreditManager;
 import net.auscraft.BlivUtils.executors.ColourExecutor;
-import net.auscraft.BlivUtils.executors.CreditExecutor;
 import net.auscraft.BlivUtils.executors.GenericExecutor;
 import net.auscraft.BlivUtils.executors.RankHelpExecutor;
 import net.auscraft.BlivUtils.executors.VoteExecuter;
 import net.auscraft.BlivUtils.promotions.PromoteExecuter;
 import net.auscraft.BlivUtils.purchases.Broadcast;
+import net.auscraft.BlivUtils.purchases.Nicknames;
 import net.auscraft.BlivUtils.rewards.ChristmasExecutor;
 import net.auscraft.BlivUtils.timed.TimedCommands;
 import net.auscraft.BlivUtils.utils.Utilities;
@@ -37,6 +38,7 @@ public final class BlivUtils extends JavaPlugin
 	private static BlivUtils plugin;
 	private static HashMap<String, Integer> promoteCount = new HashMap<String, Integer>();
 	private static HashMap<String, String> colourSave = new HashMap<String, String>();
+	private HashMap<Player, Integer> nick;
 	private static PermissionManager pex;
 	private ConfigSetup configSetup;
 	private ConfigAccessor cfg;
@@ -82,6 +84,7 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("promoadmin").setExecutor(new PromoteExecuter(this));
 		getCommand("updateadmin").setExecutor(new PromoteExecuter(this));
 		getCommand("updatetime").setExecutor(new PromoteExecuter(this));
+		getCommand("onick").setExecutor(new Nicknames(utils));
 		
 		//Toggleable commands
 		int toggle[] = cfg.getEnabledCommands();
@@ -99,7 +102,7 @@ public final class BlivUtils extends JavaPlugin
 		
 		if(toggle[1] == 1)
 		{
-			getCommand("credits").setExecutor(new CreditExecutor(this));
+			getCommand("credits").setExecutor(new CreditManager(this));
 			util.logInfo("Credit System Enabled.");
 		}
 		else
@@ -200,6 +203,30 @@ public final class BlivUtils extends JavaPlugin
 				}
 			}
 		}, 0L, looptime);
+	}
+	
+	public void nickScheduler()
+	{
+		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+		scheduler.scheduleSyncRepeatingTask(this, new Runnable()
+		{
+			public void run()
+			{
+				//For each entry in the HashMap
+				for(Player p : Bukkit.getOnlinePlayers())
+				{
+					if(nick.get(p) != null)
+					{
+						p.sendMessage(ChatColor.DARK_AQUA + "You have a free one-time nickname change available!\n Type /onick");
+					}
+				}
+			}
+		}, 0L, 6000L);
+	}
+	
+	public void setNickMap(HashMap<Player, Integer> inNick)
+	{
+		nick = inNick;
 	}
 
 	public Permission setupPermissions()

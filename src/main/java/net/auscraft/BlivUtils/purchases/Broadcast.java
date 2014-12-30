@@ -1,6 +1,5 @@
 package net.auscraft.BlivUtils.purchases;
 
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import net.auscraft.BlivUtils.BlivUtils;
@@ -18,12 +17,10 @@ import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
 
 public class Broadcast implements CommandExecutor
 {
-	private Logger log;
 	private Utilities util;
 	
 	public Broadcast(BlivUtils instance)
 	{
-		log = instance.getLogger();
 		util = instance.getUtil();
 	}
 
@@ -40,7 +37,7 @@ public class Broadcast implements CommandExecutor
 				
 				if(args[0].equals("true")) //Is a rank upgrade, requires name colour change
 				{
-					Nicknames nick = new Nicknames(log);
+					Nicknames nick = new Nicknames(util);
 					nick.nickPlayer(p);
 				}
 				

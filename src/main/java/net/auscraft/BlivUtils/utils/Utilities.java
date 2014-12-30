@@ -35,6 +35,7 @@ public class Utilities {
 	
 	public String translateColours(String toFix)
 	{
+		//Convert every single colour code and formatting code, excluding 'magic' (&k), capitals and lowercase are converted.
 		Pattern chatColorPattern = Pattern.compile("(?i)&([0-9A-Fa-f-l-oL-OrR])"); // Credit to t3hk0d3 in ChatManager(With slight edits)
 		String fixedString = chatColorPattern.matcher(toFix).replaceAll("\u00A7$1"); // And here too
 		return fixedString;
@@ -206,6 +207,11 @@ public class Utilities {
 		sender.sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "SUCCESS: " + ChatColor.GREEN + message);
 	}
 	
+	public void printPlain(CommandSender sender, String message)
+	{
+		sender.sendMessage(message);
+	}
+	
 	public void printInfo(CommandSender sender, String message)
 	{
 		sender.sendMessage(ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "INFO: " + ChatColor.BLUE + message);
@@ -225,6 +231,11 @@ public class Utilities {
 		log.log(Level.INFO, ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "SUCCESS: " + ChatColor.GREEN + message);
 	}
 	
+	public void logPlain(String message)
+	{
+		log.log(Level.INFO, message);
+	}
+	
 	public void logInfo(String message)
 	{
 		log.log(Level.INFO, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "INFO: " + ChatColor.BLUE + message);
@@ -239,5 +250,15 @@ public class Utilities {
 	{
 		log.log(Level.SEVERE, ChatColor.DARK_RED + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "SEVERE: " + ChatColor.RED + message);
 	}
+	
+	//------------------------------------------------------------------------------------------------------
+	//Miscellaneous
+	//------------------------------------------------------------------------------------------------------
+	public BlivUtils getInstance()
+	{
+		return b;
+	}
+	
+	
 	
 }

@@ -100,7 +100,8 @@ public class TimedCommands implements CommandExecutor
 				timeframe += "s"; //Equals second + s (no space), is 'seconds'
 			}
 			
-			
+			//Get the current UNIX time, and add the timeframe to it?
+			//Then save/append it to file, and regularly check the cached file.
 			
 			
 			

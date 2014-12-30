@@ -27,7 +27,7 @@ public class PromoteExecuter implements CommandExecutor
 
 	public PromoteExecuter(BlivUtils instance)
 	{
-		promoteCount = BlivUtils.getPromote();
+		promoteCount = instance.getPromote();
 		perms = instance.setupPermissions();
 		econ = instance.setupEconomy();
 		util = instance.getUtil();

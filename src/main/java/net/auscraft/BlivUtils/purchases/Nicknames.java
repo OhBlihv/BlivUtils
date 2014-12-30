@@ -1,34 +1,78 @@
 package net.auscraft.BlivUtils.purchases;
 
+import java.util.HashMap;
 import java.util.Random;
-import java.util.logging.Logger;
+
+import net.auscraft.BlivUtils.utils.Utilities;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerLoginEvent;
 
 import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
 import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
 
-public class Nicknames {
-	
-	private Logger log;
+public class Nicknames implements CommandExecutor
+{
 	
 	//When I need this, add it back in.
-	//private Utilities util;
+	private Utilities util;
+	private HashMap<Player, Integer> nick;
 	
-	public Nicknames(Logger inLog)
+	public Nicknames(Utilities inUtil)
 	{
-		log = inLog;
-		//util = inUtil;
+		util = inUtil;
+		nick = new HashMap<Player, Integer>();
 	}
 	
-	//public static void nicknamePlayer( String name, String otherplayer, String nickname, boolean command ) {
+	@EventHandler
+	public void onLogin(PlayerLoginEvent event) {
+		Player p = event.getPlayer();
+		if(!p.hasPlayedBefore())
+		{
+			nick.put(p, 1);
+		}
+	}
+	
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[])
+	{
+		if(cmd.getName().equalsIgnoreCase("onick"))
+		{
+			if(args.length == 0)
+			{
+				sender.sendMessage("One time nickname command (No Colours). Use /onick <name>");
+			}
+			else if(args.length >= 1)
+			{
+				if((nick.get(sender.getName()) != null) || (nick.get(sender.getName()) != 0))
+				{
+					BSPlayer p = PlayerManager.getPlayer(sender);
+					p.setNickname(args[1]);
+					util.printSuccess(sender, "Your nickname is now: " + args[1]);
+				}
+				else
+				{
+					util.printError(sender, "You've already used your one-time nick change!");
+				}
+			}
+		}
+		
+		
+		
+		return false;
+	}
+	
 	public void nickPlayer(Player p)
 	{
 		BSPlayer bsp = PlayerManager.getPlayer(p);
 		if(bsp.hasNickname())
 		{
-			log.info("Player " + p.getName() + " should have had a random colour assigned, but they already had a nickname.");
+			util.logInfo("Player " + p.getName() + " should have had a random colour assigned, but they already had a nickname.");
 			return; //Exit. If player has a nickname, it is most likely coloured, or it is a rebuy of the package.
 		}
 		
@@ -87,7 +131,7 @@ public class Nicknames {
 				break;
 		}
 		
-		log.info("Colour selected for player: " + colour.toString());
+		util.logInfo("Colour selected for player: " + colour.toString());
 		
 		return colour;
 	}
