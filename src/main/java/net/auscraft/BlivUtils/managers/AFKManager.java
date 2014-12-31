@@ -2,7 +2,6 @@ package net.auscraft.BlivUtils.managers;
 
 import java.util.Collection;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -78,7 +77,7 @@ public class AFKManager implements CommandExecutor
 				while(onlineAdmins[num] != null)
 				{
 					PermissionUser userLoop = PermissionsEx.getUser(onlineAdmins[num].getPlayer());
-					String AFK = "", pName = onlineAdmins[num].getName();
+					
 					if(userLoop.inGroup("BasicAdmin") || userLoop.inGroup("trialbAdmin"))
 					{
 						bAdmin = adminList(onlineAdmins[num]);

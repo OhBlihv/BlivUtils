@@ -10,9 +10,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.scheduler.BukkitTask;
-
-import ru.tehkode.permissions.PermissionUser;
 
 public class GenericExecutor implements CommandExecutor
 {
@@ -38,15 +35,13 @@ public class GenericExecutor implements CommandExecutor
 			{
 				if (args[0].equalsIgnoreCase("version"))
 				{
-					BlivUtils plugin = BlivUtils.getPlugin();
-					util.printInfo(sender, ChatColor.GOLD + "Running BlivUtils Version " + ChatColor.WHITE +plugin.getDescription().getVersion());
+					util.printInfo(sender, ChatColor.GOLD + "Running BlivUtils Version " + ChatColor.WHITE + b.getDescription().getVersion());
 				}
 				if (args[0].equalsIgnoreCase("reload")) 
 				{
 					if (sender.hasPermission("blivutils.reload") || !(sender instanceof Player))
 					{
-						BlivUtils plugin = BlivUtils.getPlugin();
-						plugin.reloadConfig();
+						b.reloadConfig();
 						util.printInfo(sender, ChatColor.GOLD + "BlivUtils successfully reloaded.");
 					}
 					else

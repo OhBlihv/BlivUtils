@@ -6,5 +6,6 @@ Timed Commands/Permissions
 (LOW PRIORITY) - Add Scheduled ASync events instead of clogging up the main thread.
 
 (LOW PRIORITY) - One time nickname change on join -- No colours.
+					--Add nickname manager alongside command and listener classes
 
 (LOWER PRIORITY) - Longer duration AFK kick for Admins -- > 15 minutes. -- Stops them idling for so long.

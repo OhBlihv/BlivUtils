@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,7 +22,6 @@ import net.auscraft.BlivUtils.executors.RankHelpExecutor;
 import net.auscraft.BlivUtils.executors.VoteExecuter;
 import net.auscraft.BlivUtils.promotions.PromoteExecuter;
 import net.auscraft.BlivUtils.purchases.Broadcast;
-import net.auscraft.BlivUtils.purchases.Nicknames;
 import net.auscraft.BlivUtils.rewards.ChristmasExecutor;
 import net.auscraft.BlivUtils.timed.TimedCommands;
 import net.auscraft.BlivUtils.utils.Utilities;
@@ -35,7 +35,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public final class BlivUtils extends JavaPlugin
 {
-	private static BlivUtils plugin;
 	private static HashMap<String, Integer> promoteCount = new HashMap<String, Integer>();
 	private static HashMap<String, String> colourSave = new HashMap<String, String>();
 	private HashMap<Player, Integer> nick;
@@ -43,7 +42,7 @@ public final class BlivUtils extends JavaPlugin
 	private ConfigSetup configSetup;
 	private ConfigAccessor cfg;
 	private Utilities util;
-	//private FileConfiguration configfile = null;
+	private FileConfiguration configFile;
 
 
 	@Override
@@ -53,10 +52,9 @@ public final class BlivUtils extends JavaPlugin
 		
 		// Other Stuff
 		pex = PermissionsEx.getPermissionManager();
-		plugin = this;
 		util = new Utilities(this);
 		configSetup = new ConfigSetup(this);
-		//configfile = configSetup.getConfig();
+		configFile = configSetup.getConfig();
 		cfg = new ConfigAccessor(this);
 		// Scheduling
 		util.checkRankScheduler();
@@ -84,7 +82,9 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("promoadmin").setExecutor(new PromoteExecuter(this));
 		getCommand("updateadmin").setExecutor(new PromoteExecuter(this));
 		getCommand("updatetime").setExecutor(new PromoteExecuter(this));
-		getCommand("onick").setExecutor(new Nicknames(utils));
+		//getCommand("onick").setExecutor(new Nicknames(this));
+		
+		//getServer().getPluginManager().registerEvents(new NicknameListener(this), this);
 		
 		//Toggleable commands
 		int toggle[] = cfg.getEnabledCommands();
@@ -97,6 +97,8 @@ public final class BlivUtils extends JavaPlugin
 		}
 		else
 		{
+			getCommand("buyrank").setExecutor(new RemovedCommand(this));
+			getCommand("promoteme").setExecutor(new RemovedCommand(this));
 			util.logInfo("Rank Purchasing Disabled.");
 		}
 		
@@ -107,6 +109,7 @@ public final class BlivUtils extends JavaPlugin
 		}
 		else
 		{
+			getCommand("credits").setExecutor(new RemovedCommand(this));
 			util.logInfo("Credits System Disabled.");
 		}
 		
@@ -117,6 +120,7 @@ public final class BlivUtils extends JavaPlugin
 		}
 		else
 		{
+			getCommand("present").setExecutor(new RemovedCommand(this));
 			util.logInfo("Rewards Disabled.");
 		}
 		
@@ -255,9 +259,9 @@ public final class BlivUtils extends JavaPlugin
 		return colourSave;
 	}
 
-	public static BlivUtils getPlugin()
+	public BlivUtils getPlugin()
 	{
-		return plugin;
+		return this;
 	}
 	
 	public ConfigSetup getConfigSetup()
@@ -273,6 +277,11 @@ public final class BlivUtils extends JavaPlugin
 	public Utilities getUtil()
 	{
 		return util;
+	}
+	
+	public HashMap<Player, Integer> getMap()
+	{
+		return nick;
 	}
 
 }

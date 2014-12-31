@@ -58,6 +58,9 @@ commands:
   timedadd:
     description: 'Adds a command to a player for a defined amount of time'
     usage: 'Usage: /<command> <player> <time> <second[s]/minute[s]/hour[s]/day[s]> <command>'
+  onick:
+    description: 'One-time Nickname change (no colour) on first join'
+    usage: 'Usage: /<command> <nick>'
 permissions:
   blivutils.*:
     description: Access every useless utility!

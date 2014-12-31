@@ -44,6 +44,10 @@
         
 #------------------------------------------------------------------------------------
 options:
+    toggle:
+        rankpromotion: 0
+        credits: 0
+        presents: 0
     scheduler:
         enabled: 1
         unit: hours
@@ -58,10 +62,7 @@ options:
         # <ENCHANTNAME:LEVEL:VARIANCE> - List of enchantments coming soon, Base level, Number of levels different from the base the enchant level can be.
         # <ITEM ID> - ID of the reward
         # <LORE> - Lore to display on the item
-        pool1:
-        - Christmas Stone,1
-        - Christmas Grass,2,1:1:0
-        - Christmas Shovel,269,1:5:2,Shovel!
+        pool1: {}
         pool2: {}
         pool3: {}
         pool4: {}

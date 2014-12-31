@@ -21,6 +21,7 @@ import net.auscraft.BlivUtils.BlivUtils;
 public class Utilities {
 	
 	private BlivUtils b;
+	private final String prefix = ChatColor.WHITE + "[" + ChatColor.DARK_AQUA + "BlivUtils" + ChatColor.WHITE + "] ";
 	
 	public Utilities(BlivUtils instance)
 	{
@@ -243,27 +244,27 @@ public class Utilities {
 	public void logSuccess(String message)
 	{
 		//b.getServer().getConsoleCommandSender().sendMessage(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "SUCCESS: " + ChatColor.GREEN + message);
-		b.getServer().getConsoleSender().sendMessage("[BlivUtils] " + ChatColor.DARK_GREEN + "SUCCESS: " + ChatColor.GREEN + message);
+		b.getServer().getConsoleSender().sendMessage(prefix + ChatColor.DARK_GREEN + "SUCCESS: " + ChatColor.GREEN + message);
 	}
 	
 	public void logPlain(String message)
 	{
-		b.getServer().getConsoleSender().sendMessage("[BlivUtils] " + message);
+		b.getServer().getConsoleSender().sendMessage(prefix + message);
 	}
 	
 	public void logInfo(String message)
 	{
-		b.getServer().getConsoleSender().sendMessage("[BlivUtils] " + ChatColor.DARK_AQUA + "" + "INFO: " + ChatColor.BLUE + message);
+		b.getServer().getConsoleSender().sendMessage(prefix + ChatColor.DARK_AQUA + "" + "INFO: " + ChatColor.BLUE + message);
 	}
 	
 	public void logError(String message)
 	{
-		b.getServer().getConsoleSender().sendMessage("[BlivUtils] " + ChatColor.DARK_RED + "ERROR: " + ChatColor.RED + message);
+		b.getServer().getConsoleSender().sendMessage(prefix + ChatColor.DARK_RED + "ERROR: " + ChatColor.RED + message);
 	}
 	
 	public void logSevere(String message)
 	{
-		b.getServer().getConsoleSender().sendMessage("[BlivUtils] " + ChatColor.DARK_RED + "SEVERE: " + ChatColor.RED + message);
+		b.getServer().getConsoleSender().sendMessage(prefix + ChatColor.DARK_RED + "SEVERE: " + ChatColor.RED + message);
 	}
 	
 	//------------------------------------------------------------------------------------------------------
@@ -273,6 +274,11 @@ public class Utilities {
 	{
 		return b;
 	}
+	
+	/*public Nicknames getNicknames()
+	{
+		return Nicknames;
+	}*/
 	
 	
 	

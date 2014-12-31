@@ -3,7 +3,6 @@ package net.auscraft.BlivUtils.rewards;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import net.auscraft.BlivUtils.BlivUtils;
@@ -107,14 +106,6 @@ public class ChristmasExecutor implements CommandExecutor
 		return fixedString;
 	}
 	
-	private String translateColours(String string)
-	{
-		String fixedString;
-		Pattern chatColorPattern = Pattern.compile("(?i)&([0-9A-Fa-fl-oL-O])"); // Credit to t3hk0d3 in ChatManager(With slight edits)
-		fixedString = chatColorPattern.matcher(string).replaceAll("\u00A7$1"); // And here too
-		return fixedString;
-	}
-	
 	private String translatePlayerName(CommandSender sender, String string)
 	{
 		String fixedString;
@@ -214,7 +205,7 @@ public class ChristmasExecutor implements CommandExecutor
 									}
 									rewardString += hyphen + " - " + ChatColor.GOLD + rolledGift[i].getName() + "\n";
 							}
-							rewardString = translateColours(rewardString.substring(0, (rewardString.length() - 1)));
+							rewardString = util.translateColours(rewardString.substring(0, (rewardString.length() - 1)));
 							
 							rewardString = translateChristmasPrefix(rewardString);
 							
@@ -280,7 +271,7 @@ public class ChristmasExecutor implements CommandExecutor
 				{
 					ItemMeta meta = reward.getItemMeta();
 					
-					String lore = translatePlayerName(sender, translateChristmasPrefix(translateColours(rolledGift[i].getName())));
+					String lore = translatePlayerName(sender, translateChristmasPrefix(util.translateColours(rolledGift[i].getName())));
 					
 					meta.setDisplayName(lore);
 					reward.setItemMeta(meta);
@@ -289,7 +280,7 @@ public class ChristmasExecutor implements CommandExecutor
 				if((rolledGift[i].getLore() != null) && (rolledGift[i].getLore() != "LEFT_BLANK"))	//Lore is not empty
 				{
 					List<String> lore = new ArrayList<>();
-					lore.add(translatePlayerName(sender, translateColours(rolledGift[i].getLore())));
+					lore.add(translatePlayerName(sender, util.translateColours(rolledGift[i].getLore())));
 					ItemMeta meta = reward.getItemMeta();
 					meta.setLore(lore);
 					reward.setItemMeta(meta);
