@@ -24,7 +24,17 @@
         #unit: minutes
             #Which unit to count by?
             #Valid Options: seconds, minutes, hours (Case-Sensitive)
-        
+    
+    #rewards:
+        #pool1:
+        # <NAME>,<ENCHANTNAME:LEVEL:VARIANCE [ ENCHANTNAME:LEVEL:VARIANCE...]>,<ITEM ID>,<LORE>
+        # -------------------------------------------------------------------------------------
+        # <NAME> -- Can include spaces and any other character but ','
+        # <ENCHANTNAME:LEVEL:VARIANCE> - List of enchantments coming soon, Base level, Number of levels different from the base the enchant level can be.
+        # <ITEM ID> - ID of the reward
+        # <LORE> - Lore to display on the item
+        # -------------------------------------------------------------------------------------
+    
     #mysql:
         #Database options for the Credit system
         #Setup variable related to setting up the database.
@@ -56,12 +66,6 @@ options:
         time: 5
         unit: minutes
     rewards:
-        #Move me later
-        # <NAME>,<ENCHANTNAME:LEVEL:VARIANCE [ ENCHANTNAME:LEVEL:VARIANCE...]>,<ITEM ID>,<LORE>
-        # <NAME> -- Can include spaces and any other character but ','
-        # <ENCHANTNAME:LEVEL:VARIANCE> - List of enchantments coming soon, Base level, Number of levels different from the base the enchant level can be.
-        # <ITEM ID> - ID of the reward
-        # <LORE> - Lore to display on the item
         pool1: {}
         pool2: {}
         pool3: {}
