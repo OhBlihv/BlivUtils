@@ -197,44 +197,47 @@ public class PromoteExecuter implements CommandExecutor
 		{
 			if ((sender.hasPermission("blivutils.promote.admin")))
 			{
-				if (args.length >= 3) 
-				{ 
+				if (args.length >= 3)
+				{
 					// Two variables are /required/, while the last is optional
+					String numberPlusTimeframe = "";
+					int length = 0;
 					if (args[1] != null)
 					{
-						int length = 0;
-						String numberPlusTimeframe = "";
-						if (args.length >= 3) 
+						if (args[2].contains("hour"))
 						{
-							if (args[2].contains("day"))
-							{
-								// Seconds multiplied by that smaller number to get args[1] day(s)
-								length = (Integer.parseInt(args[1])) * 86400;
-							} 
-							else if (args[2].contains("month"))
-							{
-								// Seconds multiplied by that giant number to get args[1] month(s)
-								length = (Integer.parseInt(args[1])) * 2592000;
-							}
-
-							numberPlusTimeframe = pluralTimeframe(args[2], args[1]);
-						} 
-						else
-						{
-							if (Integer.parseInt(args[1]) == 1)
-							{
-								numberPlusTimeframe = "1 month";
-							} 
-							else 
-							{
-								numberPlusTimeframe = args[1] + " months";
-							}
+							// Seconds multiplied by that smaller number to get args[1] hour(s)
+							length = (Integer.parseInt(args[1])) * 3600;
 						}
+						else if (args[2].contains("day"))
+						{
+							// Seconds multiplied by that smaller number to get args[1] day(s)
+							length = (Integer.parseInt(args[1])) * 86400;
+						}
+						else if (args[2].contains("month"))
+						{
+							// Seconds multiplied by that giant number to get args[1] month(s)
+							length = (Integer.parseInt(args[1])) * 2592000;
+						}
+						
+						numberPlusTimeframe = pluralTimeframe(args[2], args[1]);
+					}
+					else
+					{
+						if (Integer.parseInt(args[1]) == 1)
+						{
+							numberPlusTimeframe = "1 month";
+						} 
+						else 
+						{
+							numberPlusTimeframe = args[1] + " months";
+						}
+					}
 
 						//Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "pex user " + args[0]	+ " group add Admin \"\" " + length);
 						PermissionUser user = PermissionsEx.getUser(args[0]);
 						String sLength = "" + length; //Lazy way of Int -> String, but eh, I'll fix later.
-						
+					
 						user.addGroup("Admin");
 						user.setOption("group-Admin-until", sLength);
 						util.printSuccess(sender, "Player " + args[0] + " promoted for " + numberPlusTimeframe);
@@ -246,11 +249,6 @@ public class PromoteExecuter implements CommandExecutor
 						util.printError(sender, "You didnt specify a time in months!");
 						return false;
 					}
-				}
-				else
-				{
-					return false;
-				}
 			}
 			else
 			{
@@ -412,20 +410,28 @@ public class PromoteExecuter implements CommandExecutor
 					int length = 0;
 					String timeFormat = "";
 
-					if (args[2].contains("day"))
+					if (args[3].contains("day"))
 					{
+						try
+						{
 						// Seconds multiplied by that smaller number to get args[1] day(s)
-						length = (Integer.parseInt(args[1])) * 86400;
-						if (args[1] == "1")
+						length = (Integer.parseInt(args[2])) * 86400;
+						if (args[2] == "1")
 						{
 							timeFormat = "1 day";
 						} 
 						else 
 						{
-							timeFormat = args[1] + " days";
+							timeFormat = args[2] + " days";
+						}
+						}
+						catch(NumberFormatException e)
+						{
+							util.printError(sender, "Invalid Format");
+							return false;
 						}
 					} 
-					else if (args[2].contains("month")) 
+					else if (args[3].contains("month")) 
 					{
 						// Seconds multiplied by that giant number to get args[1] month(s)
 						length = (Integer.parseInt(args[1])) * 2592000;
@@ -443,6 +449,7 @@ public class PromoteExecuter implements CommandExecutor
 					String sTimeLeft = "" + timeLeft;
 					user.setOption("group-" + rank + "-until", sTimeLeft);
 					util.printSuccess(sender, ChatColor.GREEN + "Updated " + args[0] + "'s " + rank + " time by " + timeFormat);
+					return true;
 
 				} 
 				else 
@@ -454,6 +461,7 @@ public class PromoteExecuter implements CommandExecutor
 			else
 			{
 				util.printError(sender, "You don't have permission to do this!");
+				return true;
 			}
 		}
 
