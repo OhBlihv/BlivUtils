@@ -447,9 +447,19 @@ public class PromoteExecuter implements CommandExecutor
 
 					timeLeft += length;
 					String sTimeLeft = "" + timeLeft;
-					user.setOption("group-" + rank + "-until", sTimeLeft);
-					util.printSuccess(sender, ChatColor.GREEN + "Updated " + args[0] + "'s " + rank + " time by " + timeFormat);
-					return true;
+					
+					if(util.getTimeLeft(sender.getName(), rank) > 0)
+					{
+						user.setOption("group-" + rank + "-until", sTimeLeft);
+						util.printSuccess(sender, ChatColor.GREEN + "Updated " + args[0] + "'s " + rank + " time by " + timeFormat);
+						return true;
+					}
+					else
+					{
+						util.printError(sender, args[0] + "'s rank has expired!");
+						return true;
+					}
+					
 
 				} 
 				else 

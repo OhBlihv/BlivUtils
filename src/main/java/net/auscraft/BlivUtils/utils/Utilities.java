@@ -137,8 +137,7 @@ public class Utilities {
 		PermissionUser user = PermissionsEx.getUser(playerName);
 		if ((user.getOption("group-" + rank + "-until") != null) && (user.getOption("group-" + rank + "-until") != "")) 
 		{
-			int timeleft = ((Integer.parseInt(user.getOption("group-" + rank
-					+ "-until", null))) - ((int) (System.currentTimeMillis() / 1000L)));
+			int timeleft = ((Integer.parseInt(user.getOption("group-" + rank + "-until", null))) - ((int) (System.currentTimeMillis() / 1000L)));
 			return timeleft;
 		} 
 		else 
