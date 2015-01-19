@@ -29,13 +29,12 @@ public class ConfigAccessor {
 		int ii = 0; //Counts number of rewards in a pool.
 		int iii = 0; //Counts total number of rewards
 		
-		//Reset the rewards table, as this function will be used to reload the table too.
-		RewardContainer[][] rewardsTable = new RewardContainer[5][50]; //Sorry for the hardcoded numbers. We have 32GB of RAM, I don't really care about saving space right now.
-		
 		//Retrieve the list of rewards for each category.
-		//Only pool one exists right now, so just do pool 1. :)
 		int rewardPoolNum = getInt("options.rewards.count");
 		util.logInfo("Pool Count: " + rewardPoolNum);
+		
+		//Reset the rewards table, as this function will be used to reload the table too.
+		RewardContainer[][] rewardsTable = new RewardContainer[rewardPoolNum][50]; //Hardcoded 50 reward max.
 		
 		try
 		{
@@ -44,22 +43,12 @@ public class ConfigAccessor {
 		{
 			ii = 0;
 			List<String> pool = getStringList("options.rewards.pool" + (j+1));
-			//log.info("Reading Pool: " + (j+1));
 			for(String i : pool)
 			{
-				//log.info("Entry Number: " + ii);
 				String name = "", itemid = "", lore = "";
 				String enchantsList = "";
 				double chance = 1.0;
 				int[][] enchants = {{-1,-1,-1},{-1,-1,-1},{-1,-1,-1},{-1,-1,-1},{-1,-1,-1}}; //5 Enchantments per item, 3 Available Enchantment Variables
-				//Initialize the array to invalid values, so if they are not set it wont error.
-				/*for(int encInit = 0;encInit < 5;encInit++)
-				{
-					for(int encInitIn = 0;encInitIn < 3;encInitIn++)
-					{
-						enchants[encInit][encInitIn] = -1;
-					}
-				}*/
 				
 				try
 				{
@@ -76,30 +65,15 @@ public class ConfigAccessor {
 					    if(!enchantsList.contains("-"))
 					    {
 					    	String[] encSets = enchantsList.split("[|]");
-					    	//log.info("encSets.length = " + encSets.length);
-					    	//log.info("Reading Enchantments...");
-					    	/*for(int encAmount = 0;encAmount < encSets.length;encAmount++)
-					    	{
-					    		log.info("encSets[" + encAmount + "] = " + encSets[encAmount]);
-					    	}*/
 					    	int encCount = 0;
-					    	//One set of enchantment variables.
-					    	//log.info("encSets.length = " + encSets.length);
 					    	String[] encVars;
 					    	for(int encGroup = 0;encGroup < (encSets.length);encGroup++)
 					    	{
-					    		//log.info("Enchantment Number: " + (encGroup + 1) + " / " + (encSets.length));
 					    		encVars = encSets[encGroup].split("[:]");
-					    		//log.info("encVars[0] = " + encVars[0]);
-					    		//log.info("encVars.length = " + encVars.length);
-					    		//log.info("" + Integer.parseInt(encVars[encCount]));
 					    		enchants[encGroup][0] = Integer.parseInt(encVars[encCount++]);
-					    		//log.info("" + Integer.parseInt(encVars[encCount]));
 					    		enchants[encGroup][1] = Integer.parseInt(encVars[encCount++]);
-					    		//log.info("" + Integer.parseInt(encVars[encCount]));
 					    		enchants[encGroup][2] = Integer.parseInt(encVars[encCount++]);
 					    		
-					    		//log.info(enchants[encGroup][0] + ":" + enchants[encGroup][1] + ":" + enchants[encGroup][2]);
 					    		encCount = 0;
 					    	}
 					    }
@@ -184,36 +158,6 @@ public class ConfigAccessor {
 			//fallback to let the plugin load properly.
 			e.printStackTrace();
 		}
-		/*int poolloop = 0, rewardloop = 0;
-		try
-		{
-			for(poolloop = 0;poolloop < rewardsTable.length;poolloop++)
-			{
-				for(rewardloop = 0;rewardloop < rewardsTable[poolloop].length;rewardloop++)
-				{
-					try
-					{
-						log.info(rewardsTable[poolloop][rewardloop].getName());
-						for(int enchantLoop = 0;enchantLoop < rewardsTable[poolloop][rewardloop].getEnchants().length;enchantLoop++)
-						{
-							log.info(" - " + rewardsTable[poolloop][rewardloop].getEnchants()[enchantLoop][0]);
-							log.info(" - " + rewardsTable[poolloop][rewardloop].getEnchants()[enchantLoop][1]);
-							log.info(" - " + rewardsTable[poolloop][rewardloop].getEnchants()[enchantLoop][2]);
-						}
-						
-					}
-					catch(NullPointerException e)
-					{
-						rewardloop = rewardsTable[poolloop].length; //No more rewards in this pool, leave the loop.
-					}
-				}
-				
-			}
-		}
-		catch(NullPointerException e)
-		{
-			log.severe("Error accessing reward at [" + poolloop + "][" + rewardloop + "]");
-		}*/
 		return rewardsTable;
 	}
 	
