@@ -26,6 +26,7 @@
             #Valid Options: seconds, minutes, hours (Case-Sensitive)
     
     #rewards:
+        #count: 1
         #pool1:
         # <NAME>,<ENCHANTNAME:LEVEL:VARIANCE [ ENCHANTNAME:LEVEL:VARIANCE...]>,<ITEM ID>,<LORE>
         # -------------------------------------------------------------------------------------
@@ -66,6 +67,7 @@ options:
         time: 5
         unit: minutes
     rewards:
+        count: 5
         pool1: {}
         pool2: {}
         pool3: {}
