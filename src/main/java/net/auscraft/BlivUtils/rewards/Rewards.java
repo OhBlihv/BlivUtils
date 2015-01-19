@@ -25,10 +25,10 @@ import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 
-public class ChristmasExecutor implements CommandExecutor
+public class Rewards implements CommandExecutor
 {
 	
-	public static final String ChristmasPrefix = ChatColor.DARK_RED + 		"C"
+	/*public static final String ChristmasPrefix = ChatColor.DARK_RED + 		"C"
 										+ ChatColor.DARK_GREEN +			"H"
 										+ ChatColor.DARK_RED +				"R"
 										+ ChatColor.DARK_GREEN + 			"I"
@@ -38,7 +38,12 @@ public class ChristmasExecutor implements CommandExecutor
 										+ ChatColor.DARK_GREEN + 			"A"
 										+ ChatColor.DARK_RED +  			"S"; //What does that spell? CHRISTMAS!
 	//The above string spells out "Christmas" in alternating Red/Green italicised colours.
+	*/
+	//And this isn't relevant anymore.
 	
+	//TODO:
+	//Make this look decent.
+	public static final String prefix = "Birthday";
 	
 	private RewardContainer[][] rewardsTable;
 	private ConfigAccessor cfg;
@@ -47,7 +52,7 @@ public class ChristmasExecutor implements CommandExecutor
 	//Gift specific global variables
 	private int[] totalGiftPool = {0,0,0,0,0}; //Initialize the counts to 0, and add to them in the constructor.
 	
-	public ChristmasExecutor(BlivUtils instance)
+	public Rewards(BlivUtils instance)
 	{
 		util = instance.getUtil();
 		cfg = instance.getCfg();
@@ -97,20 +102,19 @@ public class ChristmasExecutor implements CommandExecutor
 	}
 	
 	
-	//TODO: Genericify, and put in the Utilities class
-	private String translateChristmasPrefix(String string)
+	private String translatePrefix(String string)
 	{
 		String fixedString;
-		Pattern ChristmasPattern = Pattern.compile("[@]");
-		fixedString = ChristmasPattern.matcher(string).replaceAll(ChristmasPrefix);
+		Pattern GiftPattern = Pattern.compile("[@]");
+		fixedString = GiftPattern.matcher(string).replaceAll(prefix);
 		return fixedString;
 	}
 	
 	private String translatePlayerName(CommandSender sender, String string)
 	{
 		String fixedString;
-		Pattern ChristmasPattern = Pattern.compile("[%]");
-		fixedString = ChristmasPattern.matcher(string).replaceAll(sender.getName());
+		Pattern GiftPattern = Pattern.compile("[%]");
+		fixedString = GiftPattern.matcher(string).replaceAll(sender.getName());
 		return fixedString;
 	}
 	
@@ -120,9 +124,9 @@ public class ChristmasExecutor implements CommandExecutor
 		if (cmd.getName().equalsIgnoreCase("present"))
 		{
 			PermissionUser user = PermissionsEx.getUser(sender.getName());
-			if(user.has("blivutils.present.christmas.done"))
+			if(user.has("blivutils.present.birthday.done"))
 			{
-				util.printError(sender, "You can only open one Christmas Present!");
+				util.printError(sender, "You can only open one Gift!");
 				return true;
 			}
 			else
@@ -138,20 +142,13 @@ public class ChristmasExecutor implements CommandExecutor
 						Random rand = new Random(System.currentTimeMillis());
 						
 						//Should I bother randomising if they're good or bad?
-						sender.sendMessage(ChatColor.DARK_GREEN + "Merry " + ChatColor.BLUE + "" + ChatColor.BOLD + "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft " + ChristmasPrefix);
-						sender.sendMessage(ChatColor.GREEN + "Looks like you're on my " + ChatColor.DARK_GREEN + "nice list" + ChatColor.GREEN + " and will be receiving "
-											+ ChatColor.DARK_GREEN + numberGifts + " gifts!");
-						// Pools:
-						// Pool One: Weapon (Enchantments equivalent to material)
-						// Pool Two: Tool (Enchantments equivalent to material)
-						// Pool Three: Armour (Enchantments equivalent to material)
-						// Pool Four: ??? 
-						// Pool Five: ???
+						sender.sendMessage("Thanks for joining in " + ChatColor.BLUE + "" + ChatColor.BOLD + "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft's " + prefix + " Celebrations!");
+						sender.sendMessage(ChatColor.GREEN + "You'll  be receiving " + ChatColor.DARK_GREEN + numberGifts + " gifts!");
 						
-						//Pool One ---------------
+						//Start gifting.
 						try
 						{
-							ChatColor hyphen = ChatColor.DARK_RED;
+							ChatColor hyphen = ChatColor.DARK_BLUE;
 							for(int i = 0;i < numberGifts;i++)
 							{
 									//Get the chance, round it down, and roll a number.
@@ -187,39 +184,43 @@ public class ChristmasExecutor implements CommandExecutor
 										if(numRolls >= 20)
 										{
 											//Too many rolls.
+											//Give the first entry.
 											rolledGift[i] = rewardsTable[i][0];
 											won = true;
 										}
 										numRolls++;
 									} while((!won));
 									
-									//if(rand.nextInt((int) Math.floor(10 - (rolledGift[i].getChance() * 10))) == 0)
 									util.logInfo(rolledGift[i].getName());
-									if(hyphen == ChatColor.DARK_RED)
+									
+									if(hyphen == ChatColor.BLUE)
 									{
-										hyphen = ChatColor.DARK_GREEN;
+										hyphen = ChatColor.WHITE;
 									}
-									else if(hyphen == ChatColor.DARK_GREEN)
+									else if(hyphen == ChatColor.WHITE)
 									{
-										hyphen = ChatColor.DARK_RED;
+										hyphen = ChatColor.BLUE;
 									}
 									rewardString += hyphen + " - " + ChatColor.GOLD + rolledGift[i].getName() + "\n";
 							}
 							rewardString = util.translateColours(rewardString.substring(0, (rewardString.length() - 1)));
 							
-							rewardString = translateChristmasPrefix(rewardString);
+							rewardString = translatePrefix(rewardString);
 							
-							sender.sendMessage(ChatColor.YELLOW + "Congratulations!" + ChatColor.GREEN + " You've won:\n" + rewardString);
-							util.logReward(rewardString);
+							sender.sendMessage(ChatColor.YELLOW + "Congratulations!" + ChatColor.GREEN + " You've opened:\n" + rewardString);
+							
+							//Oman -- It was in a flippidy floop the whole time.
 							util.logReward("------------------------------------------\n" + sender.getName() + "has won:");
+							util.logReward(rewardString);
 							
-							user.addPermission("blivutils.present.christmas.done"); //Player can no longer type /present open
+							
+							user.addPermission("blivutils.present.birthday.done"); //Player can no longer type /present open
 						}
 						catch(NullPointerException e)
 						{
 							e.printStackTrace();
-							util.logtoFile("Player " + sender.getName() + " had problems with their present.");
-							util.printError(sender, "Oops! Your present had trouble opening. Send a /modreq for the Musketeers.");
+							util.logtoFile("Player " + sender.getName() + " had problems with their gift.");
+							util.printError(sender, "Oops! Your gift had trouble opening. Send a /modreq for the Musketeers.");
 						}
 						
 						giveRewards(sender, rolledGift);
@@ -230,6 +231,7 @@ public class ChristmasExecutor implements CommandExecutor
 					{
 						if(sender.hasPermission("blivutils.rewards.admin"))
 						{
+							rewardsTable = null; //Hopefully this allows for reloads.
 							cfg.loadRewards();
 							loadRewards();
 							sender.sendMessage(ChatColor.GREEN + "Loaded " + ((totalGiftPool[0] + totalGiftPool[1] + totalGiftPool[2] + totalGiftPool[3] + totalGiftPool[4]) + " rewards"));
@@ -271,7 +273,7 @@ public class ChristmasExecutor implements CommandExecutor
 				{
 					ItemMeta meta = reward.getItemMeta();
 					
-					String lore = translatePlayerName(sender, translateChristmasPrefix(util.translateColours(rolledGift[i].getName())));
+					String lore = translatePlayerName(sender, translatePrefix(util.translateColours(rolledGift[i].getName())));
 					
 					meta.setDisplayName(lore);
 					reward.setItemMeta(meta);
@@ -296,8 +298,7 @@ public class ChristmasExecutor implements CommandExecutor
 						//enchants[2] = Enchantment Variation (In Levels)
 						
 						//Level randomisation
-						//log.info("Enchantment #" + ii);
-						//log.info("Enchantment: " + enchants[0] + ":" + enchants[1] + ":" + enchants[2]);
+
 						int level = enchants[1], variation = 0;
 						boolean valid = false;
 						if(enchants[0] >= 0) //If the Enchantment ID is above 0 (Valid)
@@ -307,10 +308,8 @@ public class ChristmasExecutor implements CommandExecutor
 								//Final level = Base + (RANDOM(Variation))
 								variation = rand.nextInt(enchants[2]);
 								level = enchants[1] + (variation);
-								//log.info("Variation: " + variation);
 							}
 							
-							//log.info("Enchantment level: " + level);
 							if(level <= 0) //If the resulting level (or base level for that matter), is below or equal to 0, do not apply.
 							{
 								valid = false; //If the enchantment level is below 0, or 0 itself, the enchantment cannot exist: Dont apply it.
@@ -320,10 +319,6 @@ public class ChristmasExecutor implements CommandExecutor
 								valid = true;
 							}
 						}
-						/*else
-						{
-							log.info(enchants[0] + " is not above 0. Skipping...");
-						}*/
 						
 						if(valid == true)
 						{
@@ -439,14 +434,9 @@ public class ChristmasExecutor implements CommandExecutor
 						}
 					}
 				}
-				/*else
-				{
-					//log.info("Enchantment Space Empty/Null!");
-				}*/
 				
 				
 				p.getInventory().addItem(reward);
-				//p.sendMessage("Reward given!");
 			}
 			}
 			catch(CommandException e)

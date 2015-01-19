@@ -22,7 +22,7 @@ import net.auscraft.BlivUtils.executors.RankHelpExecutor;
 import net.auscraft.BlivUtils.executors.VoteExecuter;
 import net.auscraft.BlivUtils.promotions.PromoteExecuter;
 import net.auscraft.BlivUtils.purchases.Broadcast;
-import net.auscraft.BlivUtils.rewards.ChristmasExecutor;
+import net.auscraft.BlivUtils.rewards.Rewards;
 import net.auscraft.BlivUtils.timed.TimedCommands;
 import net.auscraft.BlivUtils.utils.Utilities;
 import net.milkbowl.vault.economy.Economy;
@@ -115,7 +115,7 @@ public final class BlivUtils extends JavaPlugin
 		
 		if(toggle[2] == 1)
 		{
-			getCommand("present").setExecutor(new ChristmasExecutor(this));
+			getCommand("present").setExecutor(new Rewards(this));
 			util.logInfo("Rewards Enabled...");
 		}
 		else
