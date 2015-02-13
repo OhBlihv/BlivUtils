@@ -1,6 +1,8 @@
-/target
-/BlivUtils
-/build.xml
-/.classpath
-/.project
-/.settings
+# This was done by me, so expect it to totally not work
+target/
+BlivUtils/
+build.xml
+.classpath
+.gitattributes
+.project
+.settings
