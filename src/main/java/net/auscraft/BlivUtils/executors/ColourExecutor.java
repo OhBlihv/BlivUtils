@@ -44,14 +44,16 @@ public class ColourExecutor implements CommandExecutor
 				{
 					hasPermToUse = (ChatColor.RED + "You don't have permission to use this!\n Rank " + ChatColor.RED + "Blaze " + ChatColor.RED + "and above.\n");
 				}
-				sender.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Chat Colour Menu\n"
+				sender.sendMessage(ChatColor.GREEN + "-" + ChatColor.DARK_GREEN + "-" + ChatColor.GREEN + "-" + ChatColor.DARK_GREEN + "-" + ChatColor.GREEN + "-"
+						+ ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Chat Colour Menu"
+						+ ChatColor.GREEN + "-" + ChatColor.DARK_GREEN + "-" + ChatColor.GREEN + "-" + ChatColor.DARK_GREEN + "-" + ChatColor.GREEN + "-\n"
 						+ hasPermToUse // Blank line here to simulate the other line being here.
 						+ ChatColor.GOLD + "Cost: "	+ ChatColor.WHITE + "$"	+ ChatColor.DARK_GREEN + "200" + ChatColor.YELLOW + " per colour change\n"
 						// List here
-						+ ChatColor.GOLD + "| " + ChatColor.DARK_GRAY + " DarkGray" + ChatColor.GOLD + " Gold" + ChatColor.AQUA + " Aqua" + ChatColor.YELLOW + " Yellow\n"
-						+ ChatColor.YELLOW + "| " + ChatColor.DARK_GREEN + " DarkGreen"	+ ChatColor.DARK_PURPLE + " DarkPurple"	+ ChatColor.GRAY + " Gray\n"
-						+ ChatColor.GOLD + "| " 	+ ChatColor.DARK_AQUA + " DarkAqua" + ChatColor.BLUE + " Blue" + ChatColor.GREEN + " Green" + ChatColor.RED	+ " Red\n"
-						+ ChatColor.YELLOW + "| " + ChatColor.DARK_RED + " DarkRed" 	+ ChatColor.LIGHT_PURPLE + " LightPurple" + ChatColor.WHITE + " White\n"
+						+ ChatColor.DARK_GREEN + "| " + ChatColor.DARK_GRAY + " DarkGray" + ChatColor.GOLD + " Gold" + ChatColor.AQUA + " Aqua" + ChatColor.YELLOW + " Yellow\n"
+						+ ChatColor.GREEN + "| " + ChatColor.DARK_GREEN + " DarkGreen"	+ ChatColor.DARK_PURPLE + " DarkPurple"	+ ChatColor.GRAY + " Gray\n"
+						+ ChatColor.DARK_GREEN + "| " 	+ ChatColor.DARK_AQUA + " DarkAqua" + ChatColor.BLUE + " Blue" + ChatColor.GREEN + " Green" + ChatColor.RED	+ " Red\n"
+						+ ChatColor.GREEN + "| " + ChatColor.DARK_RED + " DarkRed" 	+ ChatColor.LIGHT_PURPLE + " LightPurple" + ChatColor.WHITE + " White\n"
 						// No more list
 						+ ChatColor.GOLD + "Usage: /chat <colour>");
 				return true;
@@ -123,7 +125,7 @@ public class ColourExecutor implements CommandExecutor
 					// Third row done
 					else if (args[0].equalsIgnoreCase("DarkRed"))
 					{
-						colour = "2";
+						colour = "4";
 						choice = ChatColor.DARK_RED;
 					}
 					else if (args[0].equalsIgnoreCase("LightPurple"))
@@ -138,7 +140,7 @@ public class ColourExecutor implements CommandExecutor
 					}
 					else
 					{
-						util.printError(sender, "Thats not a valid colour! (Did you spell it right?)");
+						util.printError(sender, "That isn't a valid colour! (Did you spell it right?)");
 					}
 					// Check if the colour was modified, and if so, follow
 					// through.
@@ -156,7 +158,7 @@ public class ColourExecutor implements CommandExecutor
 			}
 		}
 		if (cmd.getName().equalsIgnoreCase("colourme")	&& (sender instanceof Player)) // Probably change the name of this command later.	
-			{
+		{
 			Player p = (Player) sender;
 			String playerName = p.getName();
 			
@@ -178,7 +180,6 @@ public class ColourExecutor implements CommandExecutor
 			} 
 			else
 			{
-				//sender.sendMessage("The name: " + p.getName() + " was not found in the HashMap.");
 				util.printError(sender, "You need to pick a colour first! -- Use " + ChatColor.GREEN + "/chat");
 			}
 			return true;

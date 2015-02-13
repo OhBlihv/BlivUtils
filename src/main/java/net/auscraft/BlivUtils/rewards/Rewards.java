@@ -102,7 +102,7 @@ public class Rewards implements CommandExecutor
 	}
 	
 	
-	private String translatePrefix(String string)
+	public static String translatePrefix(String string)
 	{
 		String fixedString;
 		Pattern GiftPattern = Pattern.compile("[@]");
@@ -110,7 +110,7 @@ public class Rewards implements CommandExecutor
 		return fixedString;
 	}
 	
-	private String translatePlayerName(CommandSender sender, String string)
+	public static String translatePlayerName(CommandSender sender, String string)
 	{
 		String fixedString;
 		Pattern GiftPattern = Pattern.compile("[%]");
@@ -126,7 +126,7 @@ public class Rewards implements CommandExecutor
 			PermissionUser user = PermissionsEx.getUser(sender.getName());
 			if(user.has("blivutils.present.birthday.done"))
 			{
-				util.printError(sender, "You can only open one Gift!");
+				util.printError(sender, "You can only open one Gift for this celebration!");
 				return true;
 			}
 			else
@@ -142,8 +142,7 @@ public class Rewards implements CommandExecutor
 						Random rand = new Random(System.currentTimeMillis());
 						
 						//Should I bother randomising if they're good or bad?
-						sender.sendMessage("Thanks for joining in " + ChatColor.BLUE + "" + ChatColor.BOLD + "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft's " + prefix + " Celebrations!");
-						sender.sendMessage(ChatColor.GREEN + "You'll  be receiving " + ChatColor.DARK_GREEN + numberGifts + " gifts!");
+						sender.sendMessage(ChatColor.AQUA + "Thanks for joining in " + ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Aus" + ChatColor.WHITE + ChatColor.BOLD + "Craft's " + ChatColor.AQUA + prefix + " Celebrations!");
 						
 						//Start gifting.
 						try
@@ -177,10 +176,10 @@ public class Rewards implements CommandExecutor
 											won = true;
 											util.logInfo("Reward: " + rolledGift[i].getName() + " was won! Congratulations!");
 										}
-										else
-										{
+										//else
+										//{
 											//log.info("Reward: " + rolledGift[i].getName() + " was not won.");
-										}
+										//}
 										if(numRolls >= 20)
 										{
 											//Too many rolls.
@@ -193,13 +192,13 @@ public class Rewards implements CommandExecutor
 									
 									util.logInfo(rolledGift[i].getName());
 									
-									if(hyphen == ChatColor.BLUE)
+									if(hyphen == ChatColor.AQUA)
 									{
 										hyphen = ChatColor.WHITE;
 									}
 									else if(hyphen == ChatColor.WHITE)
 									{
-										hyphen = ChatColor.BLUE;
+										hyphen = ChatColor.AQUA;
 									}
 									rewardString += hyphen + " - " + ChatColor.GOLD + rolledGift[i].getName() + "\n";
 							}
@@ -210,8 +209,8 @@ public class Rewards implements CommandExecutor
 							sender.sendMessage(ChatColor.YELLOW + "Congratulations!" + ChatColor.GREEN + " You've opened:\n" + rewardString);
 							
 							//Oman -- It was in a flippidy floop the whole time.
-							util.logReward("------------------------------------------\n" + sender.getName() + "has won:");
-							util.logReward(rewardString);
+							util.logtoFile("------------------------------------------\n" + sender.getName() + "has won:", "rewardslog");
+							util.logtoFile(rewardString, "rewardslog");
 							
 							
 							user.addPermission("blivutils.present.birthday.done"); //Player can no longer type /present open
@@ -219,7 +218,7 @@ public class Rewards implements CommandExecutor
 						catch(NullPointerException e)
 						{
 							e.printStackTrace();
-							util.logtoFile("Player " + sender.getName() + " had problems with their gift.");
+							util.logtoFile("Player " + sender.getName() + " had problems with their gift.", "rewardslog");
 							util.printError(sender, "Oops! Your gift had trouble opening. Send a /modreq for the Musketeers.");
 						}
 						
@@ -246,7 +245,7 @@ public class Rewards implements CommandExecutor
 		return false;
 	}
 	
-	private void giveRewards(CommandSender sender, RewardContainer[] rolledGift)
+	public void giveRewards(CommandSender sender, RewardContainer[] rolledGift)
 	{
 		Player p = (Player) sender;
 		for(int i = 0;i < rolledGift.length;i++)

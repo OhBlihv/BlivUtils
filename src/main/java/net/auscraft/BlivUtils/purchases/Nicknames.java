@@ -6,15 +6,12 @@ import java.util.Random;
 import net.auscraft.BlivUtils.utils.Utilities;
 
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
 import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
 
-public class Nicknames implements CommandExecutor
+public class Nicknames
 {
 	
 	private Utilities util;
@@ -24,35 +21,6 @@ public class Nicknames implements CommandExecutor
 	{
 		util = inUtil;
 		nick = new HashMap<Player, Integer>();
-	}
-	
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[])
-	{
-		if(cmd.getName().equalsIgnoreCase("onick"))
-		{
-			if(args.length == 0)
-			{
-				sender.sendMessage("One time nickname command (No Colours). Use /onick <name>");
-			}
-			else if(args.length >= 1)
-			{
-				if((nick.get(sender.getName()) != null) || (nick.get(sender.getName()) != 0))
-				{
-					BSPlayer p = PlayerManager.getPlayer(sender);
-					p.setNickname(args[1]);
-					util.printSuccess(sender, "Your nickname is now: " + args[1]);
-				}
-				else
-				{
-					util.printError(sender, "You've already used your one-time nick change!");
-				}
-			}
-		}
-		
-		
-		
-		return false;
 	}
 	
 	public void nickPlayer(Player p)

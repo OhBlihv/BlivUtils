@@ -7,12 +7,11 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -41,26 +40,10 @@ public class Utilities {
 	}
 	
 	//------------------------------------------------------------------------------------------------------
-	//Nickname Operations
-	//------------------------------------------------------------------------------------------------------
-	
-	//Update the nick map from outside the class
-	public HashMap<Player, Integer> updateMap(HashMap<Player, Integer> inMap)
-	{
-		b.setNickMap(inMap);
-		return inMap;
-	}
-	
-	public HashMap<Player, Integer> getMap()
-	{
-		return b.getMap();
-	}
-	
-	//------------------------------------------------------------------------------------------------------
 	//Logging
 	//------------------------------------------------------------------------------------------------------
 	
-	public void logtoFile(String message)
+	public void logtoFile(String message, String logName)
 	{
 		try
 		{
@@ -70,42 +53,16 @@ public class Utilities {
 			{
 				dataFolder.mkdir();
 			}
-
-			File saveTo = new File(b.getDataFolder(), "log.txt");
-
-			if (!saveTo.exists())
+			
+			File saveTo = null;
+			if(logName != null)
 			{
-				saveTo.createNewFile();
+				saveTo = new File(b.getDataFolder(), logName + ".txt");
 			}
-
-			FileWriter fw = new FileWriter(saveTo, true);
-			PrintWriter pw = new PrintWriter(fw);
-			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-			Date date = new Date();
-
-			System.out.println();
-			pw.println("[" + dateFormat.format(date) + "] " + message);
-			pw.flush();
-			pw.close();
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	public void logReward(String message)
-	{
-		try
-		{
-			File dataFolder = b.getDataFolder();
-
-			if (!dataFolder.exists())
+			else
 			{
-				dataFolder.mkdir();
+				saveTo = new File(b.getDataFolder(), "log.txt");
 			}
-
-			File saveTo = new File(b.getDataFolder(), "rewardslog.txt");
 
 			if (!saveTo.exists())
 			{
@@ -140,7 +97,20 @@ public class Utilities {
 			int timeleft = ((Integer.parseInt(user.getOption("group-" + rank + "-until", null))) - ((int) (System.currentTimeMillis() / 1000L)));
 			return timeleft;
 		} 
-		else 
+		else
+		{
+			return -1;
+		}
+	}
+	
+	public int getRankTime(String playerName, String rank)
+	{
+		PermissionUser user = PermissionsEx.getUser(playerName);
+		if ((user.getOption("group-" + rank + "-until") != null) && (user.getOption("group-" + rank + "-until") != "")) 
+		{
+			return Integer.parseInt(user.getOption("group-" + rank + "-until", null));
+		} 
+		else
 		{
 			return -1;
 		}
@@ -150,29 +120,286 @@ public class Utilities {
 	{
 		PermissionUser user = PermissionsEx.getUser(playerName);
 		String rank = "";
-		if ((user.getOption("group-Endermite-until") != null) && (user.getOption("group-Endermite-until") != ""))
+		if ((user.getOption("group-Admin-until") != null) && (user.getOption("group-Admin-until") != ""))
 		{
-			rank = "Endermite";
-		} 
+			rank = "Admin";
+		}
+		else if ((user.getOption("group-EnderDragon-until") != null) && (user.getOption("group-EnderDragon-until") != ""))
+		{
+			rank = "EnderDragon";
+		}
 		else if ((user.getOption("group-Enderman-until") != null) && (user.getOption("group-Enderman-until") != ""))
 		{
 			rank = "Enderman";
 		} 
-		else if ((user.getOption("group-Enderdragon-until") != null) && (user.getOption("group-Enderdragon-until") != ""))
+		else if ((user.getOption("group-Endermite-until") != null) && (user.getOption("group-Endermite-until") != ""))
 		{
-			rank = "Enderdragon";
+			rank = "Endermite";
 		} 
-		else if ((user.getOption("group-Admin-until") != null) && (user.getOption("group-Admin-until") != ""))
+		else
 		{
-			rank = "Admin";
-		} 
-		else {
 			rank = "";
 		}
 		return rank;
 	}
 	
-	public void checkRankScheduler() {
+	public String getActiveRanks(String playerName)
+	{
+		PermissionUser user = PermissionsEx.getUser(playerName);
+		String ranks = "";
+		if ((user.getOption("group-Admin-until") != null) && (user.getOption("group-Admin-until") != ""))
+		{
+			ranks += "Admin,";
+		}
+		if ((user.getOption("group-EnderRank-until") != null) && (user.getOption("group-EnderRank-until") != ""))
+		{
+			ranks += "EnderRank,";
+		}
+		if ((user.getOption("group-EnderDragon-until") != null) && (user.getOption("group-EnderDragon-until") != ""))
+		{
+			ranks += "EnderDragon,";
+		}
+		if ((user.getOption("group-Enderman-until") != null) && (user.getOption("group-Enderman-until") != ""))
+		{
+			ranks += "Enderman,";
+		} 
+		if ((user.getOption("group-Endermite-until") != null) && (user.getOption("group-Endermite-until") != ""))
+		{
+			ranks += "Endermite,";
+		}
+		return ranks;
+	}
+	
+	public String getActivePackages(String playerName)
+	{
+		PermissionUser user = PermissionsEx.getUser(playerName);
+		String packages = "";
+		//Pets -----------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderPetsPassive-until") != null) && (user.getOption("group-EnderPetsPassive-until") != ""))
+		{
+			packages += "Passive Pets, ";
+		}
+		if ((user.getOption("group-EnderPetsNeutral-until") != null) && (user.getOption("group-EnderPetsNeutral-until") != ""))
+		{
+			packages += "Neutral Pets, ";
+		}
+		if ((user.getOption("group-EnderPetsHostile-until") != null) && (user.getOption("group-EnderPetsHostile-until") != ""))
+		{
+			packages += "Hostile Pets, ";
+		}
+		if ((user.getOption("group-EnderPetsALL-until") != null) && (user.getOption("group-EnderPetsALL-until") != ""))
+		{
+			packages += "ALL Pets, ";
+		}
+		//Trails ---------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderTrailsSET1-until") != null) && (user.getOption("group-EnderTrailsSET1-until") != ""))
+		{
+			packages += "Set 1 Trails, ";
+		}
+		if ((user.getOption("group-EnderTrailsSET2-until") != null) && (user.getOption("group-EnderTrailsSET2-until") != ""))
+		{
+			packages += "Set 2 Trails, ";
+		}
+		if ((user.getOption("group-EnderTrailsALL-until") != null) && (user.getOption("group-EnderTrailsALL-until") != ""))
+		{
+			packages += "ALL Trails, ";
+		}
+		//Disguises -------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderDisguisesPassive-until") != null) && (user.getOption("group-EnderDisguisesPassive-until") != ""))
+		{
+			packages += "Passive Mob Disguises, ";
+		}
+		if ((user.getOption("group-EnderDisguisesHostile-until") != null) && (user.getOption("group-EnderDisguisesHostile-until") != ""))
+		{
+			packages += "Hostile Mob Disguises, ";
+		}
+		if ((user.getOption("group-EnderDisguisesALL-until") != null) && (user.getOption("group-EnderDisguisesALL-until") != ""))
+		{
+			packages += "ALL Mob Disguises, ";
+		}
+		if ((user.getOption("group-EnderDisguisesALLEntity-until") != null) && (user.getOption("group-EnderDisguisesALLEntity-until") != ""))
+		{
+			packages += "ALL Mob Disguises + Entity Disguises, ";
+		}
+		//Cooldowns -------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderCooldowns-until") != null) && (user.getOption("group-EnderCooldowns-until") != ""))
+		{
+			packages += "No Cooldowns, ";
+		}
+		//Warps -----------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderWarps-until") != null) && (user.getOption("group-EnderWarps-until") != ""))
+		{
+			packages += "20 Available Warps, ";
+		}
+		//mcMMO -----------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-mcMMOSmall-until") != null) && (user.getOption("group-mcMMOSmall-until") != ""))
+		{
+			packages += "mcMMO: Small Perk Pack, ";
+		}
+		if ((user.getOption("group-mcMMOMedium-until") != null) && (user.getOption("group-mcMMOMedium-until") != ""))
+		{
+			packages += "mcMMO: Medium Perk Pack, ";
+		}
+		if ((user.getOption("group-mcMMOLarge-until") != null) && (user.getOption("group-mcMMOLarge-until") != ""))
+		{
+			packages += "mcMMO: Large Perk Pack, ";
+		}
+
+		return packages;
+	}
+	
+	public void updatePackages(String playerName, String time)
+	{
+		PermissionUser user = PermissionsEx.getUser(playerName);
+		//Pets -----------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderPetsPassive-until") != null) && (user.getOption("group-EnderPetsPassive-until") != ""))
+		{
+			user.setOption("group-EnderPetsPassive-until", time);
+		}
+		if ((user.getOption("group-EnderPetsNeutral-until") != null) && (user.getOption("group-EnderPetsNeutral-until") != ""))
+		{
+			user.setOption("group-EnderPetsNeutral-until", time);
+		}
+		if ((user.getOption("group-EnderPetsHostile-until") != null) && (user.getOption("group-EnderPetsHostile-until") != ""))
+		{
+			user.setOption("group-EnderPetsHostile-until", time);
+		}
+		if ((user.getOption("group-EnderPetsALL-until") != null) && (user.getOption("group-EnderPetsALL-until") != ""))
+		{
+			user.setOption("group-EnderPetsALL-until", time);
+		}
+		//Trails ---------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderTrailsSET1-until") != null) && (user.getOption("group-EnderTrailsSET1-until") != ""))
+		{
+			user.setOption("group-EnderTrailsSET1-until", time);
+		}
+		if ((user.getOption("group-EnderTrailsSET2-until") != null) && (user.getOption("group-EnderTrailsSET2-until") != ""))
+		{
+			user.setOption("group-EnderTrailsSET2-until", time);
+		}
+		if ((user.getOption("group-EnderTrailsALL-until") != null) && (user.getOption("group-EnderTrailsALL-until") != ""))
+		{
+			user.setOption("group-EnderTrailsALL-until", time);
+		}
+		//Disguises -------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderDisguisesPassive-until") != null) && (user.getOption("group-EnderDisguisesPassive-until") != ""))
+		{
+			user.setOption("group-EnderDisguisesPassive-until", time);
+		}
+		if ((user.getOption("group-EnderDisguisesHostile-until") != null) && (user.getOption("group-EnderDisguisesHostile-until") != ""))
+		{
+			user.setOption("group-EnderDisguisesHostile-until", time);
+		}
+		if ((user.getOption("group-EnderDisguisesALL-until") != null) && (user.getOption("group-EnderDisguisesALL-until") != ""))
+		{
+			user.setOption("group-EnderDisguiseALL-until", time);
+		}
+		if ((user.getOption("group-EnderDisguisesALLEntity-until") != null) && (user.getOption("group-EnderDisguisesALLEntity-until") != ""))
+		{
+			user.setOption("group-EnderDisguisesALLEntity-until", time);
+		}
+		//Cooldowns -------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderCooldowns-until") != null) && (user.getOption("group-EnderCooldowns-until") != ""))
+		{
+			user.setOption("group-EnderCooldowns-until", time);
+		}
+		//Warps -----------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderWarps-until") != null) && (user.getOption("group-EnderWarps-until") != ""))
+		{
+			user.setOption("group-EnderWarps-until", time);
+		}
+		//mcMMO -----------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-mcMMOSmall-until") != null) && (user.getOption("group-mcMMOSmall-until") != ""))
+		{
+			user.setOption("group-mcMMOSmall-until", time);
+		}
+		if ((user.getOption("group-mcMMOMedium-until") != null) && (user.getOption("group-mcMMOMedium-until") != ""))
+		{
+			user.setOption("group-mcMMOMedium-until", time);
+		}
+		if ((user.getOption("group-mcMMOLarge-until") != null) && (user.getOption("group-mcMMOLarge-until") != ""))
+		{
+			user.setOption("group-mcMMOLarge-until", time);
+		}
+	}
+	
+	public void wipePackages(String playerName)
+	{
+		PermissionUser user = PermissionsEx.getUser(playerName);
+		//Pets -----------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderPetsPassive-until") != null) && (user.getOption("group-EnderPetsPassive-until") != ""))
+		{
+			user.setOption("group-EnderPetsPassive-until", "");
+		}
+		if ((user.getOption("group-EnderPetsNeutral-until") != null) && (user.getOption("group-EnderPetsNeutral-until") != ""))
+		{
+			user.setOption("group-EnderPetsNeutral-until", "");
+		}
+		if ((user.getOption("group-EnderPetsHostile-until") != null) && (user.getOption("group-EnderPetsHostile-until") != ""))
+		{
+			user.setOption("group-EnderPetsHostile-until", "");
+		}
+		if ((user.getOption("group-EnderPetsALL-until") != null) && (user.getOption("group-EnderPetsALL-until") != ""))
+		{
+			user.setOption("group-EnderPetsALL-until", "");
+		}
+		//Trails ---------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderTrailsSET1-until") != null) && (user.getOption("group-EnderTrailsSET1-until") != ""))
+		{
+			user.setOption("group-EnderTrailsSET1-until", "");
+		}
+		if ((user.getOption("group-EnderTrailsSET2-until") != null) && (user.getOption("group-EnderTrailsSET2-until") != ""))
+		{
+			user.setOption("group-EnderTrailsSET2-until", "");
+		}
+		if ((user.getOption("group-EnderTrailsALL-until") != null) && (user.getOption("group-EnderTrailsALL-until") != ""))
+		{
+			user.setOption("group-EnderTrailsALL-until", "");
+		}
+		//Disguises -------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderDisguisesPassive-until") != null) && (user.getOption("group-EnderDisguisesPassive-until") != ""))
+		{
+			user.setOption("group-EnderDisguisesPassive-until", "");
+		}
+		if ((user.getOption("group-EnderDisguisesHostile-until") != null) && (user.getOption("group-EnderDisguisesHostile-until") != ""))
+		{
+			user.setOption("group-EnderDisguisesHostile-until", "");
+		}
+		if ((user.getOption("group-EnderDisguisesALL-until") != null) && (user.getOption("group-EnderDisguisesALL-until") != ""))
+		{
+			user.setOption("group-EnderDisguiseALL-until", "");
+		}
+		if ((user.getOption("group-EnderDisguisesALLEntity-until") != null) && (user.getOption("group-EnderDisguisesALLEntity-until") != ""))
+		{
+			user.setOption("group-EnderDisguisesALLEntity-until", "");
+		}
+		//Cooldowns -------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderCooldowns-until") != null) && (user.getOption("group-EnderCooldowns-until") != ""))
+		{
+			user.setOption("group-EnderCooldowns-until", "");
+		}
+		//Warps -----------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-EnderWarps-until") != null) && (user.getOption("group-EnderWarps-until") != ""))
+		{
+			user.setOption("group-EnderWarps-until", "");
+		}
+		//mcMMO -----------------------------------------------------------------------------------------------------------------
+		if ((user.getOption("group-mcMMOSmall-until") != null) && (user.getOption("group-mcMMOSmall-until") != ""))
+		{
+			user.setOption("group-mcMMOSmall-until", "");
+		}
+		if ((user.getOption("group-mcMMOMedium-until") != null) && (user.getOption("group-mcMMOMedium-until") != ""))
+		{
+			user.setOption("group-mcMMOMedium-until", "");
+		}
+		if ((user.getOption("group-mcMMOLarge-until") != null) && (user.getOption("group-mcMMOLarge-until") != ""))
+		{
+			user.setOption("group-mcMMOLarge-until", "");
+		}
+	}
+	
+	public void checkRankScheduler() 
+	{
 		int enabled = b.getCfg().getInt("options.scheduler.enabled");
 		if ((enabled != -1) && (enabled != 0))
 		{
@@ -206,6 +433,7 @@ public class Utilities {
 		} 
 		else
 		{
+			logError("Unit not valid. Defaulting to 1 hour.");
 			conversion = 72000;
 			return conversion;
 		}
@@ -235,6 +463,16 @@ public class Utilities {
 	{
 		sender.sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "" + ChatColor.ITALIC + "ERROR: " + ChatColor.RED + message);
 	}
+	
+	//------------------------------------------------------------------------------------------------------
+	//Broadcasting
+	//------------------------------------------------------------------------------------------------------
+	
+	public void broadcastPlain(String message)
+	{
+		Bukkit.broadcastMessage(message);
+	}
+	
 	
 	//------------------------------------------------------------------------------------------------------
 	//Logging
@@ -273,11 +511,6 @@ public class Utilities {
 	{
 		return b;
 	}
-	
-	/*public Nicknames getNicknames()
-	{
-		return Nicknames;
-	}*/
 	
 	
 	

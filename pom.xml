@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.auscraft</groupId>
   <artifactId>BlivUtils</artifactId>
-  <version>0.2.3</version>
+  <version>0.2.6</version>
   
   <repositories>
        <repository>
@@ -52,9 +52,9 @@
 		<dependency>
             <groupId>ru.tehkode</groupId>
     		<artifactId>PermissionsEx</artifactId>
-   			<version>1.23</version>
+   			<version>1.23.1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/PermissionsEx-1.23.jar</systemPath>
+            <systemPath>${project.basedir}/lib/PermissionsEx-1.23.1.jar</systemPath>
         </dependency>
 		<dependency>
          <groupId>com.mojang</groupId>

@@ -13,6 +13,9 @@ commands:
   purch:
     description: 'A printout of the recent purchase on the AusCraft Store. (CONSOLE)'
     usage: 'Usage: /<command> <string>'
+  enderrank:
+    description: 'Adds a package to a players account on purchase of the Ender Rank (CONSOLE)'
+    usage: 'Usage: /<command> <player> <package>'
   wstop:
     description: 'Adds a delay to the /stop command. (Console Only!)'
     usage: 'Usage in Console: /<command>'

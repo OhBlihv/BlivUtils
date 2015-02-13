@@ -18,6 +18,7 @@ public class ConfigAccessor {
 	
 	public ConfigAccessor(BlivUtils instance)
 	{
+	    b = instance;	
 		util = instance.getUtil();
 		config = instance.getConfig();
 	}

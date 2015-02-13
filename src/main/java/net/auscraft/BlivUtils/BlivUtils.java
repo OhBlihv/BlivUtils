@@ -19,12 +19,13 @@ import net.auscraft.BlivUtils.credits.CreditManager;
 import net.auscraft.BlivUtils.executors.ColourExecutor;
 import net.auscraft.BlivUtils.executors.GenericExecutor;
 import net.auscraft.BlivUtils.executors.RankHelpExecutor;
-import net.auscraft.BlivUtils.executors.VoteExecuter;
 import net.auscraft.BlivUtils.promotions.PromoteExecuter;
 import net.auscraft.BlivUtils.purchases.Broadcast;
+import net.auscraft.BlivUtils.purchases.Ender;
 import net.auscraft.BlivUtils.rewards.Rewards;
 import net.auscraft.BlivUtils.timed.TimedCommands;
 import net.auscraft.BlivUtils.utils.Utilities;
+import net.auscraft.BlivUtils.vote.Vote;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import ru.tehkode.permissions.PermissionManager;
@@ -37,7 +38,6 @@ public final class BlivUtils extends JavaPlugin
 {
 	private static HashMap<String, Integer> promoteCount = new HashMap<String, Integer>();
 	private static HashMap<String, String> colourSave = new HashMap<String, String>();
-	private HashMap<Player, Integer> nick;
 	private static PermissionManager pex;
 	private ConfigSetup configSetup;
 	private ConfigAccessor cfg;
@@ -73,7 +73,8 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("wstop").setExecutor(new GenericExecutor(this));
 		getCommand("servers").setExecutor(new GenericExecutor(this));
 		getCommand("purch").setExecutor(new Broadcast(this));
-		getCommand("voteprint").setExecutor(new VoteExecuter(this));
+		getCommand("enderrank").setExecutor(new Ender(this));
+		getCommand("voteprint").setExecutor(new Vote(this));
 		getCommand("timedadd").setExecutor(new TimedCommands(this));
 		getCommand("timeleft").setExecutor(new PromoteExecuter(this));
 		getCommand("prefix").setExecutor(new PromoteExecuter(this));
@@ -82,7 +83,6 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("promoadmin").setExecutor(new PromoteExecuter(this));
 		getCommand("updateadmin").setExecutor(new PromoteExecuter(this));
 		getCommand("updatetime").setExecutor(new PromoteExecuter(this));
-		//getCommand("onick").setExecutor(new Nicknames(this));
 		
 		//getServer().getPluginManager().registerEvents(new NicknameListener(this), this);
 		
@@ -190,47 +190,46 @@ public final class BlivUtils extends JavaPlugin
 			{
 				for (Player p : getServer().getOnlinePlayers())
 				{
-					PermissionUser entity = pex.getUser(p);
-					String rank = util.getActiveRank(p.getName());
-					if (rank != "")
+					PermissionUser user = pex.getUser(p);
+					String rankString = util.getActiveRanks(p.getName());
+					if (rankString != "")
 					{
-						if ((Integer.parseInt(entity.getOption("group-" + rank + "-until", null)) < (((int) (System.currentTimeMillis() / 1000L)))))
+						String ranks[] = rankString.split(",");
+						for(String rank : ranks)
 						{
-							entity.removeGroup(rank, null);
-							entity.setOption("group-" + rank + "-until", ""); // Reset the option's value so that the scheduler doesn't get past the first if.
-							Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),"mail send " + p.getName() + " Your " + rank + " has EXPIRED!");
-							//p.sendMessage(ChatColor.GOLD + "Your " + rank + " has " + ChatColor.DARK_RED + "EXPIRED!");
-							util.printInfo(p, ChatColor.GOLD + "Your " + rank + " has " + ChatColor.DARK_RED + "EXPIRED!");
-							util.logInfo("Player " + p.getName() + "'s " + rank + " has EXPIRED!");
+							if ((Integer.parseInt(user.getOption("group-" + rank + "-until", null)) < ((int) (System.currentTimeMillis() / 1000L))))
+							{
+								user.removeGroup(rank, null);
+								user.setOption("group-" + rank + "-until", ""); // Reset the option's value so that the scheduler doesn't get past the first if.
+								if(rank.equals("EnderRank"))
+								{
+									String EnderRankValue = user.getOption("EnderRankValue");
+									util.wipePackages(p.getName());
+									switch(EnderRankValue)
+									{
+										case "1":
+											rank = "Enderman";
+											break;
+										case "2":
+											rank = "EnderDragon";
+											break;
+										case "3":
+											rank = "Wither";
+											break;
+										default:
+											break;
+									}
+								}
+								Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),"mail send " + p.getName() + " Your " + rank + " has EXPIRED!");
+								util.printInfo(p, ChatColor.GOLD + "Your " + rank + " has " + ChatColor.DARK_RED + "EXPIRED!");
+								util.logInfo("Player " + p.getName() + "'s " + rank + " has EXPIRED!");
+							}
 						}
+						
 					}
 				}
 			}
 		}, 0L, looptime);
-	}
-	
-	public void nickScheduler()
-	{
-		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		scheduler.scheduleSyncRepeatingTask(this, new Runnable()
-		{
-			public void run()
-			{
-				//For each entry in the HashMap
-				for(Player p : Bukkit.getOnlinePlayers())
-				{
-					if(nick.get(p) != null)
-					{
-						p.sendMessage(ChatColor.DARK_AQUA + "You have a free one-time nickname change available!\n Type /onick");
-					}
-				}
-			}
-		}, 0L, 6000L);
-	}
-	
-	public void setNickMap(HashMap<Player, Integer> inNick)
-	{
-		nick = inNick;
 	}
 
 	public Permission setupPermissions()
@@ -277,11 +276,6 @@ public final class BlivUtils extends JavaPlugin
 	public Utilities getUtil()
 	{
 		return util;
-	}
-	
-	public HashMap<Player, Integer> getMap()
-	{
-		return nick;
 	}
 
 }

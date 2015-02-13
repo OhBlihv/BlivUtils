@@ -15,13 +15,28 @@ public class RewardContainer
 		name = inName;
 		action = inAction;
 		//If no enchants/lore on the item, don't set them up!
-		if((inEnchants != null))
+		try
 		{
-			enchantmentOpts = inEnchants;
+			if((inEnchants != null))
+			{
+				enchantmentOpts = inEnchants;
+			}
 		}
-		if(((inLore.equals("LEFT_BLANK")) || (inLore != null)))
+		catch(NullPointerException e)
 		{
-			lore = inLore;
+			enchantmentOpts = null;
+		}
+		
+		try
+		{
+			if(((inLore.equals("LEFT_BLANK")) || (inLore != null)))
+			{
+				lore = inLore;
+			}
+		}
+		catch(NullPointerException e)
+		{
+			enchantmentOpts = null;
 		}
 	}
 	

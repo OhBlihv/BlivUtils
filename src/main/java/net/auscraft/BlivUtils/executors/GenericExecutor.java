@@ -16,6 +16,7 @@ public class GenericExecutor implements CommandExecutor
 	
 	private Utilities util;
 	private BlivUtils b;
+	private final String serversHeader = ChatColor.GOLD + "- - - - - " + ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Servers Menu - - - - -\n";
 	
 	public GenericExecutor(BlivUtils instance)
 	{
@@ -112,7 +113,7 @@ public class GenericExecutor implements CommandExecutor
 			{
 				if(args[0].equalsIgnoreCase("Hub"))
 				{
-					sender.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Servers Menu - - - - -\n"
+					sender.sendMessage(serversHeader
 									+ ChatColor.GOLD + "Hub " + ChatColor.WHITE + "is the spawning location for every player.\n"
 									+ "   It contains portals to every available server, and acts as\n"
 									+ "   limbo during server restarts and downtime.\n"
@@ -121,7 +122,7 @@ public class GenericExecutor implements CommandExecutor
 				}
 				else if(args[0].equalsIgnoreCase("Survival"))
 				{
-					sender.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Servers Menu - - - - -\n"
+					sender.sendMessage(serversHeader
 									+ ChatColor.GOLD + "Survival " + ChatColor.WHITE + "is the main Survival world on AusCraft\n"
 									+ "   Providing a challenging but forgiving experience, the Survival\n"
 									+ "   server is equipped with many features to ease and enrich the vanilla experience.\n"
@@ -130,7 +131,7 @@ public class GenericExecutor implements CommandExecutor
 				}
 				else if(args[0].equalsIgnoreCase("Creative"))
 				{
-					sender.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Servers Menu - - - - -\n"
+					sender.sendMessage(serversHeader
 									+ ChatColor.GOLD + "Creative " + ChatColor.WHITE + "is the creative portion of AusCraft.\n"
 									+ "   Equipped with Freebuild and Large Protections.\n"
 									+ "   " + ChatColor.RED + "WARNING: " + ChatColor.WHITE + "Must be " + ChatColor.GREEN + "Sheep Rank" + ChatColor.WHITE + " or Higher! (/rank sheep)\n"
@@ -139,7 +140,7 @@ public class GenericExecutor implements CommandExecutor
 				}
 				else if(args[0].equalsIgnoreCase("Vanilla"))
 				{
-					sender.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Servers Menu - - - - -\n"
+					sender.sendMessage(serversHeader
 									+ ChatColor.GOLD + "Vanilla " + ChatColor.WHITE + "is a vanilla whitelist server.\n"
 									+ "   Providing the vanilla experience without any of the\n"
 									+ "   features of regular Survival, providing a tougher challenge.\n"
@@ -148,7 +149,7 @@ public class GenericExecutor implements CommandExecutor
 				}
 				else if(args[0].equalsIgnoreCase("Minigames"))
 				{
-					sender.sendMessage(ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Servers Menu - - - - -\n"
+					sender.sendMessage(serversHeader
 									+ ChatColor.GOLD + "Minigames " + ChatColor.WHITE + "is a currently unreleased server.\n"
 									+ "   Providing team based and solo games, Minigames\n"
 									+ "   is an enjoyable break from the other servers.\n"
@@ -172,7 +173,7 @@ public class GenericExecutor implements CommandExecutor
 	
 	private void printServerMenu(CommandSender sender)
 	{
-		sender.sendMessage(ChatColor.YELLOW + "- - - - - " + ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Servers Menu - - - - -\n"
+		sender.sendMessage(serversHeader
 							+ ChatColor.GRAY + "| " + ChatColor.WHITE + " - " + ChatColor.GREEN + "Hub\n"
 							+ ChatColor.DARK_GRAY + "| " + ChatColor.WHITE + " - " + ChatColor.GREEN + "Survival\n"
 							+ ChatColor.GRAY + "| " + ChatColor.WHITE + " - " + ChatColor.GREEN + "Creative\n"

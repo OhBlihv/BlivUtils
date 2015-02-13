@@ -32,19 +32,6 @@ public class ConfigSetup {
 			FileConfiguration a = getConfig();
 			saveDefaultConfig();
 			
-			//Setting up default.yml
-			//File f = new File(plugin.getDataFolder() + "default.yml");
-			//YamlConfiguration yamlFile = YamlConfiguration.loadConfiguration(f);
-			
-			/*try 
-			{
-				yamlFile.save(f);
-			}
-			catch(IOException e) 
-			{
-				 e.printStackTrace();
-			}*/
-			
 			if (a != null) 
 			{
 				success = true;

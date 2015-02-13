@@ -27,7 +27,7 @@ public class PromoteExecuter implements CommandExecutor
 
 	public PromoteExecuter(BlivUtils instance)
 	{
-		promoteCount = instance.getPromote();
+		promoteCount = BlivUtils.getPromote();
 		perms = instance.setupPermissions();
 		econ = instance.setupEconomy();
 		util = instance.getUtil();
@@ -37,7 +37,8 @@ public class PromoteExecuter implements CommandExecutor
 	{
 		if (cmd.getName().equalsIgnoreCase("buyrank") && (sender instanceof Player))
 		{
-			if (args.length == 0) {
+			if (args.length == 0)
+			{
 				ChatColor a = ChatColor.RED;
 				ChatColor b = a;
 				ChatColor c = a;
@@ -50,7 +51,7 @@ public class PromoteExecuter implements CommandExecutor
 				ChatColor e = ChatColor.STRIKETHROUGH;
 				ChatColor ee = ChatColor.STRIKETHROUGH;
 				
-				if (!sender.hasPermission("blivutils.promote.magmaslime")) 
+				if (!sender.hasPermission("blivutils.promote.magmaslime"))
 				{
 					a = ChatColor.STRIKETHROUGH;
 					aa = a;
@@ -116,79 +117,62 @@ public class PromoteExecuter implements CommandExecutor
 				return true;
 			}
 			
-			//TODO: Fix this up into one method with variable imports.
 			if (args.length > 0) 
 			{
-				if (args[0].equalsIgnoreCase("MagmaSlime"))
+				if(sender instanceof Player)
 				{
-					if (sender.hasPermission("blivutils.promote.magmaslime") && !sender.hasPermission("blivutils.promote.blaze") 
-							&& !sender.hasPermission("blivutils.promote.pigzombie")	&& !sender.hasPermission("blivutils.promote.ghast")
-							|| !(sender instanceof Player))
+					int rankValue = -1;
+					if((args[0].equalsIgnoreCase("MagmaSlime") && (sender.hasPermission("blivutils.promote.magmaslime"))))
 					{
-						Player player = (Player) sender;
-						rankQuery(player, 1);
-					} 
-					else 
-					{
-						util.printInfo(sender, ChatColor.GREEN + "You can't buy this at your rank! You can buy it at " + ChatColor.BLUE + "Ocelot");
-						return false;
+						rankValue = 1;
 					}
-				}
-				else if (args[0].equalsIgnoreCase("Blaze"))
-				{
-					if (sender.hasPermission("blivutils.promote.blaze")	&& !sender.hasPermission("blivutils.promote.pigzombie")	&& !sender.hasPermission("blivutils.promote.ghast")
-							|| !(sender instanceof Player)) 
+					else if((args[0].equalsIgnoreCase("Blaze") && (sender.hasPermission("blivutils.promote.blaze"))))
 					{
-						Player player = (Player) sender;
-						rankQuery(player, 2);
+						rankValue = 2;
 					}
-					else 
+					else if((args[0].equalsIgnoreCase("PigZombie") && (sender.hasPermission("blivutils.promote.pigzombie"))))
 					{
-						util.printInfo(sender, ChatColor.GREEN	+ "You can't buy this at your rank! You can buy it at " + ChatColor.RED + "MagmaSlime only!");
-						return false;
+						rankValue = 3;
 					}
-				}
-				else if (args[0].equalsIgnoreCase("PigZombie"))
-				{
-					if (sender.hasPermission("blivutils.promote.pigzombie")	&& !sender.hasPermission("blivutils.promote.ghast")	|| !(sender instanceof Player)) {
-						Player player = (Player) sender;
-						rankQuery(player, 3);
+					else if((args[0].equalsIgnoreCase("Ghast") && (sender.hasPermission("blivutils.promote.Ghast"))))
+					{
+						rankValue = 4;
+					}
+					else if((args[0].equalsIgnoreCase("Endermite") && (sender.hasPermission("blivutils.promote.done"))))
+					{
+						rankValue = 5;
+					}
+					
+					if(rankValue == -1)
+					{
+						String reqGroup = "";
+						if(args[0].equalsIgnoreCase("MagmaSlime"))
+						{
+							reqGroup = "Ocelot";
+						}
+						else if(args[0].equalsIgnoreCase("Blaze"))
+						{
+							reqGroup = "MagmaSlime";
+						}
+						else if(args[0].equalsIgnoreCase("PigZombie"))
+						{
+							reqGroup = "Blaze";
+						}
+						else if(args[0].equalsIgnoreCase("Ghast"))
+						{
+							reqGroup = "PigZombie";
+						}
+						else if(args[0].equalsIgnoreCase("Endermite"))
+						{
+							reqGroup = "Ghast";
+						}
+						
+						util.printError(sender, "You can't buy this at your rank! Required rank: " + reqGroup);
 					}
 					else
 					{
-						util.printInfo(sender, ChatColor.GREEN + "You can't buy this at your rank! You can buy it at " + ChatColor.RED + "Blaze");
-						return false;
+						rankQuery((Player) sender, rankValue);
 					}
-				}
-				else if (args[0].equalsIgnoreCase("Ghast"))
-				{
-					if (sender.hasPermission("blivutils.promote.ghast")	&& !sender.hasPermission("blivutils.promote.done") || !(sender instanceof Player)) {
-						Player player = (Player) sender;
-						rankQuery(player, 4);
-					} 
-					else
-					{
-						util.printInfo(sender, ChatColor.GREEN + "You can't buy this at your rank! You can buy it at " + ChatColor.RED + "PigZombie");
-						return false;
-					}
-				} 
-				else if (args[0].equalsIgnoreCase("Endermite")) 
-				{
-					if ((sender.hasPermission("blivutils.promote.done") || !(sender instanceof Player)))
-					{
-						Player player = (Player) sender;
-						rankQuery(player, 5);
-					} 
-					else 
-					{
-						util.printInfo(sender, ChatColor.GREEN + "You can't rent this at your rank! You can rent it at " + ChatColor.RED + "Ghast");
-						return false;
-					}
-				}
-				else
-				{
-					util.printInfo(sender, ChatColor.GREEN + "You didnt specify a valid rank!");
-					return false;
 				}
 			}
 		}
@@ -241,7 +225,7 @@ public class PromoteExecuter implements CommandExecutor
 						user.addGroup("Admin");
 						user.setOption("group-Admin-until", sLength);
 						util.printSuccess(sender, "Player " + args[0] + " promoted for " + numberPlusTimeframe);
-						util.logtoFile("Player " + args[0] + " promoted to Admin for " + numberPlusTimeframe);
+						util.logtoFile("Player " + args[0] + " promoted to Admin for " + numberPlusTimeframe, null);
 						return true;
 					}
 					else
@@ -288,7 +272,7 @@ public class PromoteExecuter implements CommandExecutor
 						user.setOption("group-Endermite-until", "1296000");
 					}
 					util.logInfo("Player " + sender.getName() + " has been promoted to " + rankString);
-					util.logtoFile("Player " + sender.getName() + " has been promoted to " + rankString);
+					util.logtoFile("Player " + sender.getName() + " has been promoted to " + rankString, null);
 					promoteCount.put(playerName, 0);
 					if ((rank != 5))
 					{
@@ -316,59 +300,123 @@ public class PromoteExecuter implements CommandExecutor
 
 		if (cmd.getName().equalsIgnoreCase("timeleft")) 
 		{
-			if (args.length == 0) // Self
-			{ 
-				Player p = (Player) sender;
-				String rank = util.getActiveRank(p.getName());
-				String outputMessage;
-
-				if (rank != "") 
+			// ------
+			String playerName = null;
+			boolean other = false;
+			try
+			{
+				if(args.length == 0) //Self Check
 				{
-					outputMessage = timeleftGeneric(p, rank, false);
-					sender.sendMessage(outputMessage);
-					return true;
-				} 
+					playerName = sender.getName();
+				}
+				else //Other player check
+				{
+					OfflinePlayer p = Bukkit.getOfflinePlayer(args[0]);
+					if(p.getName() != null)
+					{
+						playerName = p.getName();
+					}
+					other = true;
+				}
+			}
+			catch(NullPointerException e)
+			{
+				util.printError(sender, "Player requested does not exist.");
+			}
+				
+			String rank = util.getActiveRanks(playerName);
+			String packages = null;
+			if(rank.contains("EnderRank"))
+			{
+				packages = util.getActivePackages(playerName);
+			}
+			String outputMessage = "";
+
+			if (rank != "")
+			{
+				ChatColor colour = ChatColor.DARK_PURPLE;
+				String ranks[] = rank.split(",");
+				String packageString = "", packagePrefix = "";
+				for(String sRank : ranks)
+				{
+					String actualRank = sRank;
+					switch(sRank)
+					{
+						//Already purple.
+						//case Endermite:
+						//case Enderman:
+						case "EnderRank":
+							//Already Purple
+							util.logInfo("Is EnderRank");
+							String sPackages[] = packages.split(",");
+							util.logInfo(packages);
+							PermissionUser user = PermissionsEx.getUser(playerName);
+							//Change the rank based on the pex option
+							String EnderRankOption = user.getOption("EnderRankValue");
+							switch(EnderRankOption)
+							{
+								case "1":
+									sRank = "Enderman";
+									break;
+								case "2":
+									sRank = "EnderDragon";
+									colour = ChatColor.DARK_RED;
+									break;
+								case "3":
+									sRank = "Wither";
+									colour = ChatColor.DARK_GRAY;
+									break;
+								default:
+									break;
+							}
+							if((!packages.isEmpty()) && (other != true))
+							{
+								util.logInfo("Packages is not empty");
+								packagePrefix = ChatColor.GOLD + "Included Packages:\n ";
+								for(String sPackage : sPackages)
+								{
+									packageString += ChatColor.WHITE + "" + ChatColor.ITALIC + sPackage + "\n";
+								}
+								//Remove the trailing newline character
+								packageString = packageString.substring(0, (packageString.length() - 2));
+							}
+							
+							break;
+						case "EnderDragon": colour = ChatColor.DARK_RED;
+							break;
+						case "Admin": colour = ChatColor.GOLD;
+							break;
+						default: colour = ChatColor.DARK_PURPLE;
+							break;
+					}
+					
+					outputMessage += colour + sRank + timeleftGeneric(playerName, actualRank) + "\n" + packagePrefix + packageString;
+				}
+				if(!outputMessage.equals(""))
+				{
+					if(other == false)
+					{
+						sender.sendMessage(ChatColor.GREEN + "Timeleft on remaining ranks:\n" + outputMessage);
+					}
+					else
+					{
+						sender.sendMessage(ChatColor.GREEN + "Timeleft on remaining ranks for " + ChatColor.AQUA + playerName + ChatColor.GREEN + ":\n" + outputMessage);
+					}
+					
+					
+				}
 				else
 				{
 					util.printInfo(sender, ChatColor.GOLD + "You dont have an active rank!");
-					return true;
 				}
+				return true;
 			}
-			else if (args.length >= 1) // Other Player
+			else
 			{
-				if ((sender.hasPermission("blivutils.promote.admin.check")))
-				{
-					OfflinePlayer p = Bukkit.getOfflinePlayer(args[0]); // Shut up, I don't care for now.
-					
-					if (p != null) 
-					{
-						String rank = util.getActiveRank(p.getName());
-						String outputMessage;
-
-						if (rank != "")
-						{
-							outputMessage = timeleftGeneric(p, rank, true);
-							sender.sendMessage(outputMessage);
-							return true;
-						} 
-						else 
-						{
-							util.printInfo(sender, ChatColor.GOLD + p.getName()	+ " doesn't have an active rank!");
-							return true;
-						}
-					}
-					else 
-					{
-						util.printError(sender, ChatColor.RED + "Player does not exist!");
-					}
-				} 
-				else 
-				{
-					util.printError(sender, ChatColor.RED + "You don't have permission to check other player's time!");
-				}
+				util.printInfo(sender, ChatColor.GOLD + "You dont have an active rank!");
+				return true;
 			}
 		}
-		
 		
 		//This will grab the player's current rank timeleft, and add time to it.
 		//If the expiry date has already passed, or the rank was never active, it will not update.
@@ -393,11 +441,15 @@ public class PromoteExecuter implements CommandExecutor
 					}
 					else if(args[1].equalsIgnoreCase("EnderDragon"))
 					{
-						rank = "Enderdragon";
+						rank = "EnderDragon";
 					}
 					else if(args[1].equalsIgnoreCase("Admin"))
 					{
 						rank = "Admin";
+					}
+					else if(args[1].equalsIgnoreCase("EnderRank"))
+					{
+						rank = "EnderRank";
 					}
 					else
 					{
@@ -406,7 +458,7 @@ public class PromoteExecuter implements CommandExecutor
 						return true;
 					}
 					
-					int timeLeft = Integer.parseInt(user.getOption("group-" + rank + "-until"));
+					int timeLeft = util.getRankTime(args[0], rank);
 					int length = 0;
 					String timeFormat = "";
 
@@ -414,16 +466,16 @@ public class PromoteExecuter implements CommandExecutor
 					{
 						try
 						{
-						// Seconds multiplied by that smaller number to get args[1] day(s)
-						length = (Integer.parseInt(args[2])) * 86400;
-						if (args[2] == "1")
-						{
-							timeFormat = "1 day";
-						} 
-						else 
-						{
-							timeFormat = args[2] + " days";
-						}
+							// Seconds multiplied by that smaller number to get args[1] day(s)
+							length = (Integer.parseInt(args[2])) * 86400;
+							if (args[2] == "1")
+							{
+								timeFormat = "1 day";
+							} 
+							else 
+							{
+								timeFormat = args[2] + " days";
+							}
 						}
 						catch(NumberFormatException e)
 						{
@@ -433,34 +485,49 @@ public class PromoteExecuter implements CommandExecutor
 					} 
 					else if (args[3].contains("month")) 
 					{
-						// Seconds multiplied by that giant number to get args[1] month(s)
-						length = (Integer.parseInt(args[1])) * 2592000;
-						if (args[1] == "1")
+						try
 						{
-							timeFormat = "1 month";
+							// Seconds multiplied by that giant number to get args[1] month(s)
+							length = (Integer.parseInt(args[2])) * 2592000;
+							if (args[2] == "1")
+							{
+								timeFormat = "1 month";
+							}
+							else
+							{
+								timeFormat = args[2] + " months";
+							}
 						}
-						else
+						catch(NumberFormatException e)
 						{
-							timeFormat = args[1] + " months";
+							util.printError(sender, "Invalid Format");
+							return false;
 						}
 					}
 
-					timeLeft += length;
-					String sTimeLeft = "" + timeLeft;
-					
-					if(util.getTimeLeft(sender.getName(), rank) > 0)
+					if(util.getTimeLeft(args[0], rank) > 0)
 					{
+						timeLeft += length;
+						String sTimeLeft = "" + timeLeft;
 						user.setOption("group-" + rank + "-until", sTimeLeft);
+						if(rank.equals("EnderRank"))
+						{
+							util.updatePackages(args[0], sTimeLeft);
+						}
 						util.printSuccess(sender, ChatColor.GREEN + "Updated " + args[0] + "'s " + rank + " time by " + timeFormat);
 						return true;
 					}
 					else
 					{
-						util.printError(sender, args[0] + "'s rank has expired!");
+						user.setOption("group-" + rank + "-until", "" + length);
+						if(rank.equals("EnderRank"))
+						{
+							util.updatePackages(args[0], "" + length);
+						}
+						util.printSuccess(sender, ChatColor.GREEN + "Updated " + args[0] + "'s " + rank + " time by " + timeFormat);
+						//util.printError(sender, args[0] + "'s rank has expired!");
 						return true;
 					}
-					
-
 				} 
 				else 
 				{
@@ -536,7 +603,7 @@ public class PromoteExecuter implements CommandExecutor
 						user.setPrefix(enteredPrefix, null);
 						sender.sendMessage(successfulSet + ChatColor.WHITE + util.translateColours(enteredPrefix));
 						util.logInfo(playerName + "'s prefix has been set to " + enteredPrefix);
-						util.logtoFile(playerName + "'s prefix has been set to " + enteredPrefix);
+						util.logtoFile(playerName + "'s prefix has been set to " + enteredPrefix, null);
 						return true;
 					} 
 					else // Prefix tags not included.
@@ -598,10 +665,10 @@ public class PromoteExecuter implements CommandExecutor
 		return numberPlusTimeframe;
 	}
 
-	private String timeleftGeneric(OfflinePlayer p, String rank, boolean otherPlayer) // Oh man, he just used a control flag. Raise the pitchforks.
+	private String timeleftGeneric(String player, String rank) // Oh man, he just used a control flag. Raise the pitchforks.
 	{
-		int allseconds = util.getTimeLeft(p.getName(), rank);
-		String timeString = "", otherPlayerString = "", print;
+		int allseconds = util.getTimeLeft(player, rank);
+		String timeString = "", print;
 
 		// Just shamelessly ripped this code, I don't even care:
 		// http://stackoverflow.com/questions/11357945/java-convert-seconds-into-day-hour-minute-and-seconds-using-timeunit
@@ -617,46 +684,45 @@ public class PromoteExecuter implements CommandExecutor
 			// String them together, then cut them down if they're 0
 			if (day != 0)
 			{
-				timeString += day + "Day (s) ";
+				timeString += day + " Day";
+				if(day > 1)
+				{
+					timeString += "s";
+				}
 			}
 			if (hour != 0)
 			{
-				timeString += hour + " Hour(s) ";
+				timeString += " " + hour + " Hour";
+				if(hour > 1)
+				{
+					timeString += "s";
+				}
 			}
 			if (minute != 0) 
 			{
-				timeString += minute + " Minutes(s) ";
+				timeString += " " + minute + " Minute";
+				if(minute > 1)
+				{
+					timeString += "s";
+				}
 			}
-			if (second != 0) 
+			if (minute == 0) 
 			{
-				timeString += second + " Second(s) ";
-			}
-
-			if (otherPlayer) // Flag if the check is for the player themselves, or another player. If so, change the output.
-			{
-				otherPlayerString = ChatColor.DARK_GREEN + " for " + ChatColor.GREEN + p.getName();
+				timeString += " " + second + " Second";
+				if(second > 1)
+				{
+					timeString += "s";
+				}
 			}
 
 			// String print = ChatColor.GOLD + "" + days + hours + minutes + seconds + ChatColor.DARK_GREEN + "\nRemaining of " + ChatColor.GREEN + rank;
-			print = ChatColor.GOLD + "" + timeString + ChatColor.DARK_GREEN + "\nRemaining of " + ChatColor.GREEN + rank + otherPlayerString;
+			print = ": " + ChatColor.WHITE + "" + timeString;
 		}
 		else 
 		{
-			print = ChatColor.RED + "Your rank has expired!";
+			print = "";
 		}
 		return print;
-	}
-
-	// Rank Values
-	// 1 = MagmaSlime
-	// 2 = Blaze
-	// 3 = PigZombie
-	// 4 = Ghast
-	// 5 = Endermite
-	private void changePlayerState(Player player, Integer rank)
-	{
-		String playerName = player.getName();
-		promoteCount.put(playerName, rank);
 	}
 
 	private String getRankName(int rank)
@@ -692,30 +758,19 @@ public class PromoteExecuter implements CommandExecutor
 
 	private double getRankPrice(int rank)
 	{
-		int price = 0;
-		if (rank == 1)
+		double price = 0.0;
+		switch(rank)
 		{
-			price = 25000;
-		} 
-		else if (rank == 2)
-		{
-			price = 50000;
-		}
-		else if (rank == 3) 
-		{
-			price = 75000;
-		}
-		else if (rank == 4)
-		{
-			price = 100000;
-		} 
-		else if (rank == 5) 
-		{
-			price = 100000;
-		} 
-		else 
-		{
-			price = -1;
+			case 1: price = 25000.0;
+			break;
+			case 2: price = 50000.0;
+			break;
+			case 3: price = 75000.0;
+			break;
+			case 4: case 5: price = 10000.0;
+			break;
+			default: price = -1.0;
+			break;
 		}
 		return price;
 	}
@@ -760,14 +815,13 @@ public class PromoteExecuter implements CommandExecutor
 
 	private boolean checkifNull(Player player) 
 	{
-		boolean a = true;
 		if (perms == null || econ == null)
 		{
 			player.sendMessage("Whoops! Report this to the Musketeers.");
 			util.logSevere("Permissions or Economy Null -- Restart Vault/BlivUtils.");
-			a = false;
+			return false;
 		}
-		return a;
+		return true;
 	}
 
 	private boolean rankQuery(Player player, int rank) 
@@ -782,16 +836,16 @@ public class PromoteExecuter implements CommandExecutor
 			}
 			else if ((rank == 1) || (rank == 2) || (rank == 3) || (rank == 4)) 
 			{
-				player.sendMessage("Sure you want to spend " + price + ChatColor.RESET + " on " + ChatColor.RED + rankName + "?");
-				player.sendMessage("Type " + ChatColor.GREEN + "/promoteme"	+ ChatColor.RESET + " to Accept");
-				changePlayerState(player, rank);
+				player.sendMessage("Sure you want to spend " + price + ChatColor.RESET + " on " + ChatColor.RED + rankName + "?"
+								+ "Type " + ChatColor.GREEN + "/promoteme"	+ ChatColor.RESET + " to Accept");
+				promoteCount.put(player.getName(), rank);
 				return true;
 			}
 			else if (rank == 5)
 			{
-				player.sendMessage("Sure you want to spend " + price + ChatColor.RESET + " on " + ChatColor.DARK_PURPLE	+ rankName + " (15 Days)?");
-				player.sendMessage("Type " + ChatColor.GREEN + "/promoteme"	+ ChatColor.RESET + " to Accept");
-				changePlayerState(player, rank);
+				player.sendMessage("Sure you want to spend " + price + ChatColor.RESET + " on " + ChatColor.DARK_PURPLE	+ rankName + " (15 Days)?"
+								+ "Type " + ChatColor.GREEN + "/promoteme"	+ ChatColor.RESET + " to Accept");
+				promoteCount.put(player.getName(), rank);
 				return true;
 			} 
 			else 
