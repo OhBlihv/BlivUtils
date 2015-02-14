@@ -58,9 +58,6 @@ commands:
   voteprint:
     description: 'Prints out a vote message, nicely formatted and translated'
     usage: 'Usage: /<command> <name> <reward> <service>'
-  voteparty:
-    description: 'Starts a vote party, where bonus rewards are more likely to drop'
-    usage: 'Usage: /<command> [chance]'
   timedadd:
     description: 'Adds a command to a player for a defined amount of time'
     usage: 'Usage: /<command> <player> <time> <second[s]/minute[s]/hour[s]/day[s]> <command>'

@@ -499,11 +499,6 @@ public class Utilities {
 		b.getServer().getConsoleSender().sendMessage(prefix + ChatColor.DARK_RED + "ERROR: " + ChatColor.RED + message);
 	}
 	
-	public void logDebug(String message)
-	{
-		b.getServer().getConsoleSender().sendMessage(prefix + ChatColor.GREEN + "DEBUG: " + ChatColor.RED + message);
-	}
-	
 	public void logSevere(String message)
 	{
 		b.getServer().getConsoleSender().sendMessage(prefix + ChatColor.DARK_RED + "SEVERE: " + ChatColor.RED + message);

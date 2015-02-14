@@ -53,10 +53,10 @@ public class Nicknames
 				colour = ChatColor.DARK_AQUA; //&9?
 				break;
 			case 3:
-				colour = ChatColor.DARK_GREEN; //&2
+				colour = ChatColor.DARK_GRAY; //&8
 				break;
 			case 4:
-				colour = ChatColor.YELLOW; //&e
+				colour = ChatColor.DARK_GREEN; //&2
 				break;
 			case 5:
 				colour = ChatColor.DARK_PURPLE; //&5
@@ -81,6 +81,9 @@ public class Nicknames
 				break;
 			case 12:
 				colour = ChatColor.WHITE; //&f
+				break;
+			case 13:
+				colour = ChatColor.YELLOW; //&e
 				break;
 		}
 		
