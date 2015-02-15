@@ -39,8 +39,14 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public final class BlivUtils extends JavaPlugin
 {
+	//Temporary storage
 	private static HashMap<String, Integer> promoteCount = new HashMap<String, Integer>();
 	private static HashMap<String, String> colourSave = new HashMap<String, String>();
+	
+	//Ender Rank bonuses (Temporary Storage)
+	private static HashMap<String, Boolean> xpClaim = new HashMap<String, Boolean>();
+	private static HashMap<String, Boolean> fixClaim = new HashMap<String, Boolean>();
+	
 	private static PermissionManager pex;
 	private ConfigSetup configSetup;
 	private ConfigAccessor cfg;
@@ -78,6 +84,9 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("wstop").setExecutor(new GenericExecutor(this));
 		getCommand("servers").setExecutor(new GenericExecutor(this));
 		getCommand("purch").setExecutor(new Broadcast(this));
+		getCommand("lore").setExecutor(new Ender(this));
+		getCommand("xpClaim").setExecutor(new Ender(this));
+		getCommand("fixClaim").setExecutor(new Ender(this));
 		getCommand("enderrank").setExecutor(new Ender(this));
 		getCommand("voteprint").setExecutor(new Vote(this));
 		getCommand("voteparty").setExecutor(new Vote(this));
@@ -265,6 +274,16 @@ public final class BlivUtils extends JavaPlugin
 	public HashMap<String, String> getSuffixColour() 
 	{
 		return colourSave;
+	}
+	
+	public HashMap<String, Boolean> getXPClaim() 
+	{
+		return xpClaim;
+	}
+	
+	public HashMap<String, Boolean> getFixClaim() 
+	{
+		return fixClaim;
 	}
 
 	public BlivUtils getPlugin()

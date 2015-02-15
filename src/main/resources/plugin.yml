@@ -13,6 +13,13 @@ commands:
   purch:
     description: 'A printout of the recent purchase on the AusCraft Store. (CONSOLE)'
     usage: 'Usage: /<command> <string>'
+  lore:
+    description: 'Edit/Remove the lore and name of a held item'
+    usage: 'Usage: /<command> <string>'
+  fixClaim:
+    description: 'Adds a once a restart item fix'
+  xpClaim:
+    description: 'Adds a once a restart xp claim'
   enderrank:
     description: 'Adds a package to a players account on purchase of the Ender Rank (CONSOLE)'
     usage: 'Usage: /<command> <player> <package>'

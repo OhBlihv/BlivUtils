@@ -462,7 +462,49 @@ public class PromoteExecuter implements CommandExecutor
 					int length = 0;
 					String timeFormat = "";
 
-					if (args[3].contains("day"))
+					if (args[3].contains("minute"))
+					{
+						try
+						{
+							// Seconds multiplied by that smaller number to get args[1] day(s)
+							length = (Integer.parseInt(args[2])) * 60;
+							if (args[2] == "1")
+							{
+								timeFormat = "1 minute";
+							} 
+							else 
+							{
+								timeFormat = args[2] + " minutes";
+							}
+						}
+						catch(NumberFormatException e)
+						{
+							util.printError(sender, "Invalid Format");
+							return false;
+						}
+					} 
+					else if (args[3].contains("hour"))
+					{
+						try
+						{
+							// Seconds multiplied by that smaller number to get args[1] day(s)
+							length = (Integer.parseInt(args[2])) * 3600;
+							if (args[2] == "1")
+							{
+								timeFormat = "1 hour";
+							} 
+							else 
+							{
+								timeFormat = args[2] + " hours";
+							}
+						}
+						catch(NumberFormatException e)
+						{
+							util.printError(sender, "Invalid Format");
+							return false;
+						}
+					} 
+					else if (args[3].contains("day"))
 					{
 						try
 						{
@@ -510,21 +552,13 @@ public class PromoteExecuter implements CommandExecutor
 						timeLeft += length;
 						String sTimeLeft = "" + timeLeft;
 						user.setOption("group-" + rank + "-until", sTimeLeft);
-						if(rank.equals("EnderRank"))
-						{
-							util.updatePackages(args[0], sTimeLeft);
-						}
 						util.printSuccess(sender, ChatColor.GREEN + "Updated " + args[0] + "'s " + rank + " time by " + timeFormat);
 						return true;
 					}
 					else
 					{
 						user.setOption("group-" + rank + "-until", "" + length);
-						if(rank.equals("EnderRank"))
-						{
-							util.updatePackages(args[0], "" + length);
-						}
-						util.printSuccess(sender, ChatColor.GREEN + "Updated " + args[0] + "'s " + rank + " time by " + timeFormat);
+						util.printSuccess(sender, ChatColor.GREEN + "Set " + args[0] + "'s " + rank + " to " + timeFormat);
 						//util.printError(sender, args[0] + "'s rank has expired!");
 						return true;
 					}
