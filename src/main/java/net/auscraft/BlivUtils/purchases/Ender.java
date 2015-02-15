@@ -68,6 +68,7 @@ public class Ender implements CommandExecutor
 				case "EnderTrailsSET1": case "EnderTrailsSET2": case "EnderTrailsALL":
 				case "EnderDisguisesPassive": case "EnderDisguisesHostile": case "EnderDisguisesALL": case "EnderDisguisesALLEntity":
 				case "EnderCooldowns": case "EnderWarps":
+				case "EnderDoubleXP": case "EnderKeepInv": case "EnderKeepLevel": case "EnderDoubleXPKeepALL":
 				case "mcMMOSmall": case "mcMMOMedium": case "mcMMOLarge":
 					PermissionUser user = PermissionsEx.getUser(args[0]);
 					user.setOption("group-" + args[1] + "-until", "2592000");
@@ -80,14 +81,6 @@ public class Ender implements CommandExecutor
 				}
 				
 			}
-			//Stay silent, otherwise console will be spammed if a player doesnt use a variable
-			/*
-			else
-			{
-				util.printError(sender, "Invalid Syntax: /enderrank <player> <package>");
-			}
-			*/
-			
 			return true;
 		}
 		return false;

@@ -19,6 +19,8 @@ import net.auscraft.BlivUtils.credits.CreditManager;
 import net.auscraft.BlivUtils.executors.ColourExecutor;
 import net.auscraft.BlivUtils.executors.GenericExecutor;
 import net.auscraft.BlivUtils.executors.RankHelpExecutor;
+import net.auscraft.BlivUtils.listeners.DeathListener;
+import net.auscraft.BlivUtils.listeners.XPListener;
 import net.auscraft.BlivUtils.promotions.PromoteExecuter;
 import net.auscraft.BlivUtils.purchases.Broadcast;
 import net.auscraft.BlivUtils.purchases.Ender;
@@ -26,6 +28,7 @@ import net.auscraft.BlivUtils.rewards.Rewards;
 import net.auscraft.BlivUtils.timed.TimedCommands;
 import net.auscraft.BlivUtils.utils.Utilities;
 import net.auscraft.BlivUtils.vote.Vote;
+import net.auscraft.BlivUtils.vote.VoteManager;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import ru.tehkode.permissions.PermissionManager;
@@ -43,6 +46,7 @@ public final class BlivUtils extends JavaPlugin
 	private ConfigAccessor cfg;
 	private Utilities util;
 	private FileConfiguration configFile;
+	private VoteManager voteMan;
 
 
 	@Override
@@ -56,6 +60,7 @@ public final class BlivUtils extends JavaPlugin
 		configSetup = new ConfigSetup(this);
 		configFile = configSetup.getConfig();
 		cfg = new ConfigAccessor(this);
+		voteMan = new VoteManager(this);
 		// Scheduling
 		util.checkRankScheduler();
 		//MySQL Setup
@@ -75,6 +80,7 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("purch").setExecutor(new Broadcast(this));
 		getCommand("enderrank").setExecutor(new Ender(this));
 		getCommand("voteprint").setExecutor(new Vote(this));
+		getCommand("voteparty").setExecutor(new Vote(this));
 		getCommand("timedadd").setExecutor(new TimedCommands(this));
 		getCommand("timeleft").setExecutor(new PromoteExecuter(this));
 		getCommand("prefix").setExecutor(new PromoteExecuter(this));
@@ -84,7 +90,10 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("updateadmin").setExecutor(new PromoteExecuter(this));
 		getCommand("updatetime").setExecutor(new PromoteExecuter(this));
 		
+		//Listeners
 		//getServer().getPluginManager().registerEvents(new NicknameListener(this), this);
+		getServer().getPluginManager().registerEvents(new XPListener(this), this);
+		getServer().getPluginManager().registerEvents(new DeathListener(this), this);
 		
 		//Toggleable commands
 		int toggle[] = cfg.getEnabledCommands();
@@ -261,6 +270,11 @@ public final class BlivUtils extends JavaPlugin
 	public BlivUtils getPlugin()
 	{
 		return this;
+	}
+	
+	public VoteManager getVoteManager()
+	{
+		return voteMan;
 	}
 	
 	public ConfigSetup getConfigSetup()
