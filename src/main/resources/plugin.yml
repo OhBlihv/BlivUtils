@@ -20,9 +20,14 @@ commands:
     description: 'Adds a once a restart item fix'
   xpClaim:
     description: 'Adds a once a restart xp claim'
+  enderperm:
+    description: 'Adds the individual perms for upgrading Ender rank'
+    usage: 'Usage: /<command> <add|remove> <player> <package>'
   enderrank:
     description: 'Adds a package to a players account on purchase of the Ender Rank (CONSOLE)'
     usage: 'Usage: /<command> <player> <package>'
+  health:
+    description: 'A toggle between the default max health and the Ender rank max health'
   wstop:
     description: 'Adds a delay to the /stop command. (Console Only!)'
     usage: 'Usage in Console: /<command>'

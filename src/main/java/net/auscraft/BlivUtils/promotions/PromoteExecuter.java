@@ -303,6 +303,7 @@ public class PromoteExecuter implements CommandExecutor
 			// ------
 			String playerName = null;
 			boolean other = false;
+			boolean bypassother = false;
 			try
 			{
 				if(args.length == 0) //Self Check
@@ -317,6 +318,11 @@ public class PromoteExecuter implements CommandExecutor
 						playerName = p.getName();
 					}
 					other = true;
+					if(sender.hasPermission("blivutils.timeleft.bypass"))
+					{
+						bypassother = true;
+					}
+					
 				}
 			}
 			catch(NullPointerException e)
@@ -369,7 +375,7 @@ public class PromoteExecuter implements CommandExecutor
 								default:
 									break;
 							}
-							if((!packages.isEmpty()) && (other != true))
+							if(((!packages.isEmpty()) && bypassother == true) || ((!packages.isEmpty()) && (other != true)))
 							{
 								util.logInfo("Packages is not empty");
 								packagePrefix = ChatColor.GOLD + "Included Packages:\n ";

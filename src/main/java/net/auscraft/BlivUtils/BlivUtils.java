@@ -20,6 +20,7 @@ import net.auscraft.BlivUtils.executors.ColourExecutor;
 import net.auscraft.BlivUtils.executors.GenericExecutor;
 import net.auscraft.BlivUtils.executors.RankHelpExecutor;
 import net.auscraft.BlivUtils.listeners.DeathListener;
+import net.auscraft.BlivUtils.listeners.HealthListener;
 import net.auscraft.BlivUtils.listeners.XPListener;
 import net.auscraft.BlivUtils.promotions.PromoteExecuter;
 import net.auscraft.BlivUtils.purchases.Broadcast;
@@ -87,7 +88,9 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("lore").setExecutor(new Ender(this));
 		getCommand("xpClaim").setExecutor(new Ender(this));
 		getCommand("fixClaim").setExecutor(new Ender(this));
+		getCommand("enderperm").setExecutor(new Ender(this));
 		getCommand("enderrank").setExecutor(new Ender(this));
+		getCommand("health").setExecutor(new HealthListener(this));
 		getCommand("voteprint").setExecutor(new Vote(this));
 		getCommand("voteparty").setExecutor(new Vote(this));
 		getCommand("timedadd").setExecutor(new TimedCommands(this));
@@ -103,6 +106,7 @@ public final class BlivUtils extends JavaPlugin
 		//getServer().getPluginManager().registerEvents(new NicknameListener(this), this);
 		getServer().getPluginManager().registerEvents(new XPListener(this), this);
 		getServer().getPluginManager().registerEvents(new DeathListener(this), this);
+		getServer().getPluginManager().registerEvents(new HealthListener(this), this);
 		
 		//Toggleable commands
 		int toggle[] = cfg.getEnabledCommands();
@@ -230,9 +234,11 @@ public final class BlivUtils extends JavaPlugin
 											break;
 										case "2":
 											rank = "EnderDragon";
+											Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "enderperm remove " + p.getName() + " EnderDragon");
 											break;
 										case "3":
 											rank = "Wither";
+											Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "enderperm remove " + p.getName() + " Wither");
 											break;
 										default:
 											break;

@@ -86,6 +86,7 @@ public class Broadcast implements CommandExecutor
 						{
 							user.setPrefix("&7[&4EnderDragon&7] ", null);
 						}
+						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "enderperm add " + args[1] + " EnderDragon");
 						packageName = ChatColor.DARK_RED + "EnderDragon";
 						user.setOption("EnderRankValue", "2");
 					}
@@ -96,6 +97,7 @@ public class Broadcast implements CommandExecutor
 						{
 							user.setPrefix("&7[&8Wither&7] ", null);
 						}
+						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "enderperm add " + args[1] + " Wither");
 						packageName = ChatColor.DARK_GRAY + "Wither";
 						user.setOption("EnderRankValue", "3");
 					}

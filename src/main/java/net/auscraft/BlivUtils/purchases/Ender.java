@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-
 import net.auscraft.BlivUtils.BlivUtils;
 import net.auscraft.BlivUtils.utils.Utilities;
 
@@ -195,7 +194,7 @@ public class Ender implements CommandExecutor
 			return true;
 		}
 		//Once a day xp claim
-		else if (cmd.getName().equalsIgnoreCase("xpclaim") && (sender.hasPermission("blivutils.ender.xpclaim")))
+		else if (cmd.getName().equalsIgnoreCase("xpClaim") && (sender.hasPermission("blivutils.ender.xpclaim")))
 		{
 			if(!(xpClaim.containsKey(sender.getName())))
 			{
@@ -210,7 +209,7 @@ public class Ender implements CommandExecutor
 			
 		}
 		//Once a day item fix
-		else if (cmd.getName().equalsIgnoreCase("fixClaim")	&& (sender.hasPermission("blivutils.purch")))
+		else if (cmd.getName().equalsIgnoreCase("fixClaim")	&& (sender.hasPermission("blivutils.ender.fixclaim")))
 		{
 			if(!(fixClaim.containsKey(sender.getName())))
 			{
@@ -238,6 +237,101 @@ public class Ender implements CommandExecutor
 			{
 				util.printError(sender, "You've already redeemed your free item fix today! Come back tomorrow.");
 			}
+		}
+		//Ender rank upgrade clumping
+		//Adds the per-rank upgrades in one simple command
+		else if (cmd.getName().equalsIgnoreCase("enderperm")	&& (sender.hasPermission("blivutils.purch"))) //Only for Console
+		{
+			/*
+		    EnderDragon $15-$29.99
+			/firework
+			Once a Restart /fixclaim (DONE)
+			Once a Restart /xpclaim (DONE)
+			30HP (1 1/2 Bars)
+
+			Wither $30.00+
+			/lore (Add lore or a name to a weapon) (DONE)
+			40HP (2 Bars)
+			 */
+			
+			// /enderperm <add|remove> <player> <rank>
+			if(args.length >= 2)
+			{
+				if(args[0].equalsIgnoreCase("add"))
+				{
+					PermissionUser user = PermissionsEx.getUser(args[1]);
+					if(user != null)
+					{
+						if(args[2].equalsIgnoreCase("EnderDragon"))
+						{
+							user.addPermission("blivutils.ender.fixclaim");
+							user.addPermission("blivutils.ender.xpclaim");
+							user.addPermission("essentials.firework.*");
+							user.addPermission("blivutils.ender.hearts.oneandahalf");
+						}
+						else if(args[2].equalsIgnoreCase("Wither"))
+						{
+							user.addPermission("blivutils.ender.fixclaim");
+							user.addPermission("blivutils.ender.xpclaim");
+							user.addPermission("essentials.firework.*");
+							user.addPermission("blivutils.ender.hearts.oneandahalf");
+							user.addPermission("blivutils.ender.lore");
+							user.addPermission("blivutils.ender.hearts.oneandahalf");
+						}
+						else
+						{
+							util.printError(sender, "That rank does not exist for this command");
+						}
+						return true;
+					}
+					else
+					{
+						util.printError(sender, "Player does not exist");
+						return true;
+					}
+					
+				}
+				else if(args[0].equalsIgnoreCase("remove"))
+				{
+					PermissionUser user = PermissionsEx.getUser(args[1]);
+					if(user != null)
+					{
+						if(args[2].equalsIgnoreCase("EnderDragon"))
+						{
+							user.removePermission("blivutils.ender.fixclaim");
+							user.removePermission("blivutils.ender.xpclaim");
+							user.removePermission("essentials.firework.*");
+							user.removePermission("blivutils.ender.hearts.oneandahalf");
+						}
+						else if(args[2].equalsIgnoreCase("Wither"))
+						{
+							user.removePermission("blivutils.ender.fixclaim");
+							user.removePermission("blivutils.ender.xpclaim");
+							user.removePermission("essentials.firework.*");
+							user.removePermission("blivutils.ender.hearts.oneandahalf");
+							user.removePermission("blivutils.ender.lore");
+							user.removePermission("blivutils.ender.hearts.oneandahalf");
+						}
+						else
+						{
+							util.printError(sender, "That rank does not exist for this command");
+						}
+						return true;
+					}
+					else
+					{
+						util.printError(sender, "Player does not exist");
+						return true;
+					}
+				}
+			}
+			else
+			{
+				util.printError(sender, "/enderperm <add|remove> <player> <rank>");
+				return true;
+			}
+			
+			
 		}
 		//Base ender rank command
 		else if (cmd.getName().equalsIgnoreCase("enderrank")	&& (sender.hasPermission("blivutils.purch"))) //Only for Console
@@ -327,6 +421,10 @@ public class Ender implements CommandExecutor
 				util.updatePackages(args[0], args[1], args[2]);
 			}
 			return true;
+		}
+		else
+		{
+			util.printError(sender, "You don't have permission to use that Ender Rank perk!");
 		}
 		return false;
 	}
