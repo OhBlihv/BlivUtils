@@ -28,6 +28,7 @@ public class Vote implements CommandExecutor
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) 
 	{
+		
 		/*
 		 * Vote Party Trigger Command
 		 * Gives a higher chance of bonus rewards from voting

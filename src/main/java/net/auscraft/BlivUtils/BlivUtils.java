@@ -25,6 +25,7 @@ import net.auscraft.BlivUtils.listeners.XPListener;
 import net.auscraft.BlivUtils.promotions.PromoteExecuter;
 import net.auscraft.BlivUtils.purchases.Broadcast;
 import net.auscraft.BlivUtils.purchases.Ender;
+import net.auscraft.BlivUtils.rewards.RewardContainer;
 import net.auscraft.BlivUtils.rewards.Rewards;
 import net.auscraft.BlivUtils.timed.TimedCommands;
 import net.auscraft.BlivUtils.utils.Utilities;
@@ -251,6 +252,23 @@ public final class BlivUtils extends JavaPlugin
 						}
 						
 					}
+				}
+			}
+		}, 0L, looptime);
+	}
+	
+	public void doVoteRewardCheck()
+	{
+		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+		String unit = cfg.getString("options.scheduler.unit");
+		int looptime = util.getConversion(unit, "options.scheduler.time");
+		scheduler.scheduleSyncRepeatingTask(this, new Runnable()
+		{
+			public void run()
+			{
+				for(String player : voteMan.getUnclaimedRewards())
+				{
+					util.printInfo(Bukkit.getPlayer(player), ChatColor.GREEN + "You have an unclaimed voting reward! Type " + ChatColor.AQUA + "/voteclaim" + ChatColor.GREEN + " to claim");
 				}
 			}
 		}, 0L, looptime);

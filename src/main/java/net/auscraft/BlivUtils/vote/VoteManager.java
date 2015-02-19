@@ -1,11 +1,14 @@
 package net.auscraft.BlivUtils.vote;
 
+import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -15,7 +18,7 @@ import net.auscraft.BlivUtils.BlivUtils;
 import net.auscraft.BlivUtils.rewards.RewardContainer;
 import net.auscraft.BlivUtils.utils.Utilities;
 
-public class VoteManager 
+public class VoteManager implements CommandExecutor
 {
 
 	private final String bar = ChatColor.YELLOW + "------ " + ChatColor.DARK_AQUA + ChatColor.BOLD + "Aus" + ChatColor.WHITE + ChatColor.BOLD + "Vote" + ChatColor.YELLOW + " ------------------------------------\n";
@@ -24,6 +27,7 @@ public class VoteManager
 	private int rewardChance;
 	private int nextTrigger;
 	private RewardContainer[] voteRewards = new RewardContainer[6];
+	private static HashMap<String, RewardContainer> voteClaim = new HashMap<String, RewardContainer>();
 	
 	public VoteManager(BlivUtils instance)
 	{
@@ -42,6 +46,30 @@ public class VoteManager
 		voteRewards[5] = new RewardContainer(10.0, "&bMob Spawner!", "/give % 52 1", null, null);
 		//MageStone
 		voteRewards[6] = new RewardContainer(5.0, "&6MageStone!", "/give % 99 1", null, null);
+	}
+	
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) 
+	{
+		if(cmd.getName().equalsIgnoreCase("voteclaim"))
+		{
+			if(voteClaim.containsKey(sender.getName()))
+			{
+				RewardContainer reward = voteClaim.get(sender.getName());
+				String action = reward.getAction().substring(1, reward.getAction().length());
+				action = action.replaceAll("%", sender.getName()); //Replace % with players name
+				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), action);
+				util.logInfo("Command: '" + action + "'");
+				util.printSuccess(sender, "Reward " + reward.getName() + " has been added to your inventory");
+				voteClaim.remove(sender.getName());
+			}
+			else
+			{
+				util.printError(sender, "You don't have any unclaimed rewards!");
+			}
+			return true;
+		}
+		return true;
 	}
 	
 	public boolean voteParty(CommandSender sender, Command cmd, String label, String args[])
@@ -212,7 +240,9 @@ public class VoteManager
 					}
 				}
 			}
-			giveReward((CommandSender) player, rolledReward);
+			voteClaim.put(player.getName(), rolledReward);
+			
+			//giveReward((CommandSender) player, rolledReward);
 		}
 		/*else
 		{
@@ -226,20 +256,17 @@ public class VoteManager
 	
 	public void giveReward(CommandSender sender, RewardContainer rolledGift)
 	{
-		Player p = (Player) sender;
+		//Player p = (Player) sender;
 		try
 		{
-			util.logInfo("Giving Reward: " + rolledGift.getName());
-			String action = rolledGift.getAction().substring(1, rolledGift.getAction().length());
-			action = action.replaceAll("%", p.getName()); //Replace % with players name
-			Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), action);
-			util.logInfo("Command: '" + action + "'");
+			util.logInfo("Adding " + rolledGift.getName() + " to " + sender.getName() + "'s reward bank");
+			voteClaim.put(sender.getName(), rolledGift);
 			Bukkit.broadcastMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + ChatColor.BOLD + "AusVote" + ChatColor.RESET
 					+ ChatColor.GRAY + "] " + ChatColor.DARK_GREEN + "And a " + ChatColor.GOLD + "" + ChatColor.ITALIC + "" + ChatColor.BOLD + "BONUS: " + "" + ChatColor.RESET + ChatColor.GOLD + util.translateColours(rolledGift.getName()));
 		}
 		catch(Exception e)
 		{
-			util.logSevere("Error giving rewards! Check the config for misplaced ','");
+			util.logSevere("Error giving rewards! Check the rewards for any misplaced characters");
 			e.printStackTrace();
 		}
 	}
@@ -302,5 +329,10 @@ public class VoteManager
 			}
 		}
 		return timeString;
+	}
+	
+	public Set<String> getUnclaimedRewards()
+	{
+		return voteClaim.keySet();
 	}
 }
