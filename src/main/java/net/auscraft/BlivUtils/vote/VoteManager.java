@@ -23,7 +23,7 @@ public class VoteManager
 	private Utilities util;
 	private int rewardChance;
 	private int nextTrigger;
-	private RewardContainer[] voteRewards = new RewardContainer[10];
+	private RewardContainer[] voteRewards = new RewardContainer[6];
 	
 	public VoteManager(BlivUtils instance)
 	{
@@ -192,7 +192,6 @@ public class VoteManager
 						if(roll <= (int)reward.getChance())
 						{
 							wonPrize = true;
-							//util.logInfo("WON " + reward.getName());
 							rolledReward = reward;
 						}
 					}
@@ -200,18 +199,13 @@ public class VoteManager
 					{
 						try
 						{
-						util.logDebug("Reward " + reward.getName() + " has a bugged chance!");
+							util.logDebug("Reward " + reward.getName() + " has a bugged chance!");
 						}
 						catch(Exception e2)
 						{
 							util.logDebug("Oh man, just give up. That reward is bugged");
 						}
 					}
-					/*else
-					{
-						util.logInfo("Didnt win " + reward.getName());
-					}*/
-					
 					if(wonPrize == true)
 					{
 						break;
