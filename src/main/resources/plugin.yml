@@ -70,6 +70,8 @@ commands:
   voteprint:
     description: 'Prints out a vote message, nicely formatted and translated'
     usage: 'Usage: /<command> <name> <reward> <service>'
+  voteclaim:
+    description: 'Claim voting rewards'
   voteparty:
     description: 'Starts a vote party, where bonus rewards are more likely to drop'
     usage: 'Usage: /<command> [chance]'

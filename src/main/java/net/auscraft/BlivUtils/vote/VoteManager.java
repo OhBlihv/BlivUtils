@@ -10,7 +10,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+
+import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
 
@@ -26,14 +27,15 @@ public class VoteManager implements CommandExecutor
 	private Utilities util;
 	private int rewardChance;
 	private int nextTrigger;
-	private RewardContainer[] voteRewards = new RewardContainer[6];
-	private static HashMap<String, RewardContainer> voteClaim = new HashMap<String, RewardContainer>();
+	private RewardContainer[] voteRewards = new RewardContainer[7];
+	private static HashMap<String, RewardContainer[]> voteClaim = new HashMap<String, RewardContainer[]>();
+	private Random rand = new Random(System.currentTimeMillis());
 	
 	public VoteManager(BlivUtils instance)
 	{
 		util = instance.getUtil();
 		
-		rewardChance = 15;
+		rewardChance = 100; //TODO: Change back before going live
 		nextTrigger = 0;
 		
 		voteRewards[0] = new RewardContainer(40.0, "&2$&f250", "/money give % 250", null, null);
@@ -55,12 +57,26 @@ public class VoteManager implements CommandExecutor
 		{
 			if(voteClaim.containsKey(sender.getName()))
 			{
-				RewardContainer reward = voteClaim.get(sender.getName());
-				String action = reward.getAction().substring(1, reward.getAction().length());
-				action = action.replaceAll("%", sender.getName()); //Replace % with players name
-				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), action);
-				util.logInfo("Command: '" + action + "'");
-				util.printSuccess(sender, "Reward " + reward.getName() + " has been added to your inventory");
+				RewardContainer[] rewardArr = voteClaim.get(sender.getName());
+				String claimString = "";
+				try
+				{
+					String action = null;
+					for(RewardContainer reward : rewardArr)
+					{
+						action = reward.getAction().substring(1, reward.getAction().length());
+						action = action.replaceAll("%", sender.getName()); //Replace % with players name
+						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), action);
+						util.logInfo("Command: '" + action + "'");
+						claimString += " - " + reward.getName() + "\n";
+					}
+					voteClaim.remove(sender.getName());
+				}
+				catch(NullPointerException e)
+				{
+					util.logDebug("Reached end of reward bank.");
+				}
+				util.printSuccess(sender, util.translateColours("Your rewards have been claimed:\n" + claimString));
 				voteClaim.remove(sender.getName());
 			}
 			else
@@ -184,9 +200,8 @@ public class VoteManager implements CommandExecutor
 		rewardChance = inChance;
 	}
 	
-	public String rollBonusGift(Player player)
+	public String rollBonusGift(String player)
 	{
-		Random rand = new Random(System.currentTimeMillis());
 		
 		/*
 		 * Roll out of 100 -- If number is below 15 (15% chance of winning any item) then go to next stage
@@ -196,7 +211,8 @@ public class VoteManager implements CommandExecutor
 		
 		int won = rand.nextInt(100);
 		int rewardChanceDiff = rewardChance;
-		if(PlayerManager.getPlayer(player).getPlayer().hasPermission("blivutils.vote.ender"))
+		if(PermissionsEx.getUser(player).has("blivutils.vote.ender"))
+		//if(offlinePlayer.getPlayer().hasPermission("blivutils.vote.ender"))
 		{
 			rewardChanceDiff += 10;
 		}
@@ -240,9 +256,7 @@ public class VoteManager implements CommandExecutor
 					}
 				}
 			}
-			voteClaim.put(player.getName(), rolledReward);
-			
-			//giveReward((CommandSender) player, rolledReward);
+			giveReward(player, rolledReward);
 		}
 		/*else
 		{
@@ -254,15 +268,47 @@ public class VoteManager implements CommandExecutor
 		return null;
 	}
 	
-	public void giveReward(CommandSender sender, RewardContainer rolledGift)
+	public void giveReward(String player, RewardContainer rolledGift)
 	{
-		//Player p = (Player) sender;
 		try
 		{
-			util.logInfo("Adding " + rolledGift.getName() + " to " + sender.getName() + "'s reward bank");
-			voteClaim.put(sender.getName(), rolledGift);
 			Bukkit.broadcastMessage(ChatColor.GRAY + "[" + ChatColor.GOLD + ChatColor.BOLD + "AusVote" + ChatColor.RESET
 					+ ChatColor.GRAY + "] " + ChatColor.DARK_GREEN + "And a " + ChatColor.GOLD + "" + ChatColor.ITALIC + "" + ChatColor.BOLD + "BONUS: " + "" + ChatColor.RESET + ChatColor.GOLD + util.translateColours(rolledGift.getName()));
+			if(rolledGift.getName().contains("$"))
+			{
+				String action = rolledGift.getAction().substring(1, rolledGift.getAction().length());
+				action = action.replaceAll("%", player); //Replace % with players name
+				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), action);
+				util.logInfo("Command: '" + action + "'");
+			}
+			else
+			{
+				util.logInfo("Adding " + rolledGift.getName() + " to " + player + "'s reward bank");
+				if(voteClaim.containsKey(player))
+				{
+					RewardContainer[] rewards = voteClaim.get(player);
+					int rewardCount = 0;
+					while(rewards[rewardCount] != null)
+					{
+						rewardCount++;
+					}
+					rewards[rewardCount] = rolledGift;
+					voteClaim.put(player, rewards);
+				}
+				//If player has no rewards queued up
+				else
+				{
+					RewardContainer[] rewards = new RewardContainer[10];
+					rewards[0] = rolledGift;
+					voteClaim.put(player, rewards);
+				}
+				if(Bukkit.getPlayer(player) != null)
+				{
+					util.printInfo((CommandSender) Bukkit.getOfflinePlayer(player), util.translateColours(ChatColor.GREEN + "Your reward: " + rolledGift.getName() + ChatColor.GREEN + " has been added to your reward bank.\n "
+							+ ChatColor.GOLD + ChatColor.ITALIC + "   »» " + ChatColor.GREEN + "Type " + ChatColor.AQUA + "/voteclaim" + ChatColor.GREEN + " to claim"));
+				}
+			}
+			
 		}
 		catch(Exception e)
 		{

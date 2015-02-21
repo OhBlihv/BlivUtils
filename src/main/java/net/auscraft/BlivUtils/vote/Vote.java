@@ -65,18 +65,9 @@ public class Vote implements CommandExecutor
 				Bukkit.broadcastMessage(ChatColor.GRAY + "[" + ChatColor.GOLD	+ ChatColor.BOLD + "AusVote" + ChatColor.RESET
 						+ ChatColor.GRAY + "]" + " " + ChatColor.BLUE + ChatColor.ITALIC + playerName + ChatColor.DARK_GREEN + " voted at " + ChatColor.GOLD
 						+ ChatColor.ITALIC + args[2] + ChatColor.RESET + ". " + ChatColor.DARK_GREEN + "Earned $" + ChatColor.RESET + args[1] + ChatColor.DARK_GREEN + "!");
-				//Only has a chance of winning if the player is online
-				if(p != null)
+				if(util.getInstance().getCfg().getInt("options.voting.rewards") == 1)
 				{
-					if(util.getInstance().getCfg().getInt("options.voting.rewards") == 1)
-					{
-						//util.logInfo("Trying bonus reward...");
-						voteMan.rollBonusGift(p.getPlayer());
-					}
-					else
-					{
-						util.logInfo("Voting Rewards disabled.");
-					}
+					voteMan.rollBonusGift(args[0]);
 				}
 				return true;
 			}

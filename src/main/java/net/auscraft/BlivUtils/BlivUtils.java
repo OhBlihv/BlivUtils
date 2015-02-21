@@ -21,11 +21,11 @@ import net.auscraft.BlivUtils.executors.GenericExecutor;
 import net.auscraft.BlivUtils.executors.RankHelpExecutor;
 import net.auscraft.BlivUtils.listeners.DeathListener;
 import net.auscraft.BlivUtils.listeners.HealthListener;
+import net.auscraft.BlivUtils.listeners.HubListener;
 import net.auscraft.BlivUtils.listeners.XPListener;
 import net.auscraft.BlivUtils.promotions.PromoteExecuter;
 import net.auscraft.BlivUtils.purchases.Broadcast;
 import net.auscraft.BlivUtils.purchases.Ender;
-import net.auscraft.BlivUtils.rewards.RewardContainer;
 import net.auscraft.BlivUtils.rewards.Rewards;
 import net.auscraft.BlivUtils.timed.TimedCommands;
 import net.auscraft.BlivUtils.utils.Utilities;
@@ -55,6 +55,7 @@ public final class BlivUtils extends JavaPlugin
 	private Utilities util;
 	private FileConfiguration configFile;
 	private VoteManager voteMan;
+	BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 
 
 	@Override
@@ -93,6 +94,7 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("enderrank").setExecutor(new Ender(this));
 		getCommand("health").setExecutor(new HealthListener(this));
 		getCommand("voteprint").setExecutor(new Vote(this));
+		getCommand("voteclaim").setExecutor(new VoteManager(this));
 		getCommand("voteparty").setExecutor(new Vote(this));
 		getCommand("timedadd").setExecutor(new TimedCommands(this));
 		getCommand("timeleft").setExecutor(new PromoteExecuter(this));
@@ -104,7 +106,7 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("updatetime").setExecutor(new PromoteExecuter(this));
 		
 		//Listeners
-		//getServer().getPluginManager().registerEvents(new NicknameListener(this), this);
+		getServer().getPluginManager().registerEvents(new HubListener(), this);
 		getServer().getPluginManager().registerEvents(new XPListener(this), this);
 		getServer().getPluginManager().registerEvents(new DeathListener(this), this);
 		getServer().getPluginManager().registerEvents(new HealthListener(this), this);
@@ -145,6 +147,16 @@ public final class BlivUtils extends JavaPlugin
 		{
 			getCommand("present").setExecutor(new RemovedCommand(this));
 			util.logInfo("Rewards Disabled.");
+		}
+		
+		//Vote Reward checker
+		if(this.getCfg().getInt("options.voting.rewards") == 1)
+		{
+			this.doVoteRewardCheck();
+		}
+		else
+		{
+			util.logInfo("Voting Rewards disabled.");
 		}
 		
 	}
@@ -204,7 +216,6 @@ public final class BlivUtils extends JavaPlugin
 
 	public void startRankScheduler()
 	{
-		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 		String unit = cfg.getString("options.scheduler.unit");
 		int looptime = util.getConversion(unit, "options.scheduler.time");
 		scheduler.scheduleSyncRepeatingTask(this, new Runnable()
@@ -259,19 +270,23 @@ public final class BlivUtils extends JavaPlugin
 	
 	public void doVoteRewardCheck()
 	{
-		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		String unit = cfg.getString("options.scheduler.unit");
-		int looptime = util.getConversion(unit, "options.scheduler.time");
 		scheduler.scheduleSyncRepeatingTask(this, new Runnable()
 		{
 			public void run()
 			{
 				for(String player : voteMan.getUnclaimedRewards())
 				{
-					util.printInfo(Bukkit.getPlayer(player), ChatColor.GREEN + "You have an unclaimed voting reward! Type " + ChatColor.AQUA + "/voteclaim" + ChatColor.GREEN + " to claim");
+					try
+					{
+						util.printInfo(Bukkit.getPlayer(player), ChatColor.GREEN + "You have an unclaimed voting reward! Type " + ChatColor.AQUA + "/voteclaim" + ChatColor.GREEN + " to claim");
+					}
+					catch(NullPointerException e)
+					{
+						//
+					}
 				}
 			}
-		}, 0L, looptime);
+		}, 0L, /*6000L*/ 200L); //5 Minutes
 	}
 
 	public Permission setupPermissions()
