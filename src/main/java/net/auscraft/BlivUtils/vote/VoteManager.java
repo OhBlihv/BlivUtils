@@ -35,7 +35,7 @@ public class VoteManager implements CommandExecutor
 	{
 		util = instance.getUtil();
 		
-		rewardChance = 100; //TODO: Change back before going live
+		rewardChance = 15; //TODO: Change back before going live
 		nextTrigger = 0;
 		
 		voteRewards[0] = new RewardContainer(40.0, "&2$&f250", "/money give % 250", null, null);
