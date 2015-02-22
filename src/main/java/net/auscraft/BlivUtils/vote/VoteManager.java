@@ -70,14 +70,14 @@ public class VoteManager implements CommandExecutor
 						util.logInfo("Command: '" + action + "'");
 						claimString += " - " + reward.getName() + "\n";
 					}
-					voteClaim.remove(sender.getName());
+					voteClaim.remove(sender.getName().toLowerCase());
 				}
 				catch(NullPointerException e)
 				{
 					util.logDebug("Reached end of reward bank.");
 				}
 				util.printSuccess(sender, util.translateColours("Your rewards have been claimed:\n" + claimString));
-				voteClaim.remove(sender.getName());
+				voteClaim.remove(sender.getName().toLowerCase());
 			}
 			else
 			{
