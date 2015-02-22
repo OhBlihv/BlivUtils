@@ -1,14 +1,11 @@
 package net.auscraft.BlivUtils.promotions;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import net.auscraft.BlivUtils.BlivUtils;
 import net.auscraft.BlivUtils.utils.Utilities;
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.permission.Permission;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -67,7 +64,7 @@ public class PromoteExecuter implements CommandExecutor
 	
 	private ItemStack PigZombie(boolean hasPermission)
 	{
-		ItemStack item = new ItemStack(Material.GOLD_SWORD, 1);
+		ItemStack item = new ItemStack(Material.GOLD_HELMET, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.RED + "PigZombie");
         String hasPerm = ChatColor.RED + "NO";

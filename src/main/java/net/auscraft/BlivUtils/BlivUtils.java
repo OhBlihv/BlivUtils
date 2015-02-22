@@ -19,12 +19,13 @@ import net.auscraft.BlivUtils.credits.CreditManager;
 import net.auscraft.BlivUtils.executors.ColourExecutor;
 import net.auscraft.BlivUtils.executors.GenericExecutor;
 import net.auscraft.BlivUtils.executors.RankHelpExecutor;
+import net.auscraft.BlivUtils.listeners.ColourListener;
 import net.auscraft.BlivUtils.listeners.DeathListener;
 import net.auscraft.BlivUtils.listeners.HealthListener;
 import net.auscraft.BlivUtils.listeners.HubListener;
+import net.auscraft.BlivUtils.listeners.PromotionListener;
 import net.auscraft.BlivUtils.listeners.XPListener;
 import net.auscraft.BlivUtils.promotions.PromoteExecuter;
-import net.auscraft.BlivUtils.promotions.PromotionListener;
 import net.auscraft.BlivUtils.purchases.Broadcast;
 import net.auscraft.BlivUtils.purchases.Ender;
 import net.auscraft.BlivUtils.rewards.Rewards;
@@ -99,13 +100,13 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("timedadd").setExecutor(new TimedCommands(this));
 		getCommand("timeleft").setExecutor(new PromoteExecuter(this));
 		getCommand("prefix").setExecutor(new PromoteExecuter(this));
-		getCommand("chat").setExecutor(new ColourExecutor(this));
-		getCommand("colourme").setExecutor(new ColourExecutor(this));
+		getCommand("chat").setExecutor(new ColourExecutor());
 		getCommand("promoadmin").setExecutor(new PromoteExecuter(this));
 		getCommand("updateadmin").setExecutor(new PromoteExecuter(this));
 		getCommand("updatetime").setExecutor(new PromoteExecuter(this));
 		
 		//Listeners
+		getServer().getPluginManager().registerEvents(new ColourListener(this), this);
 		getServer().getPluginManager().registerEvents(new PromotionListener(this), this);
 		getServer().getPluginManager().registerEvents(new HubListener(), this);
 		getServer().getPluginManager().registerEvents(new XPListener(this), this);

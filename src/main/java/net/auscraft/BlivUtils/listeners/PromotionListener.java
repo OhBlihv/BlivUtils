@@ -1,4 +1,4 @@
-package net.auscraft.BlivUtils.promotions;
+package net.auscraft.BlivUtils.listeners;
 
 import java.util.Arrays;
 import java.util.List;
@@ -97,7 +97,7 @@ public class PromotionListener implements Listener
 			{
 				doConfirmationDialog("Blaze", p, p.hasPermission("blivutils.promote.blaze"));
 			}
-			else if(event.getCurrentItem().getType().equals(Material.GOLD_SWORD))
+			else if(event.getCurrentItem().getType().equals(Material.GOLD_HELMET))
 			{
 				doConfirmationDialog("PigZombie", p, p.hasPermission("blivutils.promote.pigzombie"));
 			}
@@ -129,7 +129,7 @@ public class PromotionListener implements Listener
 				rankPromotion(p, "Blaze");
 				p.closeInventory();
 			}
-			else if(event.getCurrentItem().getType().equals(Material.GOLD_SWORD))
+			else if(event.getCurrentItem().getType().equals(Material.GOLD_HELMET))
 			{
 				rankPromotion(p, "PigZombie");
 				p.closeInventory();

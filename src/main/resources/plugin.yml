@@ -49,16 +49,12 @@ commands:
   updatetime:
     description: 'Adds or removes time from a players rank (defined in command)'
     usage: 'Usage: /<command> <player> <rank> <amount> <day(s) OR month(s)>'
-  promoteme:
-    description: 'Confirms the purchase of a rank using /buyrank'
   timeleft:
     description: 'Checks the players time left of a rank'
   prefix:
     description: 'Change your own prefix'
   chat:
     description: 'Access to the chat colour changing utility'
-  colourme:
-    description: 'Confirmation command for the /chat menu'
   credits:
     description: 'Utility and balance displays for Credits'
     usage: 'Usage: /<command> [arg]'
