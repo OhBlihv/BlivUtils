@@ -24,6 +24,7 @@ import net.auscraft.BlivUtils.listeners.HealthListener;
 import net.auscraft.BlivUtils.listeners.HubListener;
 import net.auscraft.BlivUtils.listeners.XPListener;
 import net.auscraft.BlivUtils.promotions.PromoteExecuter;
+import net.auscraft.BlivUtils.promotions.PromotionListener;
 import net.auscraft.BlivUtils.purchases.Broadcast;
 import net.auscraft.BlivUtils.purchases.Ender;
 import net.auscraft.BlivUtils.rewards.Rewards;
@@ -42,7 +43,6 @@ import org.bukkit.scheduler.BukkitScheduler;
 public final class BlivUtils extends JavaPlugin
 {
 	//Temporary storage
-	private static HashMap<String, Integer> promoteCount = new HashMap<String, Integer>();
 	private static HashMap<String, String> colourSave = new HashMap<String, String>();
 	
 	//Ender Rank bonuses (Temporary Storage)
@@ -106,6 +106,7 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("updatetime").setExecutor(new PromoteExecuter(this));
 		
 		//Listeners
+		getServer().getPluginManager().registerEvents(new PromotionListener(this), this);
 		getServer().getPluginManager().registerEvents(new HubListener(), this);
 		getServer().getPluginManager().registerEvents(new XPListener(this), this);
 		getServer().getPluginManager().registerEvents(new DeathListener(this), this);
@@ -286,7 +287,7 @@ public final class BlivUtils extends JavaPlugin
 					}
 				}
 			}
-		}, 0L, /*6000L*/ 200L); //5 Minutes
+		}, 0L, 6000L /*200L*/); //5 Minutes
 	}
 
 	public Permission setupPermissions()
@@ -303,11 +304,6 @@ public final class BlivUtils extends JavaPlugin
 			;
 		Economy econ = (Economy) rsp.getProvider();
 		return econ;
-	}
-
-	public static HashMap<String, Integer> getPromote()
-	{
-		return promoteCount;
 	}
 
 	public HashMap<String, String> getSuffixColour() 
