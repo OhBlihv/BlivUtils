@@ -63,8 +63,8 @@ public class Vote implements CommandExecutor
 				}
 				
 				Bukkit.broadcastMessage(ChatColor.GRAY + "[" + ChatColor.GOLD	+ ChatColor.BOLD + "AusVote" + ChatColor.RESET
-						+ ChatColor.GRAY + "]" + " " + ChatColor.BLUE + ChatColor.ITALIC + playerName + ChatColor.DARK_GREEN + " voted at " + ChatColor.GOLD
-						+ ChatColor.ITALIC + args[2] + ChatColor.RESET + ". " + ChatColor.DARK_GREEN + "Earned $" + ChatColor.RESET + args[1] + ChatColor.DARK_GREEN + "!");
+						+ ChatColor.GRAY + "]" + " " + ChatColor.BLUE + ChatColor.ITALIC + playerName + ChatColor.GREEN + " voted at " + ChatColor.GOLD
+						+ ChatColor.ITALIC + args[2] + ChatColor.RESET + ". " + ChatColor.GREEN + "Earned" + ChatColor.DARK_GREEN + " $" + ChatColor.RESET + args[1] + ChatColor.DARK_GREEN + "!");
 				if(util.getInstance().getCfg().getInt("options.voting.rewards") == 1)
 				{
 					voteMan.rollBonusGift(args[0]);

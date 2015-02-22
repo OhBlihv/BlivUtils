@@ -35,7 +35,7 @@ public class VoteManager implements CommandExecutor
 	{
 		util = instance.getUtil();
 		
-		rewardChance = 15; //TODO: Change back before going live
+		rewardChance = 15;
 		nextTrigger = 0;
 		
 		voteRewards[0] = new RewardContainer(40.0, "&2$&f250", "/money give % 250", null, null);
@@ -55,9 +55,9 @@ public class VoteManager implements CommandExecutor
 	{
 		if(cmd.getName().equalsIgnoreCase("voteclaim"))
 		{
-			if(voteClaim.containsKey(sender.getName()))
+			if(voteClaim.containsKey(sender.getName().toLowerCase()))
 			{
-				RewardContainer[] rewardArr = voteClaim.get(sender.getName());
+				RewardContainer[] rewardArr = voteClaim.get(sender.getName().toLowerCase());
 				String claimString = "";
 				try
 				{
@@ -284,23 +284,23 @@ public class VoteManager implements CommandExecutor
 			else
 			{
 				util.logInfo("Adding " + rolledGift.getName() + " to " + player + "'s reward bank");
-				if(voteClaim.containsKey(player))
+				if(voteClaim.containsKey(player.toLowerCase()))
 				{
-					RewardContainer[] rewards = voteClaim.get(player);
+					RewardContainer[] rewards = voteClaim.get(player.toLowerCase());
 					int rewardCount = 0;
 					while(rewards[rewardCount] != null)
 					{
 						rewardCount++;
 					}
 					rewards[rewardCount] = rolledGift;
-					voteClaim.put(player, rewards);
+					voteClaim.put(player.toLowerCase(), rewards);
 				}
 				//If player has no rewards queued up
 				else
 				{
 					RewardContainer[] rewards = new RewardContainer[10];
 					rewards[0] = rolledGift;
-					voteClaim.put(player, rewards);
+					voteClaim.put(player.toLowerCase(), rewards);
 				}
 				if(Bukkit.getPlayer(player) != null)
 				{
