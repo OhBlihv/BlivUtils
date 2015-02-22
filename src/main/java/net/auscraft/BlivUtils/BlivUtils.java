@@ -119,13 +119,11 @@ public final class BlivUtils extends JavaPlugin
 		if(toggle[0] == 1)
 		{
 			getCommand("buyrank").setExecutor(new PromoteExecuter(this));
-			getCommand("promoteme").setExecutor(new PromoteExecuter(this));
 			util.logInfo("Rank Purchasing Enabled.");
 		}
 		else
 		{
 			getCommand("buyrank").setExecutor(new RemovedCommand(this));
-			getCommand("promoteme").setExecutor(new RemovedCommand(this));
 			util.logInfo("Rank Purchasing Disabled.");
 		}
 		

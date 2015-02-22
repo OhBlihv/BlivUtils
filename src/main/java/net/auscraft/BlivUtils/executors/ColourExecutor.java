@@ -58,10 +58,10 @@ public class ColourExecutor implements CommandExecutor
 	        inv.setItem(19, WoolColour("Gray"));
 	        inv.setItem(20, WoolColour("Dark Aqua"));
 	        inv.setItem(21, WoolColour("Blue"));
-	        inv.setItem(22, WoolColour("Green"));
+	        inv.setItem(25, WoolColour("Green"));
 	        inv.setItem(23, WoolColour("Red"));
 	        inv.setItem(24, WoolColour("Light Purple"));
-	        inv.setItem(25, WoolColour("White"));
+	        inv.setItem(22, WoolColour("White"));
 	        ((Player) sender).openInventory(inv);
 	        return true;
 		}

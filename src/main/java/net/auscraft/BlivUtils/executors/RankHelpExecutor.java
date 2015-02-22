@@ -68,7 +68,8 @@ public class RankHelpExecutor implements CommandExecutor
 							+ ChatColor.GREEN + "| " + ChatColor.WHITE + "Free: " + ChatColor.GREEN + "Squid, Chicken, Sheep, Pig\n"
 							+ ChatColor.DARK_GREEN + "| " + ChatColor.WHITE + "Free: " + ChatColor.DARK_AQUA + "Cow, Mooshroom, Slime, Ocelot\n"
 							+ ChatColor.GREEN + "| " + ChatColor.WHITE + "Nether: " + ChatColor.RED + "MagmaSlime, Blaze, PigZombie, Ghast\n"
-							+ ChatColor.DARK_GREEN + "| " + ChatColor.WHITE + "Ender: " + ChatColor.DARK_PURPLE + "Endermite, Enderman," + ChatColor.DARK_RED + " EnderDragon\n"
+							+ ChatColor.DARK_GREEN + "| " + ChatColor.WHITE + "Ender: " + ChatColor.DARK_PURPLE + "Endermite, Enderman," + ChatColor.DARK_RED + " EnderDragon,"
+							+ ChatColor.GRAY + "Wither\n"
 							+ ChatColor.GREEN + "| " + ChatColor.GOLD + "Usage: /rank <rank>\n"
 							+ footer);
 					return true;
@@ -198,8 +199,11 @@ public class RankHelpExecutor implements CommandExecutor
 					else if (args[0].equalsIgnoreCase("Enderman"))
 					{
 						sender.sendMessage(banner
-								+ ChatColor.DARK_GREEN + "Enderman: " + ChatColor.GRAY + "$5 AUD per Month\n"
-								+ ChatColor.AQUA + "Inherits all Free rank perks,\nAlso including fly, mobdisguise, trails and pets!\n"
+								+ ChatColor.DARK_GREEN + "Enderman: " + ChatColor.GRAY + "$5 AUD per month\n"
+								+ ChatColor.AQUA + "Inherits all Free rank perks, also includes:\n"
+								+ ChatColor.AQUA + "/tp, /weather, /jumpto, /fly, /speed\n"
+								+ ChatColor.AQUA + "+ 200% Mob Drops + 10% Bonus Voting Reward Chance\n"
+								+ ChatColor.AQUA + "+ /kit dtools + /kit darmour | And 3 Free Trails\n"
 								+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " wiki.aus-craft.net/ranks#Enderman < Click Me!\n"
 								+ footer);
 						return true;
@@ -207,9 +211,22 @@ public class RankHelpExecutor implements CommandExecutor
 					else if (args[0].equalsIgnoreCase("EnderDragon")) 
 					{
 						sender.sendMessage(banner
-								+ ChatColor.DARK_GREEN + "EnderDragon: " + ChatColor.GRAY + "$10 AUD per Month\n"
-								+ ChatColor.AQUA + "Inherits all Endermite and Emderman perks,\nAlso including all remaining Pets and all remaining Trails\n"
+								+ ChatColor.DARK_GREEN + "EnderDragon: " + ChatColor.GRAY + "Enderman + $5AUD of perks per month\n"
+								+ ChatColor.AQUA + "Inherits all free and Enderman perks, also includes:\n"
+								+ ChatColor.AQUA + "/firework, /fixclaim, /xpclaim\n"
+								+ ChatColor.AQUA + "10HP Extra (1 1/2 Bars Total)\n"
 								+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " wiki.aus-craft.net/ranks#EnderDragon < Click Me!\n"
+								+ footer);
+						return true;
+					}
+					else if (args[0].equalsIgnoreCase("Wither")) 
+					{
+						sender.sendMessage(banner
+								+ ChatColor.DARK_GREEN + "Wither: " + ChatColor.GRAY + "Enderman + $25AUD of perks per Month\n"
+								+ ChatColor.AQUA + "Inherits all free and EnderDragon perks, also includes:\n"
+								+ ChatColor.AQUA + "/lore (Edit any items name and description)\n"
+								+ ChatColor.AQUA + "20HP Extra (2 Bars Total)\n"
+								+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " wiki.aus-craft.net/ranks#Wither < Click Me!\n"
 								+ footer);
 						return true;
 					} 
