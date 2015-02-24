@@ -26,15 +26,24 @@ public class Nicknames
 	public void nickPlayer(Player p)
 	{
 		BSPlayer bsp = PlayerManager.getPlayer(p);
-		if(bsp.hasNickname())
+		try
 		{
-			util.logInfo("Player " + p.getName() + " should have had a random colour assigned, but they already had a nickname.");
-			return; //Exit. If player has a nickname, it is most likely coloured, or it is a rebuy of the package.
+			if(bsp.hasNickname())
+			{
+				util.logInfo("Player " + p.getName() + " should have had a random colour assigned, but they already had a nickname.");
+				return; //Exit. If player has a nickname, it is most likely coloured, or it is a rebuy of the package.
+			}
+			String newName = randomColour() + p.getName(); //Default minecraft name
+			
+			PlayerManager.nicknamePlayer(p.getName(), p.getName(), newName, true);
+		}
+		catch(NullPointerException e)
+		{
+			util.logError("Some error regarding nicknames. Player has not had a nickname assigned");
 		}
 		
-		String newName = randomColour() + p.getName(); //Default minecraft name
 		
-		PlayerManager.nicknamePlayer(p.getName(), p.getName(), newName, true);
+		
 	}
 	
 	public ChatColor randomColour()

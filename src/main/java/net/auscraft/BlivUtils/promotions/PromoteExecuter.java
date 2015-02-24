@@ -116,7 +116,7 @@ public class PromoteExecuter implements CommandExecutor
 		if (cmd.getName().equalsIgnoreCase("buyrank") && (sender instanceof Player))
 		{
 			Player p = (Player) sender;
-			Inventory inv = Bukkit.createInventory(null, 27, "/buyrank");
+			Inventory inv = Bukkit.createInventory(null, 27, "Buy Ranks");
 	        inv.setItem(11, MagmaSlime(p.hasPermission("blivutils.promote.magmaslime")));
 	        inv.setItem(12, Blaze(p.hasPermission("blivutils.promote.blaze")));
 	        inv.setItem(13, PigZombie(p.hasPermission("blivutils.promote.pigzombie")));
@@ -315,7 +315,7 @@ public class PromoteExecuter implements CommandExecutor
 		//This will grab the player's current rank timeleft, and add time to it.
 		//If the expiry date has already passed, or the rank was never active, it will not update.
 		//Merged from /updateadmin, in order to save space.
-		if (cmd.getName().equalsIgnoreCase("updatetime") && (sender instanceof Player))
+		if (cmd.getName().equalsIgnoreCase("updatetime"))
 		{
 			if (sender.hasPermission("blivutils.promote.admin.update"))
 			{
@@ -451,6 +451,7 @@ public class PromoteExecuter implements CommandExecutor
 					}
 					else
 					{
+						length += ((int) (System.currentTimeMillis() / 1000L));
 						user.setOption("group-" + rank + "-until", "" + length);
 						util.printSuccess(sender, ChatColor.GREEN + "Set " + args[0] + "'s " + rank + " to " + timeFormat);
 						//util.printError(sender, args[0] + "'s rank has expired!");

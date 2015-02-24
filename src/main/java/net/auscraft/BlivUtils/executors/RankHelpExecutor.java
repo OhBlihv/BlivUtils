@@ -23,7 +23,8 @@ public class RankHelpExecutor implements CommandExecutor
 								+ ChatColor.GREEN + "- "
 								+ ChatColor.DARK_GREEN + "- "
 								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- \n";
+								+ ChatColor.DARK_GREEN + "- "
+								+ ChatColor.GREEN + " - \n";
 	private final String footer = ChatColor.GREEN + "- "
 								+ ChatColor.DARK_GREEN + "- "
 								+ ChatColor.GREEN + "- "
@@ -68,7 +69,7 @@ public class RankHelpExecutor implements CommandExecutor
 							+ ChatColor.GREEN + "| " + ChatColor.WHITE + "Free: " + ChatColor.GREEN + "Squid, Chicken, Sheep, Pig\n"
 							+ ChatColor.DARK_GREEN + "| " + ChatColor.WHITE + "Free: " + ChatColor.DARK_AQUA + "Cow, Mooshroom, Slime, Ocelot\n"
 							+ ChatColor.GREEN + "| " + ChatColor.WHITE + "Nether: " + ChatColor.RED + "MagmaSlime, Blaze, PigZombie, Ghast\n"
-							+ ChatColor.DARK_GREEN + "| " + ChatColor.WHITE + "Ender: " + ChatColor.DARK_PURPLE + "Endermite, Enderman," + ChatColor.DARK_RED + " EnderDragon,"
+							+ ChatColor.DARK_GREEN + "| " + ChatColor.WHITE + "Ender: " + ChatColor.DARK_PURPLE + "Endermite, Enderman," + ChatColor.DARK_RED + " EnderDragon, "
 							+ ChatColor.GRAY + "Wither\n"
 							+ ChatColor.GREEN + "| " + ChatColor.GOLD + "Usage: /rank <rank>\n"
 							+ footer);

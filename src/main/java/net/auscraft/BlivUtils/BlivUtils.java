@@ -33,8 +33,10 @@ import net.auscraft.BlivUtils.timed.TimedCommands;
 import net.auscraft.BlivUtils.utils.Utilities;
 import net.auscraft.BlivUtils.vote.Vote;
 import net.auscraft.BlivUtils.vote.VoteManager;
+
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
+
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -75,7 +77,6 @@ public final class BlivUtils extends JavaPlugin
 		util.checkRankScheduler();
 		//MySQL Setup
 		setupMySQL();
-		//loadRewards();
 		
 		
 		// Some of the commands require the above set up before they can appear to function.

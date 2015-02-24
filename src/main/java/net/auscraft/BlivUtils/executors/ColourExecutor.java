@@ -49,16 +49,16 @@ public class ColourExecutor implements CommandExecutor
 		{
 			Player p = (Player) sender;
 			Inventory inv = Bukkit.createInventory(null, 45, "Chat Colour");
-	        inv.setItem(10, WoolColour("Dark Gray"));
+	        inv.setItem(29, WoolColour("Dark Gray"));
 	        inv.setItem(11, WoolColour("Gold"));
 	        inv.setItem(12, WoolColour("Aqua"));
 	        inv.setItem(14, WoolColour("Yellow"));
 	        inv.setItem(15, WoolColour("Dark Green"));
-	        inv.setItem(16, WoolColour("Dark Purple"));
-	        inv.setItem(19, WoolColour("Gray"));
+	        inv.setItem(33, WoolColour("Dark Purple"));
+	        inv.setItem(30, WoolColour("Gray"));
 	        inv.setItem(20, WoolColour("Dark Aqua"));
 	        inv.setItem(21, WoolColour("Blue"));
-	        inv.setItem(25, WoolColour("Green"));
+	        inv.setItem(32, WoolColour("Green"));
 	        inv.setItem(23, WoolColour("Red"));
 	        inv.setItem(24, WoolColour("Light Purple"));
 	        inv.setItem(22, WoolColour("White"));
