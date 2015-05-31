@@ -21,7 +21,7 @@ public class Vote implements CommandExecutor
 	
 	public Vote(BlivUtils instance)
 	{
-		voteMan = instance.getVoteManager();
+		voteMan = instance.getVoteMan();
 		util = instance.getUtil();
 	}
 	
@@ -35,7 +35,7 @@ public class Vote implements CommandExecutor
 		 */
 		if((cmd.getName().equalsIgnoreCase("voteparty")) && (sender.hasPermission("blivutils.vote.party")))
 		{
-			return voteMan.voteParty(sender, cmd, label, args);
+			return voteMan.voteParty(sender, args);
 		}
 		
 		
@@ -71,11 +71,9 @@ public class Vote implements CommandExecutor
 				}
 				return true;
 			}
-			else
-			{
-				util.printError(sender, "Invalid Syntax: /voteprint <name> <reward> <service>");
-				return true;
-			}
+			
+			util.printError(sender, "Invalid Syntax: /voteprint <name> <reward> <service>");
+			return true;
 		}
 		
 		

@@ -6,16 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 
+import lombok.Getter;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.auscraft.BlivUtils.config.ConfigAccessor;
-import net.auscraft.BlivUtils.config.ConfigSetup;
-import net.auscraft.BlivUtils.credits.CreditManager;
 import net.auscraft.BlivUtils.executors.ColourExecutor;
 import net.auscraft.BlivUtils.executors.GenericExecutor;
 import net.auscraft.BlivUtils.executors.RankHelpExecutor;
@@ -25,18 +23,16 @@ import net.auscraft.BlivUtils.listeners.HealthListener;
 import net.auscraft.BlivUtils.listeners.HubListener;
 import net.auscraft.BlivUtils.listeners.PromotionListener;
 import net.auscraft.BlivUtils.listeners.XPListener;
-import net.auscraft.BlivUtils.promotions.PromoteExecuter;
+import net.auscraft.BlivUtils.promotions.PromoteExecutor;
 import net.auscraft.BlivUtils.purchases.Broadcast;
 import net.auscraft.BlivUtils.purchases.Ender;
 import net.auscraft.BlivUtils.rewards.Rewards;
-import net.auscraft.BlivUtils.timed.TimedCommands;
+import net.auscraft.BlivUtils.utils.FlatFile;
 import net.auscraft.BlivUtils.utils.Utilities;
 import net.auscraft.BlivUtils.vote.Vote;
 import net.auscraft.BlivUtils.vote.VoteManager;
-
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
@@ -46,17 +42,24 @@ import org.bukkit.scheduler.BukkitScheduler;
 public final class BlivUtils extends JavaPlugin
 {
 	//Temporary storage
-	private static HashMap<String, String> colourSave = new HashMap<String, String>();
+	@Getter
+	private static HashMap<String, String> colourSave;
 	
 	//Ender Rank bonuses (Temporary Storage)
-	private static HashMap<String, Boolean> xpClaim = new HashMap<String, Boolean>();
-	private static HashMap<String, Boolean> fixClaim = new HashMap<String, Boolean>();
+	@Getter
+	private static HashMap<String, Boolean> xpClaim;
+	@Getter
+	private static HashMap<String, Boolean> fixClaim;
 	
+	@Getter
+	private BlivUtils instance;
+	@Getter
 	private static PermissionManager pex;
-	private ConfigSetup configSetup;
-	private ConfigAccessor cfg;
+	@Getter
+	private FlatFile cfg;
+	@Getter
 	private Utilities util;
-	private FileConfiguration configFile;
+	@Getter
 	private VoteManager voteMan;
 	BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 
@@ -64,20 +67,22 @@ public final class BlivUtils extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
-		//Get in there early to claim the economy!
+		this.instance = this;
 		
 		// Other Stuff
 		pex = PermissionsEx.getPermissionManager();
 		util = new Utilities(this);
-		configSetup = new ConfigSetup(this);
-		configFile = configSetup.getConfig();
-		cfg = new ConfigAccessor(this);
+		cfg = new FlatFile(this, "config.yml");
 		voteMan = new VoteManager(this);
 		// Scheduling
 		util.checkRankScheduler();
 		//MySQL Setup
 		setupMySQL();
+		doScheduledCommands();
 		
+		fixClaim = new HashMap<String, Boolean>();
+		xpClaim = new HashMap<String, Boolean>();
+		colourSave = new HashMap<String, String>();
 		
 		// Some of the commands require the above set up before they can appear to function.
 		// Command Declaration
@@ -98,28 +103,24 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("voteprint").setExecutor(new Vote(this));
 		getCommand("voteclaim").setExecutor(new VoteManager(this));
 		getCommand("voteparty").setExecutor(new Vote(this));
-		getCommand("timedadd").setExecutor(new TimedCommands(this));
-		getCommand("timeleft").setExecutor(new PromoteExecuter(this));
-		getCommand("prefix").setExecutor(new PromoteExecuter(this));
+		getCommand("timeleft").setExecutor(new PromoteExecutor(this));
+		getCommand("prefix").setExecutor(new PromoteExecutor(this));
 		getCommand("chat").setExecutor(new ColourExecutor());
-		getCommand("promoadmin").setExecutor(new PromoteExecuter(this));
-		getCommand("updateadmin").setExecutor(new PromoteExecuter(this));
-		getCommand("updatetime").setExecutor(new PromoteExecuter(this));
+		getCommand("promoadmin").setExecutor(new PromoteExecutor(this));
+		getCommand("updateadmin").setExecutor(new PromoteExecutor(this));
+		getCommand("updatetime").setExecutor(new PromoteExecutor(this));
 		
 		//Listeners
 		getServer().getPluginManager().registerEvents(new ColourListener(this), this);
 		getServer().getPluginManager().registerEvents(new PromotionListener(this), this);
 		getServer().getPluginManager().registerEvents(new HubListener(), this);
-		getServer().getPluginManager().registerEvents(new XPListener(this), this);
+		getServer().getPluginManager().registerEvents(new XPListener(), this);
 		getServer().getPluginManager().registerEvents(new DeathListener(this), this);
 		getServer().getPluginManager().registerEvents(new HealthListener(this), this);
 		
-		//Toggleable commands
-		int toggle[] = cfg.getEnabledCommands();
-		
-		if(toggle[0] == 1)
+		if(cfg.getInt("options.toggle.rankpromotion") == 1)
 		{
-			getCommand("buyrank").setExecutor(new PromoteExecuter(this));
+			getCommand("buyrank").setExecutor(new PromoteExecutor(this));
 			util.logInfo("Rank Purchasing Enabled.");
 		}
 		else
@@ -128,18 +129,7 @@ public final class BlivUtils extends JavaPlugin
 			util.logInfo("Rank Purchasing Disabled.");
 		}
 		
-		if(toggle[1] == 1)
-		{
-			getCommand("credits").setExecutor(new CreditManager(this));
-			util.logInfo("Credit System Enabled.");
-		}
-		else
-		{
-			getCommand("credits").setExecutor(new RemovedCommand(this));
-			util.logInfo("Credits System Disabled.");
-		}
-		
-		if(toggle[2] == 1)
+		if(cfg.getInt("options.toggle.presents") == 1)
 		{
 			getCommand("present").setExecutor(new Rewards(this));
 			util.logInfo("Rewards Enabled...");
@@ -181,7 +171,8 @@ public final class BlivUtils extends JavaPlugin
 		{
 			util.logInfo("Table not set up. First run.");
 			//Set the setup variable to 1, so it attempts to setup the CreditsDB table
-			configSetup.setValue("options.mysql.setup", "1");
+			cfg.saveValue("options.mysql.setup", "1");
+			//configSetup.setValue("options.mysql.setup", "1");
 			util.logInfo("setup should now be 1");
 		}
 		else if(setup.equals("1"))
@@ -197,7 +188,8 @@ public final class BlivUtils extends JavaPlugin
 				conn.close();
 				util.logInfo("Successfully set up Credits Table");
 				//Set the setup variable to 2, so it doesn't attempt to setup the CreditsDB table anymore.
-				configSetup.setValue("options.mysql.setup", "2");
+				//configSetup.setValue("options.mysql.setup", "2");
+				cfg.saveValue("options.mysql.setup", "2");
 			}
 			catch(SQLException e)
 			{
@@ -235,7 +227,7 @@ public final class BlivUtils extends JavaPlugin
 							if ((Integer.parseInt(user.getOption("group-" + rank + "-until", null)) < ((int) (System.currentTimeMillis() / 1000L))))
 							{
 								user.removeGroup(rank, null);
-								user.setOption("group-" + rank + "-until", ""); // Reset the option's value so that the scheduler doesn't get past the first if.
+								user.setOption("group-" + rank + "-until", null); // Reset the option's value so that the scheduler doesn't get past the first if.
 								if(rank.equals("EnderRank"))
 								{
 									String EnderRankValue = user.getOption("EnderRankValue");
@@ -244,13 +236,28 @@ public final class BlivUtils extends JavaPlugin
 									{
 										case "1":
 											rank = "Enderman";
+											if(user.getPrefix().equals("&7[&5Enderman&7] "))
+											{
+												user.setPrefix("", null);
+											}
+											user.setOption("EnderRankValue", null);
 											break;
 										case "2":
 											rank = "EnderDragon";
+											if(user.getPrefix().equals("&7[&4EnderDragon&7] "))
+											{
+												user.setPrefix("", null);
+											}
+											user.setOption("EnderRankValue", null);
 											Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "enderperm remove " + p.getName() + " EnderDragon");
 											break;
 										case "3":
 											rank = "Wither";
+											if(user.getPrefix().equals("&7[&8Wither&7] "))
+											{
+												user.setPrefix("", null);
+											}
+											user.setOption("EnderRankValue", null);
 											Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "enderperm remove " + p.getName() + " Wither");
 											break;
 										default:
@@ -267,6 +274,18 @@ public final class BlivUtils extends JavaPlugin
 				}
 			}
 		}, 0L, looptime);
+	}
+	
+	public void doScheduledCommands()
+	{
+		scheduler.scheduleSyncRepeatingTask(this, new Runnable()
+		{
+			public void run()
+			{
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex reload");
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
+			}
+		}, 18000L, 18000L /*200L*/); //5 Minutes
 	}
 	
 	public void doVoteRewardCheck()
@@ -293,7 +312,7 @@ public final class BlivUtils extends JavaPlugin
 	public Permission setupPermissions()
 	{
 		RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
-		Permission perms = (Permission) rsp.getProvider();
+		Permission perms = rsp.getProvider();
 		return perms;
 	}
 
@@ -302,48 +321,8 @@ public final class BlivUtils extends JavaPlugin
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 		if (rsp != null)
 			;
-		Economy econ = (Economy) rsp.getProvider();
+		Economy econ = rsp.getProvider();
 		return econ;
-	}
-
-	public HashMap<String, String> getSuffixColour() 
-	{
-		return colourSave;
-	}
-	
-	public HashMap<String, Boolean> getXPClaim() 
-	{
-		return xpClaim;
-	}
-	
-	public HashMap<String, Boolean> getFixClaim() 
-	{
-		return fixClaim;
-	}
-
-	public BlivUtils getPlugin()
-	{
-		return this;
-	}
-	
-	public VoteManager getVoteManager()
-	{
-		return voteMan;
-	}
-	
-	public ConfigSetup getConfigSetup()
-	{
-		return configSetup;
-	}
-	
-	public ConfigAccessor getCfg()
-	{
-		return cfg;
-	}
-	
-	public Utilities getUtil()
-	{
-		return util;
 	}
 
 }

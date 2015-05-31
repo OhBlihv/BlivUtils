@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -92,174 +93,169 @@ public class Utilities {
 	public int getTimeLeft(String playerName, String rank)
 	{
 		PermissionUser user = PermissionsEx.getUser(playerName);
-		if ((user.getOption("group-" + rank + "-until") != null) && (user.getOption("group-" + rank + "-until") != "")) 
+		if (!(user.getOption("group-" + rank + "-until") == null) && !(user.getOption("group-" + rank + "-until").length() == 0)) 
 		{
-			int timeleft = ((Integer.parseInt(user.getOption("group-" + rank + "-until", null))) - ((int) (System.currentTimeMillis() / 1000L)));
+			int timeleft = (int) ((Long.parseLong(user.getOption("group-" + rank + "-until", null))) - ((int) (System.currentTimeMillis() / 1000L)));
 			return timeleft;
-		} 
-		else
-		{
-			return -1;
 		}
+		
+		return -1;
 	}
 	
 	public int getRankTime(String playerName, String rank)
 	{
 		PermissionUser user = PermissionsEx.getUser(playerName);
-		if ((user.getOption("group-" + rank + "-until") != null) && (user.getOption("group-" + rank + "-until") != "")) 
+		if (!(user.getOption("group-" + rank + "-until") == null) && !(user.getOption("group-" + rank + "-until").length() == 0))
 		{
 			return Integer.parseInt(user.getOption("group-" + rank + "-until", null));
-		} 
-		else
-		{
-			return -1;
 		}
+		
+		return -1;
 	}
 	
 	public String getActiveRank(String playerName)
 	{
 		PermissionUser user = PermissionsEx.getUser(playerName);
-		String rank = "";
-		if ((user.getOption("group-Admin-until") != null) && (user.getOption("group-Admin-until") != ""))
+		if (!(user.getOption("group-Admin-until") == null) && !(user.getOption("group-Admin-until").length() == 0))
 		{
-			rank = "Admin";
+			return "Admin";
 		}
-		else if ((user.getOption("group-EnderDragon-until") != null) && (user.getOption("group-EnderDragon-until") != ""))
+		else if (!(user.getOption("group-EnderRank-until") == null) && !(user.getOption("group-EnderRank-until").length() == 0))
 		{
-			rank = "EnderDragon";
+			return "EnderRank";
 		}
-		else if ((user.getOption("group-Enderman-until") != null) && (user.getOption("group-Enderman-until") != ""))
+		else if (!(user.getOption("group-EnderDragon-until") == null) && !(user.getOption("group-EnderDragon-until").length() == 0))
 		{
-			rank = "Enderman";
+			return "EnderDragon";
+		}
+		else if (!(user.getOption("group-Enderman-until") == null) && !(user.getOption("group-Enderman-until").length() == 0))
+		{
+			return "Enderman";
 		} 
-		else if ((user.getOption("group-Endermite-until") != null) && (user.getOption("group-Endermite-until") != ""))
+		else if (!(user.getOption("group-Endermite-until") == null) && !(user.getOption("group-Endermite-until").length() == 0))
 		{
-			rank = "Endermite";
+			return "Endermite";
 		} 
-		else
-		{
-			rank = "";
-		}
-		return rank;
+		return "";
 	}
 	
 	public String getActiveRanks(String playerName)
 	{
 		PermissionUser user = PermissionsEx.getUser(playerName);
 		String ranks = "";
-		if ((user.getOption("group-Admin-until") != null) && (user.getOption("group-Admin-until") != ""))
+		if (!(user.getOption("group-Admin-until") == null) && !(user.getOption("group-Admin-until").length() == 0))
 		{
 			ranks += "Admin,";
 		}
-		if ((user.getOption("group-EnderRank-until") != null) && (user.getOption("group-EnderRank-until") != ""))
+		if (!(user.getOption("group-EnderRank-until") == null) && !(user.getOption("group-EnderRank-until").length() == 0))
 		{
 			ranks += "EnderRank,";
 		}
-		if ((user.getOption("group-EnderDragon-until") != null) && (user.getOption("group-EnderDragon-until") != ""))
+		if (!(user.getOption("group-EnderDragon-until") == null) && !(user.getOption("group-EnderDragon-until").length() == 0))
 		{
 			ranks += "EnderDragon,";
 		}
-		if ((user.getOption("group-Enderman-until") != null) && (user.getOption("group-Enderman-until") != ""))
+		if (!(user.getOption("group-Enderman-until") == null) && !(user.getOption("group-Enderman-until").length() == 0))
 		{
 			ranks += "Enderman,";
 		} 
-		if ((user.getOption("group-Endermite-until") != null) && (user.getOption("group-Endermite-until") != ""))
+		if (!(user.getOption("group-Endermite-until") == null) && !(user.getOption("group-Endermite-until").length() == 0))
 		{
 			ranks += "Endermite,";
 		}
-		return ranks;
+		return ranks.substring(0, ranks.length() - 1);
 	}
 	
-	public String getActivePackages(String playerName)
+	public ArrayList<String> getActivePackages(String playerName)
 	{
 		PermissionUser user = PermissionsEx.getUser(playerName);
-		String packages = "";
+		ArrayList<String> packages = new ArrayList<String>();
 		//Pets -----------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-EnderPetsPassive-until") != null) && (user.getOption("group-EnderPetsPassive-until") != ""))
+		if ((user.getOption("group-EnderPetsPassive-until") != null) && (user.getOption("group-EnderPetsPassive-until").length() != 0))
 		{
-			packages += "Passive Pets, ";
+			packages.add("Passive Pets|EnderPetsPassive");
 		}
-		if ((user.getOption("group-EnderPetsNeutral-until") != null) && (user.getOption("group-EnderPetsNeutral-until") != ""))
+		if ((user.getOption("group-EnderPetsNeutral-until") != null) && (user.getOption("group-EnderPetsNeutral-until").length() != 0))
 		{
-			packages += "Neutral Pets, ";
+			packages.add("Neutral Pets|EnderPetsNeutral");
 		}
-		if ((user.getOption("group-EnderPetsHostile-until") != null) && (user.getOption("group-EnderPetsHostile-until") != ""))
+		if ((user.getOption("group-EnderPetsHostile-until") != null) && (user.getOption("group-EnderPetsHostile-until").length() != 0))
 		{
-			packages += "Hostile Pets, ";
+			packages.add("Hostile Pets|EnderPetsHostile");
 		}
-		if ((user.getOption("group-EnderPetsALL-until") != null) && (user.getOption("group-EnderPetsALL-until") != ""))
+		if ((user.getOption("group-EnderPetsALL-until") != null) && (user.getOption("group-EnderPetsALL-until").length() != 0))
 		{
-			packages += "ALL Pets, ";
+			packages.add("ALL Pets|EnderPetsALL");
 		}
 		//Trails ---------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-EnderTrailsSET1-until") != null) && (user.getOption("group-EnderTrailsSET1-until") != ""))
+		if ((user.getOption("group-EnderTrailsSET1-until") != null) && (user.getOption("group-EnderTrailsSET1-until").length() != 0))
 		{
-			packages += "Set 1 Trails, ";
+			packages.add("Set 1 Trails|EnderTrailsSET1");
 		}
-		if ((user.getOption("group-EnderTrailsSET2-until") != null) && (user.getOption("group-EnderTrailsSET2-until") != ""))
+		if ((user.getOption("group-EnderTrailsSET2-until") != null) && (user.getOption("group-EnderTrailsSET2-until").length() != 0))
 		{
-			packages += "Set 2 Trails, ";
+			packages.add("Set 2 Trails|EnderTrailsSET2");
 		}
-		if ((user.getOption("group-EnderTrailsALL-until") != null) && (user.getOption("group-EnderTrailsALL-until") != ""))
+		if ((user.getOption("group-EnderTrailsALL-until") != null) && (user.getOption("group-EnderTrailsALL-until").length() != 0))
 		{
-			packages += "ALL Trails, ";
+			packages.add("ALL Trails|EnderTrailsALL");
 		}
 		//Disguises -------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-EnderDisguisesPassive-until") != null) && (user.getOption("group-EnderDisguisesPassive-until") != ""))
+		if ((user.getOption("group-EnderDisguisesPassive-until") != null) && (user.getOption("group-EnderDisguisesPassive-until").length() != 0))
 		{
-			packages += "Passive Mob Disguises, ";
+			packages.add("Passive Mob Disguises|EnderDisguisesPassive");
 		}
-		if ((user.getOption("group-EnderDisguisesHostile-until") != null) && (user.getOption("group-EnderDisguisesHostile-until") != ""))
+		if ((user.getOption("group-EnderDisguisesHostile-until") != null) && (user.getOption("group-EnderDisguisesHostile-until").length() != 0))
 		{
-			packages += "Hostile Mob Disguises, ";
+			packages.add("Hostile Mob Disguises|EnderDisguisesHostile");
 		}
-		if ((user.getOption("group-EnderDisguisesALL-until") != null) && (user.getOption("group-EnderDisguisesALL-until") != ""))
+		if ((user.getOption("group-EnderDisguisesALL-until") != null) && (user.getOption("group-EnderDisguisesALL-until").length() != 0))
 		{
-			packages += "ALL Mob Disguises, ";
+			packages.add("ALL Mob Disguises|EnderDisguisesALL");
 		}
-		if ((user.getOption("group-EnderDisguisesALLEntity-until") != null) && (user.getOption("group-EnderDisguisesALLEntity-until") != ""))
+		if ((user.getOption("group-EnderDisguisesALLEntity-until") != null) && (user.getOption("group-EnderDisguisesALLEntity-until").length() != 0))
 		{
-			packages += "ALL Mob Disguises + Entity Disguises, ";
+			packages.add("ALL Mob Disguises + Entity Disguises|EnderDisguisesALLEntity");
 		}
 		//Cooldowns -------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-EnderCooldowns-until") != null) && (user.getOption("group-EnderCooldowns-until") != ""))
+		if ((user.getOption("group-EnderCooldowns-until") != null) && (user.getOption("group-EnderCooldowns-until").length() != 0))
 		{
-			packages += "No Cooldowns, ";
+			packages.add("No Cooldowns|EnderCooldowns");
 		}
 		//Warps -----------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-EnderWarps-until") != null) && (user.getOption("group-EnderWarps-until") != ""))
+		if ((user.getOption("group-EnderWarps-until") != null) && (user.getOption("group-EnderWarps-until").length() != 0))
 		{
-			packages += "20 Available Warps, ";
+			packages.add("20 Available Warps|EnderWarps");
 		}
 		//mcMMO -----------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-mcMMOSmall-until") != null) && (user.getOption("group-mcMMOSmall-until") != ""))
+		if ((user.getOption("group-mcMMOSmall-until") != null) && (user.getOption("group-mcMMOSmall-until").length() != 0))
 		{
-			packages += "mcMMO: Small Perk Pack, ";
+			packages.add("mcMMO: Small Perk Pack|mcMMOSmall");
 		}
-		if ((user.getOption("group-mcMMOMedium-until") != null) && (user.getOption("group-mcMMOMedium-until") != ""))
+		if ((user.getOption("group-mcMMOMedium-until") != null) && (user.getOption("group-mcMMOMedium-until").length() != 0))
 		{
-			packages += "mcMMO: Medium Perk Pack, ";
+			packages.add("mcMMO: Medium Perk Pack|mcMMOMedium");
 		}
-		if ((user.getOption("group-mcMMOLarge-until") != null) && (user.getOption("group-mcMMOLarge-until") != ""))
+		if ((user.getOption("group-mcMMOLarge-until") != null) && (user.getOption("group-mcMMOLarge-until").length() != 0))
 		{
-			packages += "mcMMO: Large Perk Pack, ";
+			packages.add("mcMMO: Large Perk Pack|mcMMOLarge");
 		}
 		//XP Multiplication and Keep Inventory/Levels on Death
-		if ((user.getOption("group-EnderDoubleXP-until") != null) && (user.getOption("group-EnderDoubleXP-until") != ""))
+		if ((user.getOption("group-EnderDoubleXP-until") != null) && (user.getOption("group-EnderDoubleXP-until").length() != 0))
 		{
-			packages += "2x Vanilla Experience ";
+			packages.add("2x Vanilla Experience|EnderDoubleXP");
 		}
-		if ((user.getOption("group-EnderKeepInv-until") != null) && (user.getOption("group-EnderKeepInv-until") != ""))
+		if ((user.getOption("group-EnderKeepInv-until") != null) && (user.getOption("group-EnderKeepInv-until").length() != 0))
 		{
-			packages += "Keep Inventory on Death ";
+			packages.add("Keep Inventory on Death|EnderKeepInv");
 		}
-		if ((user.getOption("group-EnderKeepLevels-until") != null) && (user.getOption("group-EnderKeepLevels-until") != ""))
+		if ((user.getOption("group-EnderKeepLevels-until") != null) && (user.getOption("group-EnderKeepLevels-until").length() != 0))
 		{
-			packages += "Keep EXP Levels on Death ";
+			packages.add("Keep EXP Levels on Death|EnderKeepLevels");
 		}
-		if ((user.getOption("group-EnderDoubleXPKeepALL-until") != null) && (user.getOption("group-EnderDoubleXPKeepALL-until") != ""))
+		if ((user.getOption("group-EnderDoubleXPKeepALL-until") != null) && (user.getOption("group-EnderDoubleXPKeepALL-until").length() != 0))
 		{
-			packages += "Double XP + Keep Inventory/Levels on Death ";
+			packages.add("Double XP/Keep Inv & Levels on Death|EnderDoubleXPKeepALL");
 		}
 
 		return packages;
@@ -273,7 +269,7 @@ public class Utilities {
 		{
 			if(!(packageName.equals("")))
 			{
-				if ((user.getOption(packageName) != null) && (user.getOption(packageName) != ""))
+				if ((user.getOption(packageName) != null) && (user.getOption(packageName).length() != 0))
 				{
 					user.setOption(packageName, time);
 					logDebug("Added " + time + " to " + playerName + "'s package " + packageName);
@@ -288,108 +284,108 @@ public class Utilities {
 	{
 		PermissionUser user = PermissionsEx.getUser(playerName);
 		//Pets -----------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-EnderPetsPassive-until") != null) && (user.getOption("group-EnderPetsPassive-until") != ""))
+		if ((user.getOption("group-EnderPetsPassive-until") != null) && (user.getOption("group-EnderPetsPassive-until").length() != 0))
 		{
 			user.setOption("group-EnderPetsPassive-until", "");
 			user.removeGroup("EnderPetsPassive");
 		}
-		if ((user.getOption("group-EnderPetsNeutral-until") != null) && (user.getOption("group-EnderPetsNeutral-until") != ""))
+		if ((user.getOption("group-EnderPetsNeutral-until") != null) && (user.getOption("group-EnderPetsNeutral-until").length() != 0))
 		{
 			user.setOption("group-EnderPetsNeutral-until", "");
 			user.removeGroup("EnderPetsNeutral");
 		}
-		if ((user.getOption("group-EnderPetsHostile-until") != null) && (user.getOption("group-EnderPetsHostile-until") != ""))
+		if ((user.getOption("group-EnderPetsHostile-until") != null) && (user.getOption("group-EnderPetsHostile-until").length() != 0))
 		{
 			user.setOption("group-EnderPetsHostile-until", "");
 			user.removeGroup("EnderPetsHostile");
 		}
-		if ((user.getOption("group-EnderPetsALL-until") != null) && (user.getOption("group-EnderPetsALL-until") != ""))
+		if ((user.getOption("group-EnderPetsALL-until") != null) && (user.getOption("group-EnderPetsALL-until").length() != 0))
 		{
 			user.setOption("group-EnderPetsALL-until", "");
 			user.removeGroup("EnderPetsALL");
 		}
 		//Trails ---------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-EnderTrailsSET1-until") != null) && (user.getOption("group-EnderTrailsSET1-until") != ""))
+		if ((user.getOption("group-EnderTrailsSET1-until") != null) && (user.getOption("group-EnderTrailsSET1-until").length() != 0))
 		{
 			user.setOption("group-EnderTrailsSET1-until", "");
 			user.removeGroup("EnderTrailsSET1");
 		}
-		if ((user.getOption("group-EnderTrailsSET2-until") != null) && (user.getOption("group-EnderTrailsSET2-until") != ""))
+		if ((user.getOption("group-EnderTrailsSET2-until") != null) && (user.getOption("group-EnderTrailsSET2-until").length() != 0))
 		{
 			user.setOption("group-EnderTrailsSET2-until", "");
 			user.removeGroup("EnderTrailsSET2");
 		}
-		if ((user.getOption("group-EnderTrailsALL-until") != null) && (user.getOption("group-EnderTrailsALL-until") != ""))
+		if ((user.getOption("group-EnderTrailsALL-until") != null) && (user.getOption("group-EnderTrailsALL-until").length() != 0))
 		{
 			user.setOption("group-EnderTrailsALL-until", "");
 			user.removeGroup("EnderTrailsALL");
 		}
 		//Disguises -------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-EnderDisguisesPassive-until") != null) && (user.getOption("group-EnderDisguisesPassive-until") != ""))
+		if ((user.getOption("group-EnderDisguisesPassive-until") != null) && (user.getOption("group-EnderDisguisesPassive-until").length() != 0))
 		{
 			user.setOption("group-EnderDisguisesPassive-until", "");
 			user.removeGroup("EnderDisguisesPassive");
 		}
-		if ((user.getOption("group-EnderDisguisesHostile-until") != null) && (user.getOption("group-EnderDisguisesHostile-until") != ""))
+		if ((user.getOption("group-EnderDisguisesHostile-until") != null) && (user.getOption("group-EnderDisguisesHostile-until").length() != 0))
 		{
 			user.setOption("group-EnderDisguisesHostile-until", "");
 			user.removeGroup("EnderPetsDisguisesHostile");
 		}
-		if ((user.getOption("group-EnderDisguisesALL-until") != null) && (user.getOption("group-EnderDisguisesALL-until") != ""))
+		if ((user.getOption("group-EnderDisguisesALL-until") != null) && (user.getOption("group-EnderDisguisesALL-until").length() != 0))
 		{
 			user.setOption("group-EnderDisguiseALL-until", "");
 			user.removeGroup("EnderDisguisesALL");
 		}
-		if ((user.getOption("group-EnderDisguisesALLEntity-until") != null) && (user.getOption("group-EnderDisguisesALLEntity-until") != ""))
+		if ((user.getOption("group-EnderDisguisesALLEntity-until") != null) && (user.getOption("group-EnderDisguisesALLEntity-until").length() != 0))
 		{
 			user.setOption("group-EnderDisguisesALLEntity-until", "");
 			user.removeGroup("EnderDisguisesALLEntity");
 		}
 		//Cooldowns -------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-EnderCooldowns-until") != null) && (user.getOption("group-EnderCooldowns-until") != ""))
+		if ((user.getOption("group-EnderCooldowns-until") != null) && (user.getOption("group-EnderCooldowns-until").length() != 0))
 		{
 			user.setOption("group-EnderCooldowns-until", "");
 			user.removeGroup("EnderCooldowns");
 		}
 		//Warps -----------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-EnderWarps-until") != null) && (user.getOption("group-EnderWarps-until") != ""))
+		if ((user.getOption("group-EnderWarps-until") != null) && (user.getOption("group-EnderWarps-until").length() != 0))
 		{
 			user.setOption("group-EnderWarps-until", "");
 			user.removeGroup("EnderWarps");
 		}
 		//mcMMO -----------------------------------------------------------------------------------------------------------------
-		if ((user.getOption("group-mcMMOSmall-until") != null) && (user.getOption("group-mcMMOSmall-until") != ""))
+		if ((user.getOption("group-mcMMOSmall-until") != null) && (user.getOption("group-mcMMOSmall-until").length() != 0))
 		{
 			user.setOption("group-mcMMOSmall-until", "");
 			user.removeGroup("mcMMOSmall");
 		}
-		if ((user.getOption("group-mcMMOMedium-until") != null) && (user.getOption("group-mcMMOMedium-until") != ""))
+		if ((user.getOption("group-mcMMOMedium-until") != null) && (user.getOption("group-mcMMOMedium-until").length() != 0))
 		{
 			user.setOption("group-mcMMOMedium-until", "");
 			user.removeGroup("mcMMOMedium");
 		}
-		if ((user.getOption("group-mcMMOLarge-until") != null) && (user.getOption("group-mcMMOLarge-until") != ""))
+		if ((user.getOption("group-mcMMOLarge-until") != null) && (user.getOption("group-mcMMOLarge-until").length() != 0))
 		{
 			user.setOption("group-mcMMOLarge-until", "");
 			user.removeGroup("mcMMOLarge");
 		}
 		//XP Multiplication and Keep Inventory/Levels on Death
-		if ((user.getOption("group-EnderDoubleXP-until") != null) && (user.getOption("group-EnderDoubleXP-until") != ""))
+		if ((user.getOption("group-EnderDoubleXP-until") != null) && (user.getOption("group-EnderDoubleXP-until").length() != 0))
 		{
 			user.setOption("group-EnderDoubleXP-until", "");
 			user.removeGroup("EnderDoubleXP");
 		}
-		if ((user.getOption("group-EnderKeepInv-until") != null) && (user.getOption("group-EnderKeepInv-until") != ""))
+		if ((user.getOption("group-EnderKeepInv-until") != null) && (user.getOption("group-EnderKeepInv-until").length() != 0))
 		{
 			user.setOption("group-EnderKeepInv-until", "");
 			user.removeGroup("EnderKeepInv");
 		}
-		if ((user.getOption("group-EnderKeepLevels-until") != null) && (user.getOption("group-EnderKeepLevels-until") != ""))
+		if ((user.getOption("group-EnderKeepLevels-until") != null) && (user.getOption("group-EnderKeepLevels-until").length() != 0))
 		{
 			user.setOption("group-EnderKeepLevels-until", "");
 			user.removeGroup("EnderKeepLevels");
 		}
-		if ((user.getOption("group-EnderDoubleXPKeepALL-until") != null) && (user.getOption("group-EnderDoubleXPKeepALL-until") != ""))
+		if ((user.getOption("group-EnderDoubleXPKeepALL-until") != null) && (user.getOption("group-EnderDoubleXPKeepALL-until").length() != 0))
 		{
 			user.setOption("group-EnderDoubleXPKeepALL-until", "");
 			user.removeGroup("EnderDoubleXPKeepALL");

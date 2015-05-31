@@ -29,7 +29,7 @@ public class RewardContainer
 		
 		try
 		{
-			if(((inLore.equals("LEFT_BLANK")) || (inLore != null)))
+			if((inLore == null) || (inLore.equals("LEFT_BLANK")))
 			{
 				lore = inLore;
 			}

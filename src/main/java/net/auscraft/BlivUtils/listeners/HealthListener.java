@@ -29,7 +29,7 @@ private Utilities util;
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		Player p = event.getPlayer();
-		if(!(p.hasPermission("blivutils.ender.hearts.off")))
+		if(p.hasPermission("blivutils.ender.hearts.off"))
 		{
 			p.setMaxHealth(20.0);
 		}
@@ -40,6 +40,10 @@ private Utilities util;
 		else if(p.hasPermission("blivutils.ender.hearts.oneandahalf"))
 		{
 			p.setMaxHealth(30.0);
+		}
+		else
+		{
+			p.setMaxHealth(20.0);
 		}
 		
 	}

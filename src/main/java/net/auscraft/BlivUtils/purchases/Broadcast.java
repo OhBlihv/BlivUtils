@@ -72,7 +72,7 @@ public class Broadcast implements CommandExecutor
 					if(Double.parseDouble(args[3]) < 15.00)
 					{
 						//If the user has a prefix, dont set their prefix
-						if(!(user.getPrefix().equals("") || user.getPrefix().equals(null)))
+						if(!(user.getPrefix().length() == 0 || user.getPrefix() == null))
 						{
 							user.setPrefix("&7[&5Enderman&7] ", null);
 						}
@@ -82,7 +82,7 @@ public class Broadcast implements CommandExecutor
 					//Player gets [EnderDragon]
 					else if(Double.parseDouble(args[3]) < 30.00)
 					{
-						if(!(user.getPrefix().equals("") || user.getPrefix().equals(null)))
+						if(!(user.getPrefix().length() == 0 || user.getPrefix() == null))
 						{
 							user.setPrefix("&7[&4EnderDragon&7] ", null);
 						}
@@ -93,7 +93,7 @@ public class Broadcast implements CommandExecutor
 					//Player gets [Wither] >= $30/month
 					else
 					{
-						if(!(user.getPrefix().equals("") || user.getPrefix().equals(null)))
+						if(!(user.getPrefix().length() == 0 || user.getPrefix() == null))
 						{
 							user.setPrefix("&7[&8Wither&7] ", null);
 						}
@@ -118,16 +118,12 @@ public class Broadcast implements CommandExecutor
 						+ ChatColor.GRAY + "]" + " " + ChatColor.YELLOW	+ ChatColor.ITALIC + ChatColor.BOLD + message);
 				return true;
 			}
-			else 
-			{
-				return false;
-			}
+			
+			return false;
 		}
-		else
-		{
-			util.printError(sender, "You can't do this!");
-			return true;
-		}
+		
+		util.printError(sender, "You can't do this!");
+		return true;
 	}
 	
 	private String translateVariables(String fixedString, Player p, String packageName, String price)

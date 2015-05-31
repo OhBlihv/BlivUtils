@@ -239,15 +239,11 @@ public class RankHelpExecutor implements CommandExecutor
 				}
 				return true;
 			}
-			else
-			{
-				util.printError(sender, "M8, u rnt a playr. Git owt.");
-				return true;
-			}
+			
+			util.printError(sender, "M8, u rnt a playr. Git owt.");
+			return true;
 		}
-		else 
-		{
-			return false;
-		}
+		
+		return false;
 	}
 }

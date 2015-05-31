@@ -31,8 +31,8 @@ public class Ender implements CommandExecutor
 	public Ender(BlivUtils instance)
 	{
 		util = instance.getUtil();
-		xpClaim = instance.getXPClaim();
-		fixClaim = instance.getFixClaim();
+		xpClaim = BlivUtils.getXpClaim();
+		fixClaim = BlivUtils.getFixClaim();
 	}
 
 	@Override
@@ -174,7 +174,6 @@ public class Ender implements CommandExecutor
 					}
 					msgArr[msgArr.length - 1] = util.translateColours("&5Lore edited by &o" + sender.getName());
 					
-					//TODO: Format using util.translateColours()
 					List<String> lore = new ArrayList<String>(Arrays.asList(msgArr));
 					meta.setLore(lore);
 					item.setItemMeta(meta);
@@ -266,17 +265,18 @@ public class Ender implements CommandExecutor
 						{
 							user.addPermission("blivutils.ender.fixclaim");
 							user.addPermission("blivutils.ender.xpclaim");
-							user.addPermission("essentials.firework.*");
+							user.addPermission("essentials.firework");
+							user.addPermission("blivutils.ender.hearts");
 							user.addPermission("blivutils.ender.hearts.oneandahalf");
 						}
 						else if(args[2].equalsIgnoreCase("Wither"))
 						{
 							user.addPermission("blivutils.ender.fixclaim");
 							user.addPermission("blivutils.ender.xpclaim");
-							user.addPermission("essentials.firework.*");
-							user.addPermission("blivutils.ender.hearts.oneandahalf");
+							user.addPermission("essentials.firework");
 							user.addPermission("blivutils.ender.lore");
-							user.addPermission("blivutils.ender.hearts.oneandahalf");
+							user.addPermission("blivutils.ender.hearts");
+							user.addPermission("blivutils.ender.hearts.double");
 						}
 						else
 						{
@@ -284,11 +284,9 @@ public class Ender implements CommandExecutor
 						}
 						return true;
 					}
-					else
-					{
-						util.printError(sender, "Player does not exist");
-						return true;
-					}
+					
+					util.printError(sender, "Player does not exist");
+					return true;
 					
 				}
 				else if(args[0].equalsIgnoreCase("remove"))
@@ -318,11 +316,9 @@ public class Ender implements CommandExecutor
 						}
 						return true;
 					}
-					else
-					{
-						util.printError(sender, "Player does not exist");
-						return true;
-					}
+					
+					util.printError(sender, "Player does not exist");
+					return true;
 				}
 			}
 			else
@@ -334,7 +330,7 @@ public class Ender implements CommandExecutor
 			
 		}
 		//Base ender rank command
-		else if (cmd.getName().equalsIgnoreCase("enderrank")	&& (sender.hasPermission("blivutils.purch"))) //Only for Console
+		else if (cmd.getName().equalsIgnoreCase("enderrank") && (sender.hasPermission("blivutils.purch"))) //Only for Console
 		{
 			/* Package Names ---------------------
 			 * 
@@ -382,34 +378,51 @@ public class Ender implements CommandExecutor
 				if(args[0].equals("wipe"))
 				{
 					util.wipePackages(args[1]);
-					/*for(int i = 0;i < enderPackages.length;i++)
-					{
-						PermissionUser user = PermissionsEx.getUser(args[0]);
-						//user.setOption("group-" + enderPackages[i] + "-until", "0");
-						user.removeGroup(enderPackages[i]);
-					}*/
 					util.logInfo("Wiped all packages from " + args[1] + "'s account");
 					return true;
 				}
-				else
+				
+				PermissionUser user = PermissionsEx.getUser(args[0]);
+				if(util.getTimeLeft(args[0], "EnderRank") <= 0 || user.getPermissions(null).contains("blivutils.ender.purchasebypass"))
 				{
-					switch(args[1])
-					{
-						case "EnderPetsPassive": case "EnderPetsNeutral": case "EnderPetsHostile": case "EnderPetsALL":
-						case "EnderTrailsSET1": case "EnderTrailsSET2": case "EnderTrailsALL":
-						case "EnderDisguisesPassive": case "EnderDisguisesHostile": case "EnderDisguisesALL": case "EnderDisguisesALLEntity":
-						case "EnderCooldowns": case "EnderWarps":
-						case "EnderDoubleXP": case "EnderKeepInv": case "EnderKeepLevel": case "EnderDoubleXPKeepALL":
-						case "mcMMOSmall": case "mcMMOMedium": case "mcMMOLarge":
-							PermissionUser user = PermissionsEx.getUser(args[0]);
-							user.setOption("group-" + args[1] + "-until", ((int) (System.currentTimeMillis() / 1000L)) + "2592000");
-							user.addGroup(args[1]);
-							util.logInfo("Package " + args[1] + " successfully added to " + args[0] + "'s account");
-							return true;
-						default:
-							//Stay Silent, otherwise console will be spammed if a player doesnt use a variable
-							return true;
-					}
+					util.logError("EnderRank not active -- Perks not added");
+					Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
+							"mail send " + args[0] + " Your perk: " + args[1] + " could not be applied due to an inactive Ender Rank.");
+				}
+				
+				switch(args[1])
+				{
+					case "EnderPetsPassive": case "EnderPetsNeutral": case "EnderPetsHostile": case "EnderPetsALL":
+					case "EnderTrailsSET1": case "EnderTrailsSET2": case "EnderTrailsALL":
+					case "EnderDisguisesPassive": case "EnderDisguisesHostile": case "EnderDisguisesALL": case "EnderDisguisesALLEntity":
+					case "EnderCooldowns": case "EnderWarps":
+					case "EnderDoubleXP": case "EnderKeepInv": case "EnderKeepLevel": case "EnderDoubleXPKeepALL":
+					case "mcMMOSmall": case "mcMMOMedium": case "mcMMOLarge":
+						
+						long currentLength = 0;
+						try
+						{
+							currentLength = Long.parseLong(user.getOption("group-" + args[1] + "-until"));
+						}
+						catch(NullPointerException | NumberFormatException e)
+						{
+							//Current Length = 0
+						}
+						
+						if(currentLength <= (System.currentTimeMillis() / 1000L))
+						{
+							currentLength = (System.currentTimeMillis() / 1000L);
+						}
+						long thirtyDays = 2592000;
+						long newLength = currentLength + thirtyDays;
+						//util.logDebug("Current: " + currentLength + " |30Days: " + thirtyDays + " |New: " + newLength);
+						user.setOption("group-" + args[1] + "-until", newLength + "");
+						user.addGroup(args[1]);
+						util.logInfo("Package " + args[1] + " successfully added to " + args[0] + "'s account");
+						return true;
+					default:
+						//Stay Silent, otherwise console will be spammed if a player doesnt use a variable
+						return true;
 				}
 				
 				

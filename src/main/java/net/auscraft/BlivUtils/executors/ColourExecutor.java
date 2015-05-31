@@ -36,6 +36,8 @@ public class ColourExecutor implements CommandExecutor
 			case "Red": item = new ItemStack(Material.WOOL, 1, DyeColor.RED.getData()); meta = item.getItemMeta(); meta.setDisplayName(ChatColor.RED + "Red"); break;
 			case "Light Purple": item = new ItemStack(Material.WOOL, 1, DyeColor.PINK.getData()); meta = item.getItemMeta(); meta.setDisplayName(ChatColor.LIGHT_PURPLE + "Light Purple"); break;
 			case "White": meta.setDisplayName("White"); break;
+			default:
+				break;
 		}
 		item.setData(woolColour);
         item.setItemMeta(meta);
@@ -47,7 +49,6 @@ public class ColourExecutor implements CommandExecutor
 	{
 		if (cmd.getName().equalsIgnoreCase("chat") && (sender instanceof Player))
 		{
-			Player p = (Player) sender;
 			Inventory inv = Bukkit.createInventory(null, 45, "Chat Colour");
 	        inv.setItem(29, WoolColour("Dark Gray"));
 	        inv.setItem(11, WoolColour("Gold"));

@@ -1,7 +1,5 @@
 package net.auscraft.BlivUtils.listeners;
 
-import net.auscraft.BlivUtils.BlivUtils;
-
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,7 +9,7 @@ public class XPListener  implements Listener
 {
 	//private Utilities util;
 	
-	public XPListener(BlivUtils instance)
+	public XPListener()
 	{
 		//util = instance.getUtil();
 	}

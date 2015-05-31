@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -55,6 +54,8 @@ public class ColourListener implements Listener
 			case "Red": item = new ItemStack(Material.WOOL, 1, DyeColor.RED.getData()); meta = item.getItemMeta(); meta.setLore(Arrays.asList(ChatColor.RED + "Red")); break;
 			case "Light Purple": item = new ItemStack(Material.WOOL, 1, DyeColor.PINK.getData()); meta = item.getItemMeta(); meta.setLore(Arrays.asList(ChatColor.LIGHT_PURPLE + "Light Purple")); break;
 			case "White": item = new ItemStack(Material.WOOL, 1, DyeColor.WHITE.getData()); meta = item.getItemMeta(); meta.setLore(Arrays.asList("White")); break;
+			default:
+				return null;
         }
         List<String> lore = meta.getLore();
         lore.add(ChatColor.DARK_GREEN + "$" + ChatColor.WHITE + "200 to apply");
@@ -150,11 +151,11 @@ public class ColourListener implements Listener
 			}
 			else
 			{
-				util.printError((CommandSender) p, "You dont have permission to change your colour! (Required: Blaze Rank)");
+				util.printError(p, "You dont have permission to change your colour! (Required: Blaze Rank)");
 			}
 			
 		}
-		else if(event.getInventory().getTitle().contains("Confirmation"))
+		else if(event.getInventory().getTitle().equals("Chat Confirmation"))
 		{
 			event.setCancelled(true);
 			Player p = (Player)event.getWhoClicked();
@@ -237,18 +238,18 @@ public class ColourListener implements Listener
 			econ.withdrawPlayer(p, 200);
 			PermissionUser user = PermissionsEx.getUser(p);
 			user.setSuffix(colour, null);
-			util.printSuccess((CommandSender) p, "Set to " + readable);
+			util.printSuccess(p, "Set to " + readable);
 			util.logInfo(ChatColor.GOLD + "Successfully set " + p.getName()	+ "'s chat colour to " + readable);
 		} 
 		else
 		{
-			util.printError((CommandSender) p, "You need at least $200 to buy that colour!");
+			util.printError(p, "You need at least $200 to buy that colour!");
 		}
 	}
 	
 	private void doConfirmationDialog(String colour, Player p)
 	{
-		Inventory inv = Bukkit.createInventory(null, 27, "Confirmation");
+		Inventory inv = Bukkit.createInventory(null, 27, "Chat Confirmation");
 	    inv.setItem(12, ConfirmPurchase(colour));
 	    inv.setItem(14, ConfirmQuit());
 	    p.openInventory(inv);

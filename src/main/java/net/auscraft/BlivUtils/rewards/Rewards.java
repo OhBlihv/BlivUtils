@@ -6,7 +6,7 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.config.ConfigAccessor;
+import net.auscraft.BlivUtils.utils.FlatFile;
 import net.auscraft.BlivUtils.utils.Utilities;
 
 import org.bukkit.Bukkit;
@@ -46,7 +46,7 @@ public class Rewards implements CommandExecutor
 	public static final String prefix = "Birthday";
 	
 	private RewardContainer[][] rewardsTable;
-	private ConfigAccessor cfg;
+	private FlatFile cfg;
 	private Utilities util;
 	
 	//Gift specific global variables
@@ -69,7 +69,8 @@ public class Rewards implements CommandExecutor
 		totalGiftPool[4] = 0;	//fun NPEs for the whole family.
 		
 		//Read this in from file or something based on how many there actually are.
-		rewardsTable = cfg.loadRewards();
+		//rewardsTable = cfg.loadRewards();
+		rewardsTable = RewardSetup.loadRewards(cfg);
 		if(rewardsTable == null)
 		{
 			throw new NullPointerException("Rewards Table is blank!");
@@ -129,117 +130,115 @@ public class Rewards implements CommandExecutor
 				util.printError(sender, "You can only open one Gift for this celebration!");
 				return true;
 			}
-			else
+			
+			if(args.length >= 1)
 			{
-				if(args.length >= 1)
+				if(args[0].equals("open") && (sender instanceof Player))
 				{
-					if(args[0].equals("open") && (sender instanceof Player))
+					//5 Gifts will be randomized later?
+					int numberGifts = rewardsTable.length;
+					RewardContainer[] rolledGift = new RewardContainer[numberGifts];
+					String rewardString = "";
+					Random rand = new Random(System.currentTimeMillis());
+					
+					//Should I bother randomising if they're good or bad?
+					sender.sendMessage(ChatColor.AQUA + "Thanks for joining in " + ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Aus" + ChatColor.WHITE + ChatColor.BOLD + "Craft's " + ChatColor.AQUA + prefix + " Celebrations!");
+					
+					//Start gifting.
+					try
 					{
-						//5 Gifts will be randomized later?
-						int numberGifts = rewardsTable.length;
-						RewardContainer[] rolledGift = new RewardContainer[numberGifts];
-						String rewardString = "";
-						Random rand = new Random(System.currentTimeMillis());
-						
-						//Should I bother randomising if they're good or bad?
-						sender.sendMessage(ChatColor.AQUA + "Thanks for joining in " + ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Aus" + ChatColor.WHITE + ChatColor.BOLD + "Craft's " + ChatColor.AQUA + prefix + " Celebrations!");
-						
-						//Start gifting.
-						try
+						ChatColor hyphen = ChatColor.DARK_BLUE;
+						for(int i = 0;i < numberGifts;i++)
 						{
-							ChatColor hyphen = ChatColor.DARK_BLUE;
-							for(int i = 0;i < numberGifts;i++)
-							{
-									//Get the chance, round it down, and roll a number.
-									//Example:
-									// - Chance: 0.6
-									// 0.6 * 100 = 60
-									// Roll, if number between 0 and 60, prize is won.
-									// If roll is 70-100, prize is not won.
-									//    - Re-roll another gift.
-									boolean won = false;
-									int chance = 100, reroll = 0, numRolls = 0;
-									do
+								//Get the chance, round it down, and roll a number.
+								//Example:
+								// - Chance: 0.6
+								// 0.6 * 100 = 60
+								// Roll, if number between 0 and 60, prize is won.
+								// If roll is 70-100, prize is not won.
+								//    - Re-roll another gift.
+								boolean won = false;
+								int chance = 100, reroll = 0, numRolls = 0;
+								do
+								{
+									rolledGift[i] = rewardsTable[i][rand.nextInt(totalGiftPool[i])];
+									chance = (int) Math.ceil(( rolledGift[i].getChance() * 100));
+									if(chance == 0)
 									{
-										rolledGift[i] = rewardsTable[i][rand.nextInt(totalGiftPool[i])];
-										chance = (int) Math.ceil(( rolledGift[i].getChance() * 100));
-										if(chance == 0)
-										{
-											//Chance is wrong.
-											//Infinite loop will occur, just kill it.
-											break;
-										}
-										reroll = rand.nextInt(100);
-										//log.info("Rolled a " + reroll + " | and needed a " + chance + " or lower.");
-										if(reroll < chance)
-										{
-											won = true;
-											util.logInfo("Reward: " + rolledGift[i].getName() + " was won! Congratulations!");
-										}
-										//else
-										//{
-											//log.info("Reward: " + rolledGift[i].getName() + " was not won.");
-										//}
-										if(numRolls >= 20)
-										{
-											//Too many rolls.
-											//Give the first entry.
-											rolledGift[i] = rewardsTable[i][0];
-											won = true;
-										}
-										numRolls++;
-									} while((!won));
-									
-									util.logInfo(rolledGift[i].getName());
-									
-									if(hyphen == ChatColor.AQUA)
-									{
-										hyphen = ChatColor.WHITE;
+										//Chance is wrong.
+										//Infinite loop will occur, just kill it.
+										break;
 									}
-									else if(hyphen == ChatColor.WHITE)
+									reroll = rand.nextInt(100);
+									//log.info("Rolled a " + reroll + " | and needed a " + chance + " or lower.");
+									if(reroll < chance)
 									{
-										hyphen = ChatColor.AQUA;
+										won = true;
+										util.logInfo("Reward: " + rolledGift[i].getName() + " was won! Congratulations!");
 									}
-									rewardString += hyphen + " - " + ChatColor.GOLD + rolledGift[i].getName() + "\n";
-							}
-							rewardString = util.translateColours(rewardString.substring(0, (rewardString.length() - 1)));
-							
-							rewardString = translatePrefix(rewardString);
-							
-							sender.sendMessage(ChatColor.YELLOW + "Congratulations!" + ChatColor.GREEN + " You've opened:\n" + rewardString);
-							
-							//Oman -- It was in a flippidy floop the whole time.
-							util.logtoFile("------------------------------------------\n" + sender.getName() + "has won:", "rewardslog");
-							util.logtoFile(rewardString, "rewardslog");
-							
-							
-							user.addPermission("blivutils.present.birthday.done"); //Player can no longer type /present open
+									//else
+									//{
+										//log.info("Reward: " + rolledGift[i].getName() + " was not won.");
+									//}
+									if(numRolls >= 20)
+									{
+										//Too many rolls.
+										//Give the first entry.
+										rolledGift[i] = rewardsTable[i][0];
+										won = true;
+									}
+									numRolls++;
+								} while((!won));
+								
+								util.logInfo(rolledGift[i].getName());
+								
+								if(hyphen == ChatColor.AQUA)
+								{
+									hyphen = ChatColor.WHITE;
+								}
+								else if(hyphen == ChatColor.WHITE)
+								{
+									hyphen = ChatColor.AQUA;
+								}
+								rewardString += hyphen + " - " + ChatColor.GOLD + rolledGift[i].getName() + "\n";
 						}
-						catch(NullPointerException e)
-						{
-							e.printStackTrace();
-							util.logtoFile("Player " + sender.getName() + " had problems with their gift.", "rewardslog");
-							util.printError(sender, "Oops! Your gift had trouble opening. Send a /modreq for the Musketeers.");
-						}
+						rewardString = util.translateColours(rewardString.substring(0, (rewardString.length() - 1)));
 						
-						giveRewards(sender, rolledGift);
+						rewardString = translatePrefix(rewardString);
 						
-						return true;
+						sender.sendMessage(ChatColor.YELLOW + "Congratulations!" + ChatColor.GREEN + " You've opened:\n" + rewardString);
+						
+						//Oman -- It was in a flippidy floop the whole time.
+						util.logtoFile("------------------------------------------\n" + sender.getName() + "has won:", "rewardslog");
+						util.logtoFile(rewardString, "rewardslog");
+						
+						
+						user.addPermission("blivutils.present.birthday.done"); //Player can no longer type /present open
 					}
-					else if(args[0].equals("reload"))
+					catch(NullPointerException e)
 					{
-						if(sender.hasPermission("blivutils.rewards.admin"))
-						{
-							rewardsTable = null; //Hopefully this allows for reloads.
-							cfg.loadRewards();
-							loadRewards();
-							sender.sendMessage(ChatColor.GREEN + "Loaded " + ((totalGiftPool[0] + totalGiftPool[1] + totalGiftPool[2] + totalGiftPool[3] + totalGiftPool[4]) + " rewards"));
-						}
+						e.printStackTrace();
+						util.logtoFile("Player " + sender.getName() + " had problems with their gift.", "rewardslog");
+						util.printError(sender, "Oops! Your gift had trouble opening. Send a /modreq for the Musketeers.");
 					}
+					
+					giveRewards(sender, rolledGift);
+					
 					return true;
+				}
+				else if(args[0].equals("reload"))
+				{
+					if(sender.hasPermission("blivutils.rewards.admin"))
+					{
+						rewardsTable = null; //Hopefully this allows for reloads.
+						//cfg.loadRewards();
+						loadRewards();
+						sender.sendMessage(ChatColor.GREEN + "Loaded " + ((totalGiftPool[0] + totalGiftPool[1] + totalGiftPool[2] + totalGiftPool[3] + totalGiftPool[4]) + " rewards"));
+					}
 				}
 				return true;
 			}
+			return true;
 		}
 		
 		return false;
@@ -264,8 +263,7 @@ public class Rewards implements CommandExecutor
 			else	// Reward is an item
 			{
 				Random rand = new Random(System.currentTimeMillis()); //Define random here, so the rewards are varied, and aren't done by the same seed.
-				Material material = Material.AIR;
-				Material item = material.getMaterial(Integer.parseInt(rolledGift[i].getAction()));
+				Material item = Material.getMaterial(Integer.parseInt(rolledGift[i].getAction()));
 				ItemStack reward = new ItemStack(item);
 				
 				if(rolledGift[i].getName() != null)

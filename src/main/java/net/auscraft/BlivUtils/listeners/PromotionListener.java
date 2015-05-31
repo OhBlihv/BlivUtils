@@ -11,7 +11,6 @@ import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -58,6 +57,8 @@ public class PromotionListener implements Listener
 	        case "Endermite": price = "100,000";
 	        item = new ItemStack(Material.ENDER_PEARL, 1);
 	        break;
+			default:
+				return null;
         }
         
         ItemMeta meta = item.getItemMeta();
@@ -80,7 +81,7 @@ public class PromotionListener implements Listener
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event)
 	{
-		if(event.getInventory().getTitle().contains("/buyrank"))
+		if(event.getInventory().getTitle().contains("Buy Ranks"))
 		{
 			event.setCancelled(true);
 			Player p = (Player)event.getWhoClicked();
@@ -97,7 +98,7 @@ public class PromotionListener implements Listener
 			{
 				doConfirmationDialog("Blaze", p, p.hasPermission("blivutils.promote.blaze"));
 			}
-			else if(event.getCurrentItem().getType().equals(Material.GOLD_HELMET))
+			else if(event.getCurrentItem().getType().equals(Material.GOLD_SWORD))
 			{
 				doConfirmationDialog("PigZombie", p, p.hasPermission("blivutils.promote.pigzombie"));
 			}
@@ -129,7 +130,7 @@ public class PromotionListener implements Listener
 				rankPromotion(p, "Blaze");
 				p.closeInventory();
 			}
-			else if(event.getCurrentItem().getType().equals(Material.GOLD_HELMET))
+			else if(event.getCurrentItem().getType().equals(Material.GOLD_SWORD))
 			{
 				rankPromotion(p, "PigZombie");
 				p.closeInventory();
@@ -165,16 +166,16 @@ public class PromotionListener implements Listener
 		{
 			if(!rank.equals("Endermite"))
 			{
-				util.printError((CommandSender) p, "You don't have permission to buy this rank!");
+				util.printError(p, "You don't have permission to buy this rank!");
 			}
 			else
 			{
-				util.printError((CommandSender) p, "You don't have permission to rent this rank!");
+				util.printError(p, "You don't have permission to rent this rank!");
 			}
 		}
 	}
 	
-	private void rankPromotion(Player p, String rank)
+	public void rankPromotion(Player p, String rank)
 	{
 		double price = 0.0;
 		price = getRankPrice(rank);
@@ -191,21 +192,22 @@ public class PromotionListener implements Listener
 					perms.playerRemoveGroup(null, p, groups[i]);
 				}
 				perms.playerAddGroup(null, p, rank);
-				util.printSuccess((CommandSender) p, "You have been promoted to " + ChatColor.RED + rank);
+				util.printSuccess(p, "You have been promoted to " + ChatColor.RED + rank);
 			}
 			else if (rank.equals("Endermite")) 
 			{
 				PermissionUser user = PermissionsEx.getUser(p);
 				user.addGroup("Endermite", null);
-				user.setOption("group-Endermite-until", "1296000");
-				util.printSuccess((CommandSender) p, "You have been promoted to " + ChatColor.RED + rank + ChatColor.WHITE + " for " + ChatColor.GREEN + "15 days");
+				//user.setOption("group-Endermite-until", "1296000");
+				user.setOption("group-" + rank + "-until", "" + 2592000 + ((int) (System.currentTimeMillis() / 1000L)));
+				util.printSuccess(p, "You have been promoted to " + ChatColor.RED + rank + ChatColor.WHITE + " for " + ChatColor.GREEN + "15 days");
 			}
 			util.logInfo("Player " + p.getName() + " has been promoted to " + rank);
 			util.logtoFile("Player " + p.getName() + " has been promoted to " + rank, null);
 		}
 		else 
 		{
-			util.printError((CommandSender) p, "You dont have sufficient funds to be promoted!");
+			util.printError(p, "You dont have sufficient funds to be promoted!");
 		}
 	}
 	

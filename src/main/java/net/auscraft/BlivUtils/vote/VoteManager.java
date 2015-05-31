@@ -88,7 +88,7 @@ public class VoteManager implements CommandExecutor
 		return true;
 	}
 	
-	public boolean voteParty(CommandSender sender, Command cmd, String label, String args[])
+	public boolean voteParty(CommandSender sender, String args[])
 	{
 		if(((int) (System.currentTimeMillis() / 1000L) > nextTrigger))
 		{
@@ -187,12 +187,10 @@ public class VoteManager implements CommandExecutor
 			}
 			return true;
 		}
-		else
-		{
-			String timeString = getConversion(nextTrigger - ((int) (System.currentTimeMillis() / 1000L)));
-			util.printError(sender, "On Cooldown! Can trigger in: " + timeString);
-			return true;
-		}
+		
+		String timeString = getConversion(nextTrigger - ((int) (System.currentTimeMillis() / 1000L)));
+		util.printError(sender, "On Cooldown! Can trigger in: " + timeString);
+		return true;
 	}
 	
 	private void setChance(int inChance)

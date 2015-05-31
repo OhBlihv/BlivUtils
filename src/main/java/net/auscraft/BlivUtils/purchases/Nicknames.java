@@ -91,6 +91,8 @@ public class Nicknames
 			case 12:
 				colour = ChatColor.WHITE; //&f
 				break;
+			default:
+				break;
 		}
 		
 		util.logInfo("Colour selected for player: " + colour.toString());

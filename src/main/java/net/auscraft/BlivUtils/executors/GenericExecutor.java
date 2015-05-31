@@ -71,16 +71,12 @@ public class GenericExecutor implements CommandExecutor
 							+ ChatColor.GRAY + "]" + " " + ChatColor.YELLOW	+ ChatColor.ITALIC + message);
 					return true;
 				}
-				else 
-				{
-					return false;
-				}
-			}
-			else
-			{
-				util.printError(sender, "You don't have sufficient permissions!");
+				
 				return false;
 			}
+			
+			util.printError(sender, "You don't have sufficient permissions!");
+			return false;
 		}
 		if (cmd.getName().equalsIgnoreCase("wstop")	&& !(sender instanceof Player))
 		{
@@ -96,6 +92,7 @@ public class GenericExecutor implements CommandExecutor
 		        public void run()
 		        {
 		        	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "kickall Restart");
+		        	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "ee say " + Bukkit.getServerName() + " is Restarting...");
 					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "stop");
 		        }
 		    }, 200L);
@@ -165,10 +162,8 @@ public class GenericExecutor implements CommandExecutor
 			}
 			return true;
 		}
-		else 
-		{
-			return false;
-		}
+		
+		return false;
 	}
 	
 	private void printServerMenu(CommandSender sender)

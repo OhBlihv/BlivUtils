@@ -1,5 +1,6 @@
 package net.auscraft.BlivUtils.promotions;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -20,12 +21,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
-public class PromoteExecuter implements CommandExecutor
+public class PromoteExecutor implements CommandExecutor
 {
 	
 	private Utilities util;
 
-	public PromoteExecuter(BlivUtils instance)
+	public PromoteExecutor(BlivUtils instance)
 	{
 		util = instance.getUtil();
 	}
@@ -64,7 +65,7 @@ public class PromoteExecuter implements CommandExecutor
 	
 	private ItemStack PigZombie(boolean hasPermission)
 	{
-		ItemStack item = new ItemStack(Material.GOLD_HELMET, 1);
+		ItemStack item = new ItemStack(Material.GOLD_SWORD, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.RED + "PigZombie");
         String hasPerm = ChatColor.RED + "NO";
@@ -166,25 +167,21 @@ public class PromoteExecuter implements CommandExecutor
 						}
 					}
 
-						PermissionUser user = PermissionsEx.getUser(args[0]);
-						String sLength = "" + length; //Lazy way of Int -> String, but eh, I'll fix later.
+					PermissionUser user = PermissionsEx.getUser(args[0]);
+					String sLength = "" + length; //Lazy way of Int -> String, but eh, I'll fix later.
 					
-						user.addGroup("Admin");
-						user.setOption("group-Admin-until", sLength);
-						util.printSuccess(sender, "Player " + args[0] + " promoted for " + numberPlusTimeframe);
-						util.logtoFile("Player " + args[0] + " promoted to Admin for " + numberPlusTimeframe, null);
-						return true;
-					}
-					else
-					{
-						util.printError(sender, "You didnt specify a time in months!");
-						return false;
-					}
+					user.addGroup("Admin");
+					user.setOption("group-Admin-until", sLength);
+					util.printSuccess(sender, "Player " + args[0] + " promoted for " + numberPlusTimeframe);
+					util.logtoFile("Player " + args[0] + " promoted to Admin for " + numberPlusTimeframe, null);
+					return true;
+				}
+				
+				util.printError(sender, "You didnt specify a time in months!");
+				return false;
 			}
-			else
-			{
-				util.printError(sender, "Yeah, good luck with that...");
-			}
+			
+			util.printError(sender, "Yeah, good luck with that...");
 		}
 		if (cmd.getName().equalsIgnoreCase("timeleft")) 
 		{
@@ -219,62 +216,97 @@ public class PromoteExecuter implements CommandExecutor
 			}
 				
 			String rank = util.getActiveRanks(playerName);
-			String packages = null;
+			ArrayList<String> packages = null;
 			if(rank.contains("EnderRank"))
 			{
 				packages = util.getActivePackages(playerName);
+				
+				for(String linePackage : packages)
+				{
+					util.logDebug(linePackage);
+				}
 			}
+			
 			String outputMessage = "";
 
 			if (rank != "")
 			{
+				String rankTimeLeft = "";
 				ChatColor colour = ChatColor.DARK_PURPLE;
 				String ranks[] = rank.split(",");
 				String packageString = "", packagePrefix = "";
 				for(String sRank : ranks)
 				{
 					String actualRank = sRank;
+					rankTimeLeft = timeleftGeneric(playerName, actualRank);
 					switch(sRank)
 					{
 						//Already purple.
 						//case Endermite:
 						//case Enderman:
 						case "EnderRank":
-							//Already Purple
-							util.logInfo("Is EnderRank");
-							String sPackages[] = packages.split(",");
-							util.logInfo(packages);
-							PermissionUser user = PermissionsEx.getUser(playerName);
-							//Change the rank based on the pex option
-							String EnderRankOption = user.getOption("EnderRankValue");
-							switch(EnderRankOption)
+							try
 							{
-								case "1":
-									sRank = "Enderman";
-									break;
-								case "2":
-									sRank = "EnderDragon";
-									colour = ChatColor.DARK_RED;
-									break;
-								case "3":
-									sRank = "Wither";
-									colour = ChatColor.DARK_GRAY;
-									break;
-								default:
-									break;
-							}
-							if(((!packages.isEmpty()) && bypassother == true) || ((!packages.isEmpty()) && (other != true)))
-							{
-								util.logInfo("Packages is not empty");
-								packagePrefix = ChatColor.GOLD + "Included Packages:\n ";
-								for(String sPackage : sPackages)
+								//Already Purple
+								//util.logInfo("Is EnderRank");
+								//util.logInfo(packages);
+								PermissionUser user = PermissionsEx.getUser(playerName);
+								//Change the rank based on the pex option
+								String EnderRankOption = user.getOption("EnderRankValue");
+								switch(EnderRankOption)
 								{
-									packageString += ChatColor.WHITE + "" + ChatColor.ITALIC + sPackage + "\n";
+									case "1":
+										sRank = "Enderman";
+										break;
+									case "2":
+										sRank = "EnderDragon";
+										colour = ChatColor.DARK_RED;
+										break;
+									case "3":
+										sRank = "Wither";
+										colour = ChatColor.DARK_GRAY;
+										break;
+									default:
+										break;
 								}
-								//Remove the trailing newline character
-								packageString = packageString.substring(0, (packageString.length() - 2));
+								//If the other player has perks/you have permission | You have perks and you are looking at your own
+								if(((!packages.isEmpty()) && bypassother == true) || ((!packages.isEmpty()) && (other != true)))
+								{
+									util.logInfo("Packages is not empty");
+									packagePrefix = ChatColor.GOLD + "Included Packages:\n";
+									String sPackages[] = null;
+									String packageTimeLeft = "";
+									String addonString = "";
+									
+									for(String sPackage : packages)
+									{
+										sPackages = sPackage.split("[|]");
+										packageTimeLeft = timeleftGeneric(playerName, sPackages[1]);
+										if(packageTimeLeft.equals(rankTimeLeft))
+										{
+											packageTimeLeft = "";
+											packageString += ChatColor.WHITE + "" + ChatColor.ITALIC + sPackages[0] + ChatColor.GOLD + ChatColor.stripColor(packageTimeLeft) + "\n";
+										}
+										else
+										{
+											if(addonString.equals(""))
+											{
+												addonString = ChatColor.GOLD + "Addons:\n";
+											}
+											addonString += ChatColor.WHITE + "" + ChatColor.ITALIC + sPackages[0] + ChatColor.GOLD + ChatColor.stripColor(packageTimeLeft) + "\n";
+										}
+										
+									}
+									
+									packageString += addonString;
+								}
 							}
-							
+							catch(NullPointerException e)
+							{
+								//One of the EnderRank variables/indicators was invalid
+								//Did you try to add EnderRank to yourself incorrectly?
+								break;
+							}
 							break;
 						case "EnderDragon": colour = ChatColor.DARK_RED;
 							break;
@@ -284,7 +316,7 @@ public class PromoteExecuter implements CommandExecutor
 							break;
 					}
 					
-					outputMessage += colour + sRank + timeleftGeneric(playerName, actualRank) + "\n" + packagePrefix + packageString;
+					outputMessage += colour + sRank + rankTimeLeft + "\n" + packagePrefix + packageString;
 				}
 				if(!outputMessage.equals(""))
 				{
@@ -305,11 +337,9 @@ public class PromoteExecuter implements CommandExecutor
 				}
 				return true;
 			}
-			else
-			{
-				util.printInfo(sender, ChatColor.GOLD + "You dont have an active rank!");
-				return true;
-			}
+			
+			util.printInfo(sender, ChatColor.GOLD + "You dont have an active rank!");
+			return true;
 		}
 		
 		//This will grab the player's current rank timeleft, and add time to it.
@@ -449,26 +479,20 @@ public class PromoteExecuter implements CommandExecutor
 						util.printSuccess(sender, ChatColor.GREEN + "Updated " + args[0] + "'s " + rank + " time by " + timeFormat);
 						return true;
 					}
-					else
-					{
-						length += ((int) (System.currentTimeMillis() / 1000L));
-						user.setOption("group-" + rank + "-until", "" + length);
-						util.printSuccess(sender, ChatColor.GREEN + "Set " + args[0] + "'s " + rank + " to " + timeFormat);
-						//util.printError(sender, args[0] + "'s rank has expired!");
-						return true;
-					}
-				} 
-				else 
-				{
-					util.printError(sender, "Invalid format!");
-					return false;
+					
+					length += ((int) (System.currentTimeMillis() / 1000L));
+					user.setOption("group-" + rank + "-until", "" + length);
+					util.printSuccess(sender, ChatColor.GREEN + "Set " + args[0] + "'s " + rank + " to " + timeFormat);
+					//util.printError(sender, args[0] + "'s rank has expired!");
+					return true;
 				}
+				
+				util.printError(sender, "Invalid format!");
+				return false;
 			}
-			else
-			{
-				util.printError(sender, "You don't have permission to do this!");
-				return true;
-			}
+			
+			util.printError(sender, "You don't have permission to do this!");
+			return true;
 		}
 
 		// This is in here because it requires PEX, and I don't want to import where I don't need to.
@@ -534,17 +558,13 @@ public class PromoteExecuter implements CommandExecutor
 						util.logInfo(playerName + "'s prefix has been set to " + enteredPrefix);
 						util.logtoFile(playerName + "'s prefix has been set to " + enteredPrefix, null);
 						return true;
-					} 
-					else // Prefix tags not included.
-					{
-						util.printError(sender, "Your entered prefix didn't include brackets! '[' and ']' are required.");
-						return true;
 					}
+					
+					util.printError(sender, "Your entered prefix didn't include brackets! '[' and ']' are required.");
+					return true;
 				}
-				else 
-				{
-					util.printError(sender, "Enter a prefix!");
-				}
+				
+				util.printError(sender, "Enter a prefix!");
 			}
 			else 
 			{
@@ -629,22 +649,28 @@ public class PromoteExecuter implements CommandExecutor
 			}
 			if (minute != 0) 
 			{
-				timeString += " " + minute + " Minute";
-				if(minute > 1)
+				if(hour == 0)
 				{
-					timeString += "s";
+					timeString += " " + minute + " Minute";
+					if(minute > 1)
+					{
+						timeString += "s";
+					}
 				}
+				
 			}
 			if (minute == 0) 
 			{
-				timeString += " " + second + " Second";
-				if(second > 1)
+				if(hour == 0 && minute == 0)
 				{
-					timeString += "s";
+					timeString += " " + second + " Second";
+					if(second > 1)
+					{
+						timeString += "s";
+					}
 				}
 			}
 
-			// String print = ChatColor.GOLD + "" + days + hours + minutes + seconds + ChatColor.DARK_GREEN + "\nRemaining of " + ChatColor.GREEN + rank;
 			print = ": " + ChatColor.WHITE + "" + timeString;
 		}
 		else 
