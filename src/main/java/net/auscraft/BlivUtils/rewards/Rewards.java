@@ -28,21 +28,6 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 public class Rewards implements CommandExecutor
 {
 	
-	/*public static final String ChristmasPrefix = ChatColor.DARK_RED + 		"C"
-										+ ChatColor.DARK_GREEN +			"H"
-										+ ChatColor.DARK_RED +				"R"
-										+ ChatColor.DARK_GREEN + 			"I"
-										+ ChatColor.DARK_RED + 				"S"
-										+ ChatColor.DARK_GREEN +  			"T"
-										+ ChatColor.DARK_RED + 				"M"
-										+ ChatColor.DARK_GREEN + 			"A"
-										+ ChatColor.DARK_RED +  			"S"; //What does that spell? CHRISTMAS!
-	//The above string spells out "Christmas" in alternating Red/Green italicised colours.
-	*/
-	//And this isn't relevant anymore.
-	
-	//TODO:
-	//Make this look decent.
 	public static final String prefix = "Birthday";
 	
 	private RewardContainer[][] rewardsTable;
@@ -276,7 +261,7 @@ public class Rewards implements CommandExecutor
 					reward.setItemMeta(meta);
 				}
 				
-				if((rolledGift[i].getLore() != null) && (rolledGift[i].getLore() != "LEFT_BLANK"))	//Lore is not empty
+				if((rolledGift[i].getLore() != null) && !(rolledGift[i].getLore().equals("LEFT_BLANK")))	//Lore is not empty
 				{
 					List<String> lore = new ArrayList<>();
 					lore.add(translatePlayerName(sender, util.translateColours(rolledGift[i].getLore())));

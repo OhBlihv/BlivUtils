@@ -229,7 +229,7 @@ public class PromoteExecutor implements CommandExecutor
 			
 			String outputMessage = "";
 
-			if (rank != "")
+			if (rank.length() != 0)
 			{
 				String rankTimeLeft = "";
 				ChatColor colour = ChatColor.DARK_PURPLE;
@@ -392,7 +392,7 @@ public class PromoteExecutor implements CommandExecutor
 						{
 							// Seconds multiplied by that smaller number to get args[1] day(s)
 							length = (Integer.parseInt(args[2])) * 60;
-							if (args[2] == "1")
+							if (args[2].equals("1"))
 							{
 								timeFormat = "1 minute";
 							} 
@@ -413,7 +413,7 @@ public class PromoteExecutor implements CommandExecutor
 						{
 							// Seconds multiplied by that smaller number to get args[1] day(s)
 							length = (Integer.parseInt(args[2])) * 3600;
-							if (args[2] == "1")
+							if (args[2].equals("1"))
 							{
 								timeFormat = "1 hour";
 							} 
@@ -434,7 +434,7 @@ public class PromoteExecutor implements CommandExecutor
 						{
 							// Seconds multiplied by that smaller number to get args[1] day(s)
 							length = (Integer.parseInt(args[2])) * 86400;
-							if (args[2] == "1")
+							if (args[2].equals("1"))
 							{
 								timeFormat = "1 day";
 							} 
@@ -455,7 +455,7 @@ public class PromoteExecutor implements CommandExecutor
 						{
 							// Seconds multiplied by that giant number to get args[1] month(s)
 							length = (Integer.parseInt(args[2])) * 2592000;
-							if (args[2] == "1")
+							if (args[2].equals("1"))
 							{
 								timeFormat = "1 month";
 							}
@@ -483,7 +483,6 @@ public class PromoteExecutor implements CommandExecutor
 					length += ((int) (System.currentTimeMillis() / 1000L));
 					user.setOption("group-" + rank + "-until", "" + length);
 					util.printSuccess(sender, ChatColor.GREEN + "Set " + args[0] + "'s " + rank + " to " + timeFormat);
-					//util.printError(sender, args[0] + "'s rank has expired!");
 					return true;
 				}
 				

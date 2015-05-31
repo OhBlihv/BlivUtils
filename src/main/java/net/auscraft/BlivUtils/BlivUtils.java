@@ -219,7 +219,7 @@ public final class BlivUtils extends JavaPlugin
 				{
 					PermissionUser user = pex.getUser(p);
 					String rankString = util.getActiveRanks(p.getName());
-					if (rankString != "")
+					if (rankString.length() != 0)
 					{
 						String ranks[] = rankString.split(",");
 						for(String rank : ranks)
