@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.utils.Utilities;
+import net.auscraft.BlivUtils.utils.BUtil;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -25,13 +25,11 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 public class PromotionListener implements Listener
 {
 	
-	private Utilities util;
 	private Economy econ;
 	private Permission perms;
 
 	public PromotionListener(BlivUtils instance)
 	{
-		util = instance.getUtil();
 		econ = instance.setupEconomy();
 		perms = instance.setupPermissions();
 	}
@@ -166,11 +164,11 @@ public class PromotionListener implements Listener
 		{
 			if(!rank.equals("Endermite"))
 			{
-				util.printError(p, "You don't have permission to buy this rank!");
+				BUtil.printError(p, "You don't have permission to buy this rank!");
 			}
 			else
 			{
-				util.printError(p, "You don't have permission to rent this rank!");
+				BUtil.printError(p, "You don't have permission to rent this rank!");
 			}
 		}
 	}
@@ -189,10 +187,14 @@ public class PromotionListener implements Listener
 			{
 				for (int i = 0; i < groups.length; i++) 
 				{
+					if(groups[i].equalsIgnoreCase("EnderRank"))
+					{
+						continue;
+					}
 					perms.playerRemoveGroup(null, p, groups[i]);
 				}
 				perms.playerAddGroup(null, p, rank);
-				util.printSuccess(p, "You have been promoted to " + ChatColor.RED + rank);
+				BUtil.printSuccess(p, "You have been promoted to " + ChatColor.RED + rank);
 			}
 			else if (rank.equals("Endermite")) 
 			{
@@ -200,14 +202,14 @@ public class PromotionListener implements Listener
 				user.addGroup("Endermite", null);
 				//user.setOption("group-Endermite-until", "1296000");
 				user.setOption("group-" + rank + "-until", "" + 2592000 + ((int) (System.currentTimeMillis() / 1000L)));
-				util.printSuccess(p, "You have been promoted to " + ChatColor.RED + rank + ChatColor.WHITE + " for " + ChatColor.GREEN + "15 days");
+				BUtil.printSuccess(p, "You have been promoted to " + ChatColor.RED + rank + ChatColor.WHITE + " for " + ChatColor.GREEN + "15 days");
 			}
-			util.logInfo("Player " + p.getName() + " has been promoted to " + rank);
-			util.logtoFile("Player " + p.getName() + " has been promoted to " + rank, null);
+			BUtil.logInfo("Player " + p.getName() + " has been promoted to " + rank);
+			BUtil.logtoFile("Player " + p.getName() + " has been promoted to " + rank, null);
 		}
 		else 
 		{
-			util.printError(p, "You dont have sufficient funds to be promoted!");
+			BUtil.printError(p, "You dont have sufficient funds to be promoted!");
 		}
 	}
 	

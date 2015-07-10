@@ -1,7 +1,6 @@
 package net.auscraft.BlivUtils.executors;
 
-import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.utils.Utilities;
+import net.auscraft.BlivUtils.utils.BUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
@@ -10,50 +9,17 @@ import org.bukkit.entity.Player;
 public class RankHelpExecutor implements CommandExecutor 
 {
 	
-	private Utilities util;
-	private final String banner = ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Aus" + ChatColor.WHITE + "" + ChatColor.BOLD + "Craft Rank Help"
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + " - \n";
-	private final String footer = ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- "
-								+ ChatColor.DARK_GREEN + "- "
-								+ ChatColor.GREEN + "- ";
-			//&a- &2- &a- &2- &a- &9&lAus&f&lCraft Rank Help &2- &a- &2- &a- &2- &a- &2- &a-
+	private final String banner = ChatColor.DARK_AQUA + "" + ChatColor.STRIKETHROUGH + "---" + ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---"
+								+ ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Aus" + ChatColor.WHITE + "" + ChatColor.BOLD + "Craft " + ChatColor.WHITE + "Ranks"
+								+ ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---" + ChatColor.DARK_AQUA + "" + ChatColor.STRIKETHROUGH + "---\n";
+	private final String footer = ChatColor.DARK_AQUA + "" + ChatColor.STRIKETHROUGH + "------"
+								+ ChatColor.WHITE + ChatColor.STRIKETHROUGH + "----------"
+								+ ChatColor.DARK_AQUA + ChatColor.STRIKETHROUGH + "------";
+	
 
-	public RankHelpExecutor(BlivUtils instance)
+	public RankHelpExecutor()
 	{
-		util = instance.getUtil();
+		
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[])
@@ -65,13 +31,13 @@ public class RankHelpExecutor implements CommandExecutor
 				if (args.length == 0) 
 				{
 					sender.sendMessage(banner + ""
-							+ ChatColor.DARK_GREEN + "| " + ChatColor.GOLD + "Choose from the following ranks:\n"
-							+ ChatColor.GREEN + "| " + ChatColor.WHITE + "Free: " + ChatColor.GREEN + "Squid, Chicken, Sheep, Pig\n"
-							+ ChatColor.DARK_GREEN + "| " + ChatColor.WHITE + "Free: " + ChatColor.DARK_AQUA + "Cow, Mooshroom, Slime, Ocelot\n"
-							+ ChatColor.GREEN + "| " + ChatColor.WHITE + "Nether: " + ChatColor.RED + "MagmaSlime, Blaze, PigZombie, Ghast\n"
-							+ ChatColor.DARK_GREEN + "| " + ChatColor.WHITE + "Ender: " + ChatColor.DARK_PURPLE + "Endermite, Enderman," + ChatColor.DARK_RED + " EnderDragon, "
+							+ ChatColor.DARK_AQUA + "| " + ChatColor.GOLD + "Choose from the following ranks:\n"
+							+ ChatColor.WHITE + "| " + ChatColor.WHITE + "Free: " + ChatColor.GREEN + "Squid, Chicken, Sheep, Pig\n"
+							+ ChatColor.DARK_AQUA + "| " + ChatColor.WHITE + "Free: " + ChatColor.DARK_AQUA + "Cow, Mooshroom, Slime, Ocelot\n"
+							+ ChatColor.WHITE + "| " + ChatColor.WHITE + "Nether: " + ChatColor.RED + "MagmaSlime, Blaze, PigZombie, Ghast\n"
+							+ ChatColor.DARK_AQUA + "| " + ChatColor.WHITE + "Ender: " + ChatColor.DARK_PURPLE + "Endermite, Enderman," + ChatColor.DARK_RED + " EnderDragon, "
 							+ ChatColor.GRAY + "Wither\n"
-							+ ChatColor.GREEN + "| " + ChatColor.GOLD + "Usage: /rank <rank>\n"
+							+ ChatColor.WHITE + "| " + ChatColor.GOLD + "Usage: /rank <rank>\n"
 							+ footer);
 					return true;
 				}
@@ -233,14 +199,14 @@ public class RankHelpExecutor implements CommandExecutor
 					} 
 					else 
 					{
-						util.printInfo(sender, "That rank doesn't, or doesn't yet have documentation.");
+						BUtil.printInfo(sender, "That rank doesn't, or doesn't yet have documentation.");
 						return true;
 					}
 				}
 				return true;
 			}
 			
-			util.printError(sender, "M8, u rnt a playr. Git owt.");
+			BUtil.printError(sender, "M8, u rnt a playr. Git owt.");
 			return true;
 		}
 		

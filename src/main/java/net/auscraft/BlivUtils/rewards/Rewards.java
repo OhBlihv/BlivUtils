@@ -6,8 +6,8 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 import net.auscraft.BlivUtils.BlivUtils;
+import net.auscraft.BlivUtils.utils.BUtil;
 import net.auscraft.BlivUtils.utils.FlatFile;
-import net.auscraft.BlivUtils.utils.Utilities;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,17 +32,14 @@ public class Rewards implements CommandExecutor
 	
 	private RewardContainer[][] rewardsTable;
 	private FlatFile cfg;
-	private Utilities util;
 	
 	//Gift specific global variables
 	private int[] totalGiftPool = {0,0,0,0,0}; //Initialize the counts to 0, and add to them in the constructor.
 	
-	public Rewards(BlivUtils instance)
+	public Rewards()
 	{
-		util = instance.getUtil();
-		cfg = instance.getCfg();
-		
-		loadRewards(); 
+		this.cfg = FlatFile.getInstance();
+		loadRewards();
 	}
 	
 	private void loadRewards()
@@ -84,7 +81,7 @@ public class Rewards implements CommandExecutor
 		{
 			e.printStackTrace();
 		}
-		util.logInfo((totalGiftPool[0] + totalGiftPool[1] + totalGiftPool[2] + totalGiftPool[3] + totalGiftPool[4]) + " rewards imported");
+		BUtil.logInfo((totalGiftPool[0] + totalGiftPool[1] + totalGiftPool[2] + totalGiftPool[3] + totalGiftPool[4]) + " rewards imported");
 	}
 	
 	
@@ -112,7 +109,7 @@ public class Rewards implements CommandExecutor
 			PermissionUser user = PermissionsEx.getUser(sender.getName());
 			if(user.has("blivutils.present.birthday.done"))
 			{
-				util.printError(sender, "You can only open one Gift for this celebration!");
+				BUtil.printError(sender, "You can only open one Gift for this celebration!");
 				return true;
 			}
 			
@@ -159,7 +156,7 @@ public class Rewards implements CommandExecutor
 									if(reroll < chance)
 									{
 										won = true;
-										util.logInfo("Reward: " + rolledGift[i].getName() + " was won! Congratulations!");
+										BUtil.logInfo("Reward: " + rolledGift[i].getName() + " was won! Congratulations!");
 									}
 									//else
 									//{
@@ -175,7 +172,7 @@ public class Rewards implements CommandExecutor
 									numRolls++;
 								} while((!won));
 								
-								util.logInfo(rolledGift[i].getName());
+								BUtil.logInfo(rolledGift[i].getName());
 								
 								if(hyphen == ChatColor.AQUA)
 								{
@@ -187,15 +184,15 @@ public class Rewards implements CommandExecutor
 								}
 								rewardString += hyphen + " - " + ChatColor.GOLD + rolledGift[i].getName() + "\n";
 						}
-						rewardString = util.translateColours(rewardString.substring(0, (rewardString.length() - 1)));
+						rewardString = BUtil.translateColours(rewardString.substring(0, (rewardString.length() - 1)));
 						
 						rewardString = translatePrefix(rewardString);
 						
 						sender.sendMessage(ChatColor.YELLOW + "Congratulations!" + ChatColor.GREEN + " You've opened:\n" + rewardString);
 						
 						//Oman -- It was in a flippidy floop the whole time.
-						util.logtoFile("------------------------------------------\n" + sender.getName() + "has won:", "rewardslog");
-						util.logtoFile(rewardString, "rewardslog");
+						BUtil.logtoFile("------------------------------------------\n" + sender.getName() + "has won:", "rewardslog");
+						BUtil.logtoFile(rewardString, "rewardslog");
 						
 						
 						user.addPermission("blivutils.present.birthday.done"); //Player can no longer type /present open
@@ -203,8 +200,8 @@ public class Rewards implements CommandExecutor
 					catch(NullPointerException e)
 					{
 						e.printStackTrace();
-						util.logtoFile("Player " + sender.getName() + " had problems with their gift.", "rewardslog");
-						util.printError(sender, "Oops! Your gift had trouble opening. Send a /modreq for the Musketeers.");
+						BUtil.logtoFile("Player " + sender.getName() + " had problems with their gift.", "rewardslog");
+						BUtil.printError(sender, "Oops! Your gift had trouble opening. Send a /modreq for the Musketeers.");
 					}
 					
 					giveRewards(sender, rolledGift);
@@ -236,14 +233,14 @@ public class Rewards implements CommandExecutor
 		{
 			try
 			{
-			util.logInfo("Giving Reward: " + rolledGift[i].getName());
+				BUtil.logInfo("Giving Reward: " + rolledGift[i].getName());
 			if(rolledGift[i].getAction().startsWith("-"))	//Reward is a command
 			{
 				String action = rolledGift[i].getAction().substring(1, rolledGift[i].getAction().length());
 				action = action.replaceAll("%", p.getName()); //Replace % with players name
 				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), action);
 				//p.sendMessage("Reward given!");
-				util.logInfo("Command: '" + action + "'");
+				BUtil.logInfo("Command: '" + action + "'");
 			}
 			else	// Reward is an item
 			{
@@ -255,7 +252,7 @@ public class Rewards implements CommandExecutor
 				{
 					ItemMeta meta = reward.getItemMeta();
 					
-					String lore = translatePlayerName(sender, translatePrefix(util.translateColours(rolledGift[i].getName())));
+					String lore = translatePlayerName(sender, translatePrefix(BUtil.translateColours(rolledGift[i].getName())));
 					
 					meta.setDisplayName(lore);
 					reward.setItemMeta(meta);
@@ -264,7 +261,7 @@ public class Rewards implements CommandExecutor
 				if((rolledGift[i].getLore() != null) && !(rolledGift[i].getLore().equals("LEFT_BLANK")))	//Lore is not empty
 				{
 					List<String> lore = new ArrayList<>();
-					lore.add(translatePlayerName(sender, util.translateColours(rolledGift[i].getLore())));
+					lore.add(translatePlayerName(sender, BUtil.translateColours(rolledGift[i].getLore())));
 					ItemMeta meta = reward.getItemMeta();
 					meta.setLore(lore);
 					reward.setItemMeta(meta);
@@ -423,7 +420,7 @@ public class Rewards implements CommandExecutor
 			}
 			catch(CommandException e)
 			{
-				util.logSevere("Error giving rewards! Check the config for misplaced ','");
+				BUtil.logSevere("Error giving rewards! Check the config for misplaced ','");
 				e.printStackTrace();
 			}
 			

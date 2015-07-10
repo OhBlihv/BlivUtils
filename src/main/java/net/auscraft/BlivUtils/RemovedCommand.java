@@ -1,10 +1,10 @@
 package net.auscraft.BlivUtils;
 
-import net.auscraft.BlivUtils.utils.Utilities;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import net.auscraft.BlivUtils.utils.BUtil;
 
 public class RemovedCommand implements CommandExecutor
 {
@@ -17,18 +17,16 @@ public class RemovedCommand implements CommandExecutor
 	//											 //
 	//It's better than just a blank/no printout. //
 	//-------------------------------------------//
-
-	private Utilities util;
 	
-	public RemovedCommand(BlivUtils instance)
+	public RemovedCommand()
 	{
-		util = instance.getUtil();
+		
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[])
 	{
-		util.printError(sender, "This command is disabled on this server!");
+		BUtil.printError(sender, "This command is disabled on this server!");
 		return true;
 	}
 

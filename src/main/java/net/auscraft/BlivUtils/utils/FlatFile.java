@@ -7,29 +7,39 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-
-import net.auscraft.BlivUtils.BlivUtils;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class FlatFile 
+import net.auscraft.BlivUtils.BlivUtils;
+
+public class FlatFile
 {
 
-	private File saveFile = null;
-	private FileConfiguration save = null;
-	private BlivUtils instance;
-	private String fileName;
+	protected File saveFile = null;
+	protected FileConfiguration save = null;
+
+	protected static FlatFile instance = null;
+	protected static BlivUtils plugin = null;
 	
-	public FlatFile(BlivUtils instance, String fileName)
+	protected static String fileName = "config.yml";
+	
+	public static FlatFile getInstance()
 	{
-		this.instance = instance;
-		this.fileName = fileName;
+		if(instance == null)
+		{
+			instance = new FlatFile();
+		}
+		return instance;
+	}
+	
+	protected FlatFile()
+	{
+		plugin = BlivUtils.getInstance();
 		saveDefaultConfig();
 		getSave();
 	}
-	
+
 	public FileConfiguration getSave() 
 	{
 	    if (save == null)
@@ -43,7 +53,7 @@ public class FlatFile
 	{
 	    if (saveFile == null) 
 	    {
-	    	saveFile = new File(instance.getDataFolder(), fileName);
+	    	saveFile = new File(plugin.getDataFolder(), fileName);
 	    }
 	    save = YamlConfiguration.loadConfiguration(saveFile);
 	 
@@ -51,7 +61,7 @@ public class FlatFile
 	    Reader defConfigStream = null;
 		try 
 		{
-			defConfigStream = new InputStreamReader(instance.getResource(fileName), "UTF8");
+			defConfigStream = new InputStreamReader(plugin.getResource(fileName), "UTF8");
 		} 
 		catch (UnsupportedEncodingException e) 
 		{
@@ -68,11 +78,11 @@ public class FlatFile
 	{
 	    if (saveFile == null)
 	    {
-	        saveFile = new File(instance.getDataFolder(), fileName);
+	        saveFile = new File(plugin.getDataFolder(), fileName);
 	    }
 	    if (!saveFile.exists())
 	    {            
-	         instance.saveResource(fileName, false);
+	    	plugin.saveResource(fileName, false);
 	    }
 	}
 	
@@ -88,7 +98,7 @@ public class FlatFile
 	    }
 	    catch (IOException ex) 
 	    {
-	        instance.getLogger().log(Level.SEVERE, "Could not save config to " + saveFile, ex);
+	    	BUtil.logError("Could not save config to " + saveFile);
 	    }
 	}
 	
@@ -105,44 +115,37 @@ public class FlatFile
 
 	public String loadEntry(String path)
 	{
-		String value = this.save.getString(path);
-		return value;
+		return this.save.getString(path);
 	}
 	
 	public Set<String> getChildren(String path)
 	{
-		Set<String> children = this.save.getConfigurationSection(path).getKeys(true);
-		return children;
+		return this.save.getConfigurationSection(path).getKeys(true);
 	}
 	
 	public String getString(String path)
 	{
-		String values = this.save.getString(path);
-		return values;
+		return this.save.getString(path, "");
 	}
 	
 	public List<String> getStringList(String path)
 	{
-		List<String> values = this.save.getStringList(path);
-		return values;
+		return this.save.getStringList(path);
 	}
 	
 	public int getInt(String path)
 	{
-		int value = this.save.getInt(path);
-		return value;
+		return this.save.getInt(path);
 	}
 	
 	public boolean getBoolean(String path)
 	{
-		boolean value = this.save.getBoolean(path);
-		return value;
+		return this.save.getBoolean(path);
 	}
 	
 	public long getLong(String path)
 	{
-		long value = this.save.getLong(path);
-		return value;
+		return this.save.getLong(path);
 	}
 	
 	public void saveValue(String path, Object value)
@@ -153,8 +156,12 @@ public class FlatFile
 
 	public double getDouble(String path)
 	{
-		double value = this.save.getDouble(path);
-		return value;
+		return this.save.getDouble(path);
 	}
 	
+	public float getFloat(String path)
+	{
+		return (float) this.save.getDouble(path);
+	}
+
 }

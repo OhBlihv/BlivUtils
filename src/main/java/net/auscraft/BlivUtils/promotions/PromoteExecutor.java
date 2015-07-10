@@ -5,9 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.utils.Utilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,17 +15,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import net.auscraft.BlivUtils.utils.BUtil;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 public class PromoteExecutor implements CommandExecutor
 {
-	
-	private Utilities util;
 
-	public PromoteExecutor(BlivUtils instance)
+	public PromoteExecutor()
 	{
-		util = instance.getUtil();
+		
 	}
 
 	private ItemStack MagmaSlime(boolean hasPermission)
@@ -172,16 +168,16 @@ public class PromoteExecutor implements CommandExecutor
 					
 					user.addGroup("Admin");
 					user.setOption("group-Admin-until", sLength);
-					util.printSuccess(sender, "Player " + args[0] + " promoted for " + numberPlusTimeframe);
-					util.logtoFile("Player " + args[0] + " promoted to Admin for " + numberPlusTimeframe, null);
+					BUtil.printSuccess(sender, "Player " + args[0] + " promoted for " + numberPlusTimeframe);
+					BUtil.logtoFile("Player " + args[0] + " promoted to Admin for " + numberPlusTimeframe, null);
 					return true;
 				}
 				
-				util.printError(sender, "You didnt specify a time in months!");
+				BUtil.printError(sender, "You didnt specify a time in months!");
 				return false;
 			}
 			
-			util.printError(sender, "Yeah, good luck with that...");
+			BUtil.printError(sender, "Yeah, good luck with that...");
 		}
 		if (cmd.getName().equalsIgnoreCase("timeleft")) 
 		{
@@ -212,18 +208,18 @@ public class PromoteExecutor implements CommandExecutor
 			}
 			catch(NullPointerException e)
 			{
-				util.printError(sender, "Player requested does not exist.");
+				BUtil.printError(sender, "Player requested does not exist.");
 			}
 				
-			String rank = util.getActiveRanks(playerName);
+			String rank = BUtil.getActiveRanks(playerName);
 			ArrayList<String> packages = null;
 			if(rank.contains("EnderRank"))
 			{
-				packages = util.getActivePackages(playerName);
+				packages = BUtil.getActivePackages(playerName);
 				
 				for(String linePackage : packages)
 				{
-					util.logDebug(linePackage);
+					BUtil.logDebug(linePackage);
 				}
 			}
 			
@@ -272,7 +268,7 @@ public class PromoteExecutor implements CommandExecutor
 								//If the other player has perks/you have permission | You have perks and you are looking at your own
 								if(((!packages.isEmpty()) && bypassother == true) || ((!packages.isEmpty()) && (other != true)))
 								{
-									util.logInfo("Packages is not empty");
+									BUtil.logInfo("Packages is not empty");
 									packagePrefix = ChatColor.GOLD + "Included Packages:\n";
 									String sPackages[] = null;
 									String packageTimeLeft = "";
@@ -295,7 +291,6 @@ public class PromoteExecutor implements CommandExecutor
 											}
 											addonString += ChatColor.WHITE + "" + ChatColor.ITALIC + sPackages[0] + ChatColor.GOLD + ChatColor.stripColor(packageTimeLeft) + "\n";
 										}
-										
 									}
 									
 									packageString += addonString;
@@ -318,7 +313,7 @@ public class PromoteExecutor implements CommandExecutor
 					
 					outputMessage += colour + sRank + rankTimeLeft + "\n" + packagePrefix + packageString;
 				}
-				if(!outputMessage.equals(""))
+				if(outputMessage.length() != 0)
 				{
 					if(other == false)
 					{
@@ -328,17 +323,23 @@ public class PromoteExecutor implements CommandExecutor
 					{
 						sender.sendMessage(ChatColor.GREEN + "Timeleft on remaining ranks for " + ChatColor.AQUA + playerName + ChatColor.GREEN + ":\n" + outputMessage);
 					}
-					
-					
 				}
 				else
 				{
-					util.printInfo(sender, ChatColor.GOLD + "You dont have an active rank!");
+					if(other)
+					{
+						BUtil.printInfo(sender, ChatColor.GOLD + "That player doesn't have an active rank!");
+					}
+					else
+					{
+						BUtil.printInfo(sender, ChatColor.GOLD + "You dont have an active rank!");
+					}
+					
 				}
 				return true;
 			}
 			
-			util.printInfo(sender, ChatColor.GOLD + "You dont have an active rank!");
+			BUtil.printInfo(sender, ChatColor.GOLD + "You dont have an active rank!");
 			return true;
 		}
 		
@@ -378,11 +379,11 @@ public class PromoteExecutor implements CommandExecutor
 					else
 					{
 						//Rank not found
-						util.printError(sender, "That is not a valid timed rank!");
+						BUtil.printError(sender, "That is not a valid timed rank!");
 						return true;
 					}
 					
-					int timeLeft = util.getRankTime(args[0], rank);
+					int timeLeft = BUtil.getRankTime(args[0], rank);
 					int length = 0;
 					String timeFormat = "";
 
@@ -403,7 +404,7 @@ public class PromoteExecutor implements CommandExecutor
 						}
 						catch(NumberFormatException e)
 						{
-							util.printError(sender, "Invalid Format");
+							BUtil.printError(sender, "Invalid Format");
 							return false;
 						}
 					} 
@@ -424,7 +425,7 @@ public class PromoteExecutor implements CommandExecutor
 						}
 						catch(NumberFormatException e)
 						{
-							util.printError(sender, "Invalid Format");
+							BUtil.printError(sender, "Invalid Format");
 							return false;
 						}
 					} 
@@ -445,7 +446,7 @@ public class PromoteExecutor implements CommandExecutor
 						}
 						catch(NumberFormatException e)
 						{
-							util.printError(sender, "Invalid Format");
+							BUtil.printError(sender, "Invalid Format");
 							return false;
 						}
 					} 
@@ -466,31 +467,31 @@ public class PromoteExecutor implements CommandExecutor
 						}
 						catch(NumberFormatException e)
 						{
-							util.printError(sender, "Invalid Format");
+							BUtil.printError(sender, "Invalid Format");
 							return false;
 						}
 					}
 
-					if(util.getTimeLeft(args[0], rank) > 0)
+					if(BUtil.getTimeLeft(args[0], rank) > 0)
 					{
 						timeLeft += length;
 						String sTimeLeft = "" + timeLeft;
 						user.setOption("group-" + rank + "-until", sTimeLeft);
-						util.printSuccess(sender, ChatColor.GREEN + "Updated " + args[0] + "'s " + rank + " time by " + timeFormat);
+						BUtil.printSuccess(sender, ChatColor.GREEN + "Updated " + args[0] + "'s " + rank + " time by " + timeFormat);
 						return true;
 					}
 					
 					length += ((int) (System.currentTimeMillis() / 1000L));
 					user.setOption("group-" + rank + "-until", "" + length);
-					util.printSuccess(sender, ChatColor.GREEN + "Set " + args[0] + "'s " + rank + " to " + timeFormat);
+					BUtil.printSuccess(sender, ChatColor.GREEN + "Set " + args[0] + "'s " + rank + " to " + timeFormat);
 					return true;
 				}
 				
-				util.printError(sender, "Invalid format!");
+				BUtil.printError(sender, "Invalid format!");
 				return false;
 			}
 			
-			util.printError(sender, "You don't have permission to do this!");
+			BUtil.printError(sender, "You don't have permission to do this!");
 			return true;
 		}
 
@@ -509,11 +510,10 @@ public class PromoteExecutor implements CommandExecutor
 							playerName = args[0];
 							enteredPrefix = args[1];
 							successfulSet = ChatColor.GREEN + "Successfully set " + playerName + ChatColor.GREEN + "'s prefix to ";
-							
 						}
 						else
 						{
-							util.printError(sender, "You don't have permission to change other's prefixes!");
+							BUtil.printError(sender, "You don't have permission to change other's prefixes!");
 							return true;
 						}
 					} 
@@ -531,7 +531,7 @@ public class PromoteExecutor implements CommandExecutor
 								}
 								else
 								{
-									util.printError(sender, "You don't have permission to use one of those words!");
+									BUtil.printError(sender, "You don't have permission to use one of those words!");
 									return true;
 								}
 							}
@@ -542,32 +542,46 @@ public class PromoteExecutor implements CommandExecutor
 						}
 						else
 						{
-							util.printError(sender, "Your prefix is too long! Keep it under 50 Characters.");
+							BUtil.printError(sender, "Your prefix is too long! Keep it under 50 Characters (Including Colour Codes)");
 						}
-						
 					}
 
 					if ((enteredPrefix.contains("[")) && (enteredPrefix.contains("]"))) // Correct formatting.
 					{
+						String colouredPrefix = BUtil.translateColours(enteredPrefix);
+						{
+							String stripPrefix = ChatColor.stripColor(colouredPrefix);
+							
+							if(stripPrefix.length() > 20)
+							{
+								BUtil.printError(sender, "Prefixes must be 20 letters long or shorter.");
+								return true;
+							}
+							else if(stripPrefix.replace("[", "").replace("]", "").length() == 0)
+							{
+								BUtil.printError(sender, "Prefixes must contain at least one letter!");
+							}
+						}
+						
 						PermissionUser user = PermissionsEx.getUser(playerName);
 						enteredPrefix = enteredPrefix + " "; // This is the extra space needed at the end because we've been doing prefixes like that for years.
 						
 						user.setPrefix(enteredPrefix, null);
-						sender.sendMessage(successfulSet + ChatColor.WHITE + util.translateColours(enteredPrefix));
-						util.logInfo(playerName + "'s prefix has been set to " + enteredPrefix);
-						util.logtoFile(playerName + "'s prefix has been set to " + enteredPrefix, null);
+						sender.sendMessage(successfulSet + ChatColor.WHITE + colouredPrefix);
+						BUtil.logInfo(playerName + "'s prefix has been set to " + enteredPrefix);
+						BUtil.logtoFile(playerName + "'s prefix has been set to " + enteredPrefix, null);
 						return true;
 					}
 					
-					util.printError(sender, "Your entered prefix didn't include brackets! '[' and ']' are required.");
+					BUtil.printError(sender, "Your entered prefix didn't include brackets! '[' and ']' are required.");
 					return true;
 				}
 				
-				util.printError(sender, "Enter a prefix!");
+				BUtil.printError(sender, "Enter a prefix!");
 			}
 			else 
 			{
-				util.printError(sender, "You don't have permission to change your prefix!");
+				BUtil.printError(sender, "You don't have permission to change your prefix!");
 				return true;
 			}
 		}
@@ -613,9 +627,9 @@ public class PromoteExecutor implements CommandExecutor
 		return numberPlusTimeframe;
 	}
 
-	private String timeleftGeneric(String player, String rank) // Oh man, he just used a control flag. Raise the pitchforks.
+	private String timeleftGeneric(String player, String rank)
 	{
-		int allseconds = util.getTimeLeft(player, rank);
+		int allseconds = BUtil.getTimeLeft(player, rank);
 		String timeString = "", print;
 
 		// Just shamelessly ripped this code, I don't even care:
@@ -670,7 +684,7 @@ public class PromoteExecutor implements CommandExecutor
 				}
 			}
 
-			print = ": " + ChatColor.WHITE + "" + timeString;
+			print = ": " + ChatColor.WHITE + timeString;
 		}
 		else 
 		{

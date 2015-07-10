@@ -1,7 +1,6 @@
 package net.auscraft.BlivUtils.listeners;
 
-import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.utils.Utilities;
+import net.auscraft.BlivUtils.utils.BUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -17,12 +16,10 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 public class HealthListener implements Listener, CommandExecutor
 {
-
-private Utilities util;
 	
-	public HealthListener(BlivUtils instance)
+	public HealthListener()
 	{
-		util = instance.getUtil();
+		
 	}
 	
 	@EventHandler
@@ -45,7 +42,6 @@ private Utilities util;
 		{
 			p.setMaxHealth(20.0);
 		}
-		
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[])
@@ -71,55 +67,55 @@ private Utilities util;
 			}
 			else if(args.length >= 1)
 			{
-				Player p = (Player)sender;
+				Player player = (Player) sender;
 				if(args[0].equals("default"))
 				{
-					p.setMaxHealth(20.0);
-					util.printInfo(sender, "Your health bonus has been temporarily reset");
+					player.setMaxHealth(20.0);
+					BUtil.printInfo(sender, "Your health bonus has been temporarily reset");
 				}
 				else if(args[0].equals("reset"))
 				{
-					if(p.hasPermission("blivutils.ender.hearts.double"))
+					if(player.hasPermission("blivutils.ender.hearts.double"))
 					{
-						p.setMaxHealth(40.0);
-						util.printInfo(sender, "Your health bonus has returned!");
+						player.setMaxHealth(40.0);
+						BUtil.printInfo(sender, "Your health bonus has returned!");
 					}
-					else if(p.hasPermission("blivutils.ender.hearts.oneandahalf"))
+					else if(player.hasPermission("blivutils.ender.hearts.oneandahalf"))
 					{
-						p.setMaxHealth(30.0);
-						util.printInfo(sender, "Your health bonus has returned!");
+						player.setMaxHealth(30.0);
+						BUtil.printInfo(sender, "Your health bonus has returned!");
 					}
 					
 				}
 				else if(args[0].equals("toggle"))
 				{
-					PermissionUser user = PermissionsEx.getUser(p);
+					PermissionUser user = PermissionsEx.getUser(player);
 					if(sender.hasPermission("blivutils.ender.hearts.off"))
 					{
 						user.removePermission("blivutils.ender.hearts.off");
-						if(p.hasPermission("blivutils.ender.hearts.double"))
+						if(player.hasPermission("blivutils.ender.hearts.double"))
 						{
-							p.setMaxHealth(40.0);
-							util.printInfo(sender, "Your health bonus has returned!");
+							player.setMaxHealth(40.0);
+							BUtil.printInfo(sender, "Your health bonus has returned!");
 						}
-						else if(p.hasPermission("blivutils.ender.hearts.oneandahalf"))
+						else if(player.hasPermission("blivutils.ender.hearts.oneandahalf"))
 						{
-							p.setMaxHealth(30.0);
-							util.printInfo(sender, "Your health bonus has returned!");
+							player.setMaxHealth(30.0);
+							BUtil.printInfo(sender, "Your health bonus has returned!");
 						}
 					}
 					else
 					{
 						user.addPermission("blivutils.ender.hearts.off");
-						p.setMaxHealth(20.0);
-						util.printInfo(sender, "Your health bonus has been turned off");
+						player.setMaxHealth(20.0);
+						BUtil.printInfo(sender, "Your health bonus has been turned off");
 					}
 				}
 			}
 		}
 		else
 		{
-			util.printError(sender, "You dont have access to bonus health!\n     (This is an Ender Perk)");
+			BUtil.printError(sender, "You dont have access to bonus health!\n     (This is an Ender Perk)");
 		}
 		return true;
 	}

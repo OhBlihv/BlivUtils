@@ -28,7 +28,6 @@ public class XPListener  implements Listener
         {
         	multiplier = 2.0;
         }
-        //util.logDebug("Original XP: " + amount + " | Multiplied by " + multiplier + " = " + ((int) Math.floor(event.getAmount() * multiplier)));
         event.setAmount((int) Math.floor(event.getAmount() * multiplier));
     }
 }

@@ -1,7 +1,7 @@
 package net.auscraft.BlivUtils.executors;
 
 import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.utils.Utilities;
+import net.auscraft.BlivUtils.utils.BUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,14 +14,12 @@ import org.bukkit.scheduler.BukkitScheduler;
 public class GenericExecutor implements CommandExecutor
 {
 	
-	private Utilities util;
-	private BlivUtils b;
+	private BlivUtils plugin;
 	private final String serversHeader = ChatColor.GOLD + "- - - - - " + ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Servers Menu - - - - -\n";
 	
 	public GenericExecutor(BlivUtils instance)
 	{
-		b = instance;
-		util = instance.getUtil();
+		plugin = instance;
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) 
@@ -30,24 +28,24 @@ public class GenericExecutor implements CommandExecutor
 		{
 			if (args.length == 0) 
 			{
-				util.printInfo(sender, ChatColor.GOLD + "Use one of the following inputs:\n/bu version\n/bu reload");
+				BUtil.printInfo(sender, ChatColor.GOLD + "Use one of the following inputs:\n/bu version\n/bu reload");
 			} 
 			else if (args.length > 0)
 			{
 				if (args[0].equalsIgnoreCase("version"))
 				{
-					util.printInfo(sender, ChatColor.GOLD + "Running BlivUtils Version " + ChatColor.WHITE + b.getDescription().getVersion());
+					BUtil.printInfo(sender, ChatColor.GOLD + "Running BlivUtils Version " + ChatColor.WHITE + plugin.getDescription().getVersion());
 				}
 				if (args[0].equalsIgnoreCase("reload")) 
 				{
 					if (sender.hasPermission("blivutils.reload") || !(sender instanceof Player))
 					{
-						b.reloadConfig();
-						util.printInfo(sender, ChatColor.GOLD + "BlivUtils successfully reloaded.");
+						plugin.reloadConfig();
+						BUtil.printInfo(sender, ChatColor.GOLD + "BlivUtils successfully reloaded.");
 					}
 					else
 					{
-						util.printError(sender, "You don't have sufficient permissions!");
+						BUtil.printError(sender, "You don't have sufficient permissions!");
 					}
 				}
 			}
@@ -75,7 +73,7 @@ public class GenericExecutor implements CommandExecutor
 				return false;
 			}
 			
-			util.printError(sender, "You don't have sufficient permissions!");
+			BUtil.printError(sender, "You don't have sufficient permissions!");
 			return false;
 		}
 		if (cmd.getName().equalsIgnoreCase("wstop")	&& !(sender instanceof Player))
@@ -86,7 +84,7 @@ public class GenericExecutor implements CommandExecutor
 			Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "save-all");
 				
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		    scheduler.scheduleSyncDelayedTask(b, new Runnable() 
+		    scheduler.scheduleSyncDelayedTask(plugin, new Runnable() 
 		    {
 		        @Override
 		        public void run()

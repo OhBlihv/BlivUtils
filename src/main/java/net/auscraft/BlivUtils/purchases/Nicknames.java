@@ -3,24 +3,22 @@ package net.auscraft.BlivUtils.purchases;
 import java.util.HashMap;
 import java.util.Random;
 
-import net.auscraft.BlivUtils.utils.Utilities;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
 import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
 
+import net.auscraft.BlivUtils.utils.BUtil;
+
 public class Nicknames
 {
 	
-	private Utilities util;
 	private HashMap<Player, Integer> nick;
 	
-	public Nicknames(Utilities inUtil)
+	public Nicknames()
 	{
-		util = inUtil;
-		nick = new HashMap<Player, Integer>();
+		this.nick = new HashMap<Player, Integer>();
 	}
 	
 	public void nickPlayer(Player p)
@@ -30,7 +28,7 @@ public class Nicknames
 		{
 			if(bsp.hasNickname())
 			{
-				util.logInfo("Player " + p.getName() + " should have had a random colour assigned, but they already had a nickname.");
+				BUtil.logInfo("Player " + p.getName() + " should have had a random colour assigned, but they already had a nickname.");
 				return; //Exit. If player has a nickname, it is most likely coloured, or it is a rebuy of the package.
 			}
 			String newName = randomColour() + p.getName(); //Default minecraft name
@@ -39,11 +37,8 @@ public class Nicknames
 		}
 		catch(NullPointerException e)
 		{
-			util.logError("Some error regarding nicknames. Player has not had a nickname assigned");
+			BUtil.logError("Some error regarding nicknames. Player has not had a nickname assigned");
 		}
-		
-		
-		
 	}
 	
 	public ChatColor randomColour()
@@ -95,7 +90,7 @@ public class Nicknames
 				break;
 		}
 		
-		util.logInfo("Colour selected for player: " + colour.toString());
+		BUtil.logInfo("Colour selected for player: " + colour.toString());
 		
 		return colour;
 	}

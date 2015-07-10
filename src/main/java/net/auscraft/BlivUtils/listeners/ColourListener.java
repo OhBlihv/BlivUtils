@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.utils.Utilities;
+import net.auscraft.BlivUtils.utils.BUtil;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -25,12 +25,10 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 public class ColourListener implements Listener 
 {
 	
-	private Utilities util;
 	private Economy econ;
 	
 	public ColourListener(BlivUtils instance)
 	{
-		util = instance.getUtil();
 		econ = instance.setupEconomy();
 	}
 	
@@ -151,7 +149,7 @@ public class ColourListener implements Listener
 			}
 			else
 			{
-				util.printError(p, "You dont have permission to change your colour! (Required: Blaze Rank)");
+				BUtil.printError(p, "You dont have permission to change your colour! (Required: Blaze Rank)");
 			}
 			
 		}
@@ -238,12 +236,12 @@ public class ColourListener implements Listener
 			econ.withdrawPlayer(p, 200);
 			PermissionUser user = PermissionsEx.getUser(p);
 			user.setSuffix(colour, null);
-			util.printSuccess(p, "Set to " + readable);
-			util.logInfo(ChatColor.GOLD + "Successfully set " + p.getName()	+ "'s chat colour to " + readable);
+			BUtil.printSuccess(p, "Set to " + readable);
+			BUtil.logInfo(ChatColor.GOLD + "Successfully set " + p.getName()	+ "'s chat colour to " + readable);
 		} 
 		else
 		{
-			util.printError(p, "You need at least $200 to buy that colour!");
+			BUtil.printError(p, "You need at least $200 to buy that colour!");
 		}
 	}
 	

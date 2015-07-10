@@ -2,9 +2,6 @@ package net.auscraft.BlivUtils.purchases;
 
 import java.util.regex.Pattern;
 
-import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.utils.Utilities;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,13 +15,14 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
 import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
 
+import net.auscraft.BlivUtils.utils.BUtil;
+
 public class Broadcast implements CommandExecutor
 {
-	private Utilities util;
 	
-	public Broadcast(BlivUtils instance)
+	public Broadcast()
 	{
-		util = instance.getUtil();
+		
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) 
@@ -42,14 +40,14 @@ public class Broadcast implements CommandExecutor
 				}
 				catch(Exception e)
 				{
-					util.logError("Player " + args[1] + " is not online.");
+					BUtil.logError("Player " + args[1] + " is not online.");
 				}
 				String message = "% &r&ahas purchased &6@ &afor &2$&f#&a!";
 				String packageName = args[2];
 				
 				if(args[0].equals("true")) //Is a rank upgrade, requires name colour change
 				{
-					Nicknames nick = new Nicknames(util);
+					Nicknames nick = new Nicknames();
 					if(p != null)
 					{
 						nick.nickPlayer(p);
@@ -112,7 +110,7 @@ public class Broadcast implements CommandExecutor
 					message = translateVariables(message, args[1], packageName, args[3]);
 				}
 				
-				message = util.translateColours(message);
+				message = BUtil.translateColours(message);
 				
 				Bukkit.broadcastMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "|| " + ChatColor.GRAY + "[" + ChatColor.GREEN	+ ChatColor.BOLD + "Thanks!" + ChatColor.RESET
 						+ ChatColor.GRAY + "]" + " " + ChatColor.YELLOW	+ ChatColor.ITALIC + ChatColor.BOLD + message);
@@ -122,7 +120,7 @@ public class Broadcast implements CommandExecutor
 			return false;
 		}
 		
-		util.printError(sender, "You can't do this!");
+		BUtil.printError(sender, "You can't do this!");
 		return true;
 	}
 	

@@ -20,15 +20,15 @@ import net.auscraft.BlivUtils.executors.RankHelpExecutor;
 import net.auscraft.BlivUtils.listeners.ColourListener;
 import net.auscraft.BlivUtils.listeners.DeathListener;
 import net.auscraft.BlivUtils.listeners.HealthListener;
-import net.auscraft.BlivUtils.listeners.HubListener;
+import net.auscraft.BlivUtils.listeners.JoinListener;
 import net.auscraft.BlivUtils.listeners.PromotionListener;
 import net.auscraft.BlivUtils.listeners.XPListener;
 import net.auscraft.BlivUtils.promotions.PromoteExecutor;
 import net.auscraft.BlivUtils.purchases.Broadcast;
 import net.auscraft.BlivUtils.purchases.Ender;
 import net.auscraft.BlivUtils.rewards.Rewards;
+import net.auscraft.BlivUtils.utils.BUtil;
 import net.auscraft.BlivUtils.utils.FlatFile;
-import net.auscraft.BlivUtils.utils.Utilities;
 import net.auscraft.BlivUtils.vote.Vote;
 import net.auscraft.BlivUtils.vote.VoteManager;
 import net.milkbowl.vault.economy.Economy;
@@ -52,13 +52,11 @@ public final class BlivUtils extends JavaPlugin
 	private static HashMap<String, Boolean> fixClaim;
 	
 	@Getter
-	private BlivUtils instance;
+	private static BlivUtils instance;
 	@Getter
 	private static PermissionManager pex;
 	@Getter
 	private FlatFile cfg;
-	@Getter
-	private Utilities util;
 	@Getter
 	private VoteManager voteMan;
 	BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -67,16 +65,12 @@ public final class BlivUtils extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
-		this.instance = this;
+		instance = this;
 		
-		// Other Stuff
 		pex = PermissionsEx.getPermissionManager();
-		util = new Utilities(this);
-		cfg = new FlatFile(this, "config.yml");
-		voteMan = new VoteManager(this);
-		// Scheduling
-		util.checkRankScheduler();
-		//MySQL Setup
+		cfg = FlatFile.getInstance();
+		voteMan = new VoteManager();
+		BUtil.checkRankScheduler();
 		setupMySQL();
 		doScheduledCommands();
 		
@@ -89,55 +83,55 @@ public final class BlivUtils extends JavaPlugin
 		
 		//Always enabled commands
 		getCommand("bu").setExecutor(new GenericExecutor(this));
-		getCommand("rank").setExecutor(new RankHelpExecutor(this));
+		getCommand("rank").setExecutor(new RankHelpExecutor());
 		getCommand("say").setExecutor(new GenericExecutor(this));
 		getCommand("wstop").setExecutor(new GenericExecutor(this));
 		getCommand("servers").setExecutor(new GenericExecutor(this));
-		getCommand("purch").setExecutor(new Broadcast(this));
-		getCommand("lore").setExecutor(new Ender(this));
-		getCommand("xpClaim").setExecutor(new Ender(this));
-		getCommand("fixClaim").setExecutor(new Ender(this));
-		getCommand("enderperm").setExecutor(new Ender(this));
-		getCommand("enderrank").setExecutor(new Ender(this));
-		getCommand("health").setExecutor(new HealthListener(this));
+		getCommand("purch").setExecutor(new Broadcast());
+		getCommand("lore").setExecutor(new Ender());
+		getCommand("xpClaim").setExecutor(new Ender());
+		getCommand("fixClaim").setExecutor(new Ender());
+		getCommand("enderperm").setExecutor(new Ender());
+		getCommand("enderrank").setExecutor(new Ender());
+		getCommand("health").setExecutor(new HealthListener());
 		getCommand("voteprint").setExecutor(new Vote(this));
-		getCommand("voteclaim").setExecutor(new VoteManager(this));
+		getCommand("voteclaim").setExecutor(new VoteManager());
 		getCommand("voteparty").setExecutor(new Vote(this));
-		getCommand("timeleft").setExecutor(new PromoteExecutor(this));
-		getCommand("prefix").setExecutor(new PromoteExecutor(this));
+		getCommand("timeleft").setExecutor(new PromoteExecutor());
+		getCommand("prefix").setExecutor(new PromoteExecutor());
 		getCommand("chat").setExecutor(new ColourExecutor());
-		getCommand("promoadmin").setExecutor(new PromoteExecutor(this));
-		getCommand("updateadmin").setExecutor(new PromoteExecutor(this));
-		getCommand("updatetime").setExecutor(new PromoteExecutor(this));
+		getCommand("promoadmin").setExecutor(new PromoteExecutor());
+		getCommand("updateadmin").setExecutor(new PromoteExecutor());
+		getCommand("updatetime").setExecutor(new PromoteExecutor());
 		
 		//Listeners
 		getServer().getPluginManager().registerEvents(new ColourListener(this), this);
 		getServer().getPluginManager().registerEvents(new PromotionListener(this), this);
-		getServer().getPluginManager().registerEvents(new HubListener(), this);
+		getServer().getPluginManager().registerEvents(JoinListener.getInstance(), this);
 		getServer().getPluginManager().registerEvents(new XPListener(), this);
-		getServer().getPluginManager().registerEvents(new DeathListener(this), this);
-		getServer().getPluginManager().registerEvents(new HealthListener(this), this);
+		getServer().getPluginManager().registerEvents(new DeathListener(), this);
+		getServer().getPluginManager().registerEvents(new HealthListener(), this);
 		
 		if(cfg.getInt("options.toggle.rankpromotion") == 1)
 		{
-			getCommand("buyrank").setExecutor(new PromoteExecutor(this));
-			util.logInfo("Rank Purchasing Enabled.");
+			getCommand("buyrank").setExecutor(new PromoteExecutor());
+			BUtil.logInfo("Rank Purchasing Enabled.");
 		}
 		else
 		{
-			getCommand("buyrank").setExecutor(new RemovedCommand(this));
-			util.logInfo("Rank Purchasing Disabled.");
+			getCommand("buyrank").setExecutor(new RemovedCommand());
+			BUtil.logInfo("Rank Purchasing Disabled.");
 		}
 		
 		if(cfg.getInt("options.toggle.presents") == 1)
 		{
-			getCommand("present").setExecutor(new Rewards(this));
-			util.logInfo("Rewards Enabled...");
+			getCommand("present").setExecutor(new Rewards());
+			BUtil.logInfo("Rewards Enabled...");
 		}
 		else
 		{
-			getCommand("present").setExecutor(new RemovedCommand(this));
-			util.logInfo("Rewards Disabled.");
+			getCommand("present").setExecutor(new RemovedCommand());
+			BUtil.logInfo("Rewards Disabled.");
 		}
 		
 		//Vote Reward checker
@@ -147,7 +141,7 @@ public final class BlivUtils extends JavaPlugin
 		}
 		else
 		{
-			util.logInfo("Voting Rewards disabled.");
+			BUtil.logInfo("Voting Rewards disabled.");
 		}
 		
 	}
@@ -155,7 +149,7 @@ public final class BlivUtils extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-		util.logInfo("BlivUtils disabling...");
+		BUtil.logInfo("BlivUtils disabling...");
 	}
 	
 	//Setup for MySQL
@@ -166,59 +160,65 @@ public final class BlivUtils extends JavaPlugin
 		String pass = cfg.getString("options.mysql.pass");
 		String url = cfg.getString("options.mysql.url");
 		
-		String setup = cfg.getString("options.mysql.setup");
-		if(setup.equals("0"))
+		int setup = cfg.getInt("options.mysql.setup");
+		if(setup == 0)
 		{
-			util.logInfo("Table not set up. First run.");
+			BUtil.logInfo("Table not set up. First run.");
 			//Set the setup variable to 1, so it attempts to setup the CreditsDB table
 			cfg.saveValue("options.mysql.setup", "1");
 			//configSetup.setValue("options.mysql.setup", "1");
-			util.logInfo("setup should now be 1");
+			BUtil.logInfo("setup should now be 1");
 		}
-		else if(setup.equals("1"))
+		else if(setup == 1)
 		{
-			try
+			scheduler.runTaskAsynchronously(this, new Runnable()
 			{
-				util.logInfo("Setting up Credits Table...");
-				//Initial creation of Table
-				Connection conn = DriverManager.getConnection(url, user, pass);
-				PreparedStatement sampleQueryStatement = conn.prepareStatement("CREATE TABLE IF NOT EXISTS CreditsDB (playerName VARCHAR(50) PRIMARY KEY, value INT)");
-				sampleQueryStatement.executeUpdate();
-				sampleQueryStatement.close();
-				conn.close();
-				util.logInfo("Successfully set up Credits Table");
-				//Set the setup variable to 2, so it doesn't attempt to setup the CreditsDB table anymore.
-				//configSetup.setValue("options.mysql.setup", "2");
-				cfg.saveValue("options.mysql.setup", "2");
-			}
-			catch(SQLException e)
-			{
-				e.printStackTrace(); //For now, I'll fix this later.
-				util.logSevere("Failed setting up Credits Table");
-				util.logSevere("Disabling...");
-				Bukkit.getPluginManager().disablePlugin(this);
-			}
+				
+				public void run()
+				{
+					try
+					{
+						BUtil.logInfo("Setting up Credits Table...");
+						//Initial creation of Table
+						Connection conn = DriverManager.getConnection(url, user, pass);
+						PreparedStatement sampleQueryStatement = conn.prepareStatement("CREATE TABLE IF NOT EXISTS CreditsDB (playerName VARCHAR(50) PRIMARY KEY, value INT)");
+						sampleQueryStatement.executeUpdate();
+						sampleQueryStatement.close();
+						conn.close();
+						BUtil.logInfo("Successfully set up Credits Table");
+						//Set the setup variable to 2, so it doesn't attempt to setup the CreditsDB table anymore.
+						//configSetup.setValue("options.mysql.setup", "2");
+						cfg.saveValue("options.mysql.setup", "2");
+					}
+					catch(SQLException e)
+					{
+						e.printStackTrace(); //For now, I'll fix this later.
+						BUtil.logSevere("Failed setting up Credits Table");
+						BUtil.logSevere("Disabling...");
+						Bukkit.getPluginManager().disablePlugin(instance);
+					}
+				}
+				
+			});
 		}
-		else  //Setup = 2
+		else  //Setup == 2
 		{
-			util.logInfo("Credits table already set up. Skipping...");
+			BUtil.logInfo("Credits table already set up. Skipping...");
 		}
-
-		
 	}
 
-	public void startRankScheduler()
+	public static void startRankScheduler()
 	{
-		String unit = cfg.getString("options.scheduler.unit");
-		int looptime = util.getConversion(unit, "options.scheduler.time");
-		scheduler.scheduleSyncRepeatingTask(this, new Runnable()
+		String unit = FlatFile.getInstance().getString("options.scheduler.unit");
+		int looptime = BUtil.getConversion(unit, "options.scheduler.time");
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(BlivUtils.getInstance(), new Runnable()
 		{
 			public void run()
 			{
-				for (Player p : getServer().getOnlinePlayers())
+				for (Player p : Bukkit.getServer().getOnlinePlayers())
 				{
 					PermissionUser user = pex.getUser(p);
-					String rankString = util.getActiveRanks(p.getName());
+					String rankString = BUtil.getActiveRanks(p.getName());
 					if (rankString.length() != 0)
 					{
 						String ranks[] = rankString.split(",");
@@ -231,7 +231,7 @@ public final class BlivUtils extends JavaPlugin
 								if(rank.equals("EnderRank"))
 								{
 									String EnderRankValue = user.getOption("EnderRankValue");
-									util.wipePackages(p.getName());
+									BUtil.wipePackages(p.getName());
 									switch(EnderRankValue)
 									{
 										case "1":
@@ -265,8 +265,8 @@ public final class BlivUtils extends JavaPlugin
 									}
 								}
 								Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),"mail send " + p.getName() + " Your " + rank + " has EXPIRED!");
-								util.printInfo(p, ChatColor.GOLD + "Your " + rank + " has " + ChatColor.DARK_RED + "EXPIRED!");
-								util.logInfo("Player " + p.getName() + "'s " + rank + " has EXPIRED!");
+								BUtil.printInfo(p, ChatColor.GOLD + "Your " + rank + " has " + ChatColor.DARK_RED + "EXPIRED!");
+								BUtil.logInfo("Player " + p.getName() + "'s " + rank + " has EXPIRED!");
 							}
 						}
 						
@@ -276,14 +276,31 @@ public final class BlivUtils extends JavaPlugin
 		}, 0L, looptime);
 	}
 	
-	public void doScheduledCommands()
+	public static void doScheduledCommands()
 	{
-		scheduler.scheduleSyncRepeatingTask(this, new Runnable()
+		
+		Bukkit.getScheduler().runTaskTimerAsynchronously(BlivUtils.getInstance(), new Runnable()
 		{
 			public void run()
 			{
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex reload");
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
+				Bukkit.getScheduler().runTask(instance, new Runnable()
+				{
+					
+					public void run()
+					{
+						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "pex reload");
+					}
+					
+				});
+				Bukkit.getScheduler().runTask(instance, new Runnable()
+				{
+					
+					public void run()
+					{
+						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
+					}
+					
+				});
 			}
 		}, 18000L, 18000L /*200L*/); //5 Minutes
 	}
@@ -298,7 +315,7 @@ public final class BlivUtils extends JavaPlugin
 				{
 					try
 					{
-						util.printInfo(Bukkit.getPlayer(player), ChatColor.GREEN + "You have an unclaimed voting reward! Type " + ChatColor.AQUA + "/voteclaim" + ChatColor.GREEN + " to claim");
+						BUtil.printInfo(Bukkit.getPlayer(player), ChatColor.GREEN + "You have an unclaimed voting reward! Type " + ChatColor.AQUA + "/voteclaim" + ChatColor.GREEN + " to claim");
 					}
 					catch(NullPointerException e)
 					{
