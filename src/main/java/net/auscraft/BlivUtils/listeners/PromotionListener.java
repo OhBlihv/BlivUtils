@@ -1,13 +1,9 @@
 package net.auscraft.BlivUtils.listeners;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.utils.BUtil;
+import net.auscraft.BlivUtils.util.BUtil;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,9 +14,11 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class PromotionListener implements Listener
 {
@@ -28,16 +26,16 @@ public class PromotionListener implements Listener
 	private Economy econ;
 	private Permission perms;
 
-	public PromotionListener(BlivUtils instance)
+	public PromotionListener()
 	{
-		econ = instance.setupEconomy();
-		perms = instance.setupPermissions();
+		econ = BlivUtils.setupEconomy();
+		perms = BlivUtils.setupPermissions();
 	}
 	
 	public ItemStack ConfirmPurchase(String rank)
 	{
-		String price = "N/A";
-		ItemStack item = null;
+		String price;
+		ItemStack item;
         switch(rank)
         {
 	        case "MagmaSlime": price = "25,000";
@@ -79,16 +77,17 @@ public class PromotionListener implements Listener
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event)
 	{
-		if(event.getInventory().getTitle().contains("Buy Ranks"))
+		if(event.getInventory().getTitle().equals("Buy Ranks"))
 		{
 			event.setCancelled(true);
 			Player p = (Player)event.getWhoClicked();
 			//Slot was empty
 			if(event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR))
 			{
-                return;
+				return;
 			}
-			else if(event.getCurrentItem().getType().equals(Material.MAGMA_CREAM))
+
+			if(event.getCurrentItem().getType().equals(Material.MAGMA_CREAM))
 			{
 				doConfirmationDialog("MagmaSlime", p, p.hasPermission("blivutils.promote.magmaslime"));
 			}
@@ -116,9 +115,10 @@ public class PromotionListener implements Listener
 			//Slot was empty
 			if(event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR))
 			{
-                return;
+				return;
 			}
-			else if(event.getCurrentItem().getType().equals(Material.MAGMA_CREAM))
+
+			if(event.getCurrentItem().getType().equals(Material.MAGMA_CREAM))
 			{
 				rankPromotion(p, "MagmaSlime");
 				p.closeInventory();
@@ -172,10 +172,12 @@ public class PromotionListener implements Listener
 			}
 		}
 	}
+
+	private static final long FIFTEEN_DAYS_MILLIS = 2592000L;
 	
 	public void rankPromotion(Player p, String rank)
 	{
-		double price = 0.0;
+		double price;
 		price = getRankPrice(rank);
 
 		if (econ.has(p, price)) 
@@ -185,13 +187,13 @@ public class PromotionListener implements Listener
 			// Don't Demote the Endermite Renters!
 			if (!rank.equals("Endermite")) 
 			{
-				for (int i = 0; i < groups.length; i++) 
+				for(String group : groups)
 				{
-					if(groups[i].equalsIgnoreCase("EnderRank"))
+					if(group.equalsIgnoreCase("EnderRank"))
 					{
 						continue;
 					}
-					perms.playerRemoveGroup(null, p, groups[i]);
+					perms.playerRemoveGroup(null, p, group);
 				}
 				perms.playerAddGroup(null, p, rank);
 				BUtil.printSuccess(p, "You have been promoted to " + ChatColor.RED + rank);
@@ -201,7 +203,7 @@ public class PromotionListener implements Listener
 				PermissionUser user = PermissionsEx.getUser(p);
 				user.addGroup("Endermite", null);
 				//user.setOption("group-Endermite-until", "1296000");
-				user.setOption("group-" + rank + "-until", "" + 2592000 + ((int) (System.currentTimeMillis() / 1000L)));
+				user.setOption("group-" + rank + "-until", "" + FIFTEEN_DAYS_MILLIS + ((int) (System.currentTimeMillis() / 1000L)));
 				BUtil.printSuccess(p, "You have been promoted to " + ChatColor.RED + rank + ChatColor.WHITE + " for " + ChatColor.GREEN + "15 days");
 			}
 			BUtil.logInfo("Player " + p.getName() + " has been promoted to " + rank);
@@ -209,14 +211,14 @@ public class PromotionListener implements Listener
 		}
 		else 
 		{
-			BUtil.printError(p, "You dont have sufficient funds to be promoted!");
+			BUtil.printError(p, "You don't have sufficient funds to be promoted!");
 		}
 	}
 	
 	//Random reference code
 	private double getRankPrice(String rank)
 	{
-		double price = 0.0;
+		double price;
 		switch(rank)
 		{
 			case "MagmaSlime": price = 25000.0;
@@ -225,7 +227,7 @@ public class PromotionListener implements Listener
 			break;
 			case "PigZombie": price = 75000.0;
 			break;
-			case "Ghast": case "Endermite": price = 10000.0;
+			case "Ghast": case "Endermite": price = 100000.0;
 			break;
 			default: price = -1.0;
 			break;

@@ -1,7 +1,7 @@
 package net.auscraft.BlivUtils.executors;
 
 import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.utils.BUtil;
+import net.auscraft.BlivUtils.util.BUtil;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,12 +14,13 @@ import org.bukkit.scheduler.BukkitScheduler;
 public class GenericExecutor implements CommandExecutor
 {
 	
-	private BlivUtils plugin;
-	private final String serversHeader = ChatColor.GOLD + "- - - - - " + ChatColor.BLUE + "" + ChatColor.BOLD	+ "Aus"	+ ChatColor.WHITE + ChatColor.BOLD + "Craft" + ChatColor.YELLOW	+ " Servers Menu - - - - -\n";
+	private final String serversHeader = ChatColor.DARK_AQUA + "" + ChatColor.STRIKETHROUGH + "-----" + ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "-----"
+			+ ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Aus" + ChatColor.WHITE + "" + ChatColor.BOLD + "Craft " + ChatColor.WHITE + "Servers"
+			+ ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "-----" + ChatColor.DARK_AQUA + "" + ChatColor.STRIKETHROUGH + "-----\n";
 	
-	public GenericExecutor(BlivUtils instance)
+	public GenericExecutor()
 	{
-		plugin = instance;
+		
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) 
@@ -34,13 +35,13 @@ public class GenericExecutor implements CommandExecutor
 			{
 				if (args[0].equalsIgnoreCase("version"))
 				{
-					BUtil.printInfo(sender, ChatColor.GOLD + "Running BlivUtils Version " + ChatColor.WHITE + plugin.getDescription().getVersion());
+					BUtil.printInfo(sender, ChatColor.GOLD + "Running BlivUtils Version " + ChatColor.WHITE + BlivUtils.getInstance().getDescription().getVersion());
 				}
 				if (args[0].equalsIgnoreCase("reload")) 
 				{
 					if (sender.hasPermission("blivutils.reload") || !(sender instanceof Player))
 					{
-						plugin.reloadConfig();
+						BlivUtils.getInstance().reloadConfig();
 						BUtil.printInfo(sender, ChatColor.GOLD + "BlivUtils successfully reloaded.");
 					}
 					else
@@ -57,12 +58,10 @@ public class GenericExecutor implements CommandExecutor
 				String message = "";
 				if (args.length > 0) 
 				{
-					String as[] = args;
-					int i = as.length;
-					for (int j = 0; j < i; j++)
+					int i = args.length;
+					for(String data : args)
 					{
-						String data = as[j];
-						message = (message += data + " ");
+						message += data + " ";
 					}
 
 					Bukkit.broadcastMessage(ChatColor.DARK_RED + "|| " + ChatColor.GRAY + "[" + ChatColor.GREEN	+ ChatColor.BOLD + "Server" + ChatColor.RESET
@@ -84,14 +83,15 @@ public class GenericExecutor implements CommandExecutor
 			Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "save-all");
 				
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		    scheduler.scheduleSyncDelayedTask(plugin, new Runnable() 
+		    scheduler.scheduleSyncDelayedTask(BlivUtils.getInstance(), new Runnable() 
 		    {
 		        @Override
 		        public void run()
 		        {
 		        	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "kickall Restart");
 		        	Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "ee say " + Bukkit.getServerName() + " is Restarting...");
-					Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "stop");
+					//Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "stop");
+			        Bukkit.shutdown();
 		        }
 		    }, 200L);
 		    

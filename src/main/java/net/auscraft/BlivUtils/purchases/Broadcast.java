@@ -1,29 +1,21 @@
 package net.auscraft.BlivUtils.purchases;
 
-import java.util.regex.Pattern;
-
+import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
+import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
+import net.auscraft.BlivUtils.util.BUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
-import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
-import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
-
-import net.auscraft.BlivUtils.utils.BUtil;
+import java.util.regex.Pattern;
 
 public class Broadcast implements CommandExecutor
 {
-	
-	public Broadcast()
-	{
-		
-	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) 
 	{
@@ -63,43 +55,10 @@ public class Broadcast implements CommandExecutor
 				{
 					message = "% &r&ahas donated $&f#&a.";
 				}
-				else if(packageName.contains("EnderRank"))
+				/*else if(packageName.contains("EnderRank"))
 				{
-					PermissionUser user = PermissionsEx.getUser(args[1]);
-					//Player gets [Enderman] rank
-					if(Double.parseDouble(args[3]) < 15.00)
-					{
-						//If the user has a prefix, dont set their prefix
-						if(!(user.getPrefix().length() == 0 || user.getPrefix() == null))
-						{
-							user.setPrefix("&7[&5Enderman&7] ", null);
-						}
-						packageName = ChatColor.DARK_PURPLE + "Enderman";
-						user.setOption("EnderRankValue", "1");
-					}
-					//Player gets [EnderDragon]
-					else if(Double.parseDouble(args[3]) < 30.00)
-					{
-						if(!(user.getPrefix().length() == 0 || user.getPrefix() == null))
-						{
-							user.setPrefix("&7[&4EnderDragon&7] ", null);
-						}
-						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "enderperm add " + args[1] + " EnderDragon");
-						packageName = ChatColor.DARK_RED + "EnderDragon";
-						user.setOption("EnderRankValue", "2");
-					}
-					//Player gets [Wither] >= $30/month
-					else
-					{
-						if(!(user.getPrefix().length() == 0 || user.getPrefix() == null))
-						{
-							user.setPrefix("&7[&8Wither&7] ", null);
-						}
-						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "enderperm add " + args[1] + " Wither");
-						packageName = ChatColor.DARK_GRAY + "Wither";
-						user.setOption("EnderRankValue", "3");
-					}
-				}
+					
+				}*/
 				
 				if(p != null)
 				{
@@ -124,30 +83,72 @@ public class Broadcast implements CommandExecutor
 		return true;
 	}
 	
+	public static String addEnderRank(String[] args)
+	{
+		PermissionUser user = PermissionsEx.getUser(args[1]);
+		String packageName;
+		//Player gets [Enderman] rank
+		if(Double.parseDouble(args[3]) < 15.00)
+		{
+			//If the user has a prefix, dont set their prefix
+			if(!(user.getPrefix().length() == 0 || user.getPrefix() == null))
+			{
+				user.setPrefix("&7[&5Enderman&7] ", null);
+			}
+			packageName = ChatColor.DARK_PURPLE + "Enderman";
+			user.setOption("EnderRankValue", "1");
+		}
+		//Player gets [EnderDragon]
+		else if(Double.parseDouble(args[3]) < 30.00)
+		{
+			if(!(user.getPrefix().length() == 0 || user.getPrefix() == null))
+			{
+				user.setPrefix("&7[&4EnderDragon&7] ", null);
+			}
+			Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "enderperm add " + args[1] + " EnderDragon");
+			packageName = ChatColor.DARK_RED + "EnderDragon";
+			user.setOption("EnderRankValue", "2");
+		}
+		//Player gets [Wither] >= $30/month
+		else
+		{
+			if(!(user.getPrefix().length() == 0 || user.getPrefix() == null))
+			{
+				user.setPrefix("&7[&8Wither&7] ", null);
+			}
+			Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "enderperm add " + args[1] + " Wither");
+			packageName = ChatColor.DARK_GRAY + "Wither";
+			user.setOption("EnderRankValue", "3");
+		}
+		
+		return packageName;
+	}
+
+	private static final Pattern    PACKAGE_PATTERN = Pattern.compile("[@]"),
+									SPACE_PATTERN = Pattern.compile("[_]"),
+									NAME_PATTERN = Pattern.compile("[%]"),
+									PRICE_PATTERN = Pattern.compile("[#]");
+	
 	private String translateVariables(String fixedString, Player p, String packageName, String price)
 	{
 		//Package name is first, since the second function replaces underscores, and the player name has not been added yet.
 		//Replace @ with package name
-		Pattern packagePattern = Pattern.compile("[@]");
-		fixedString = packagePattern.matcher(fixedString).replaceAll(packageName);
+		fixedString = PACKAGE_PATTERN.matcher(fixedString).replaceAll(packageName);
 				
 		//Replace underscores with spaces (for multi worded packages).
-		Pattern spacePattern = Pattern.compile("[_]");
-		fixedString = spacePattern.matcher(fixedString).replaceAll(" ");
+		fixedString = SPACE_PATTERN.matcher(fixedString).replaceAll(" ");
 		
 		//Replace % with player name
 		BSPlayer bsp = PlayerManager.getPlayer(p);
-		Pattern namePattern = Pattern.compile("[%]");
 		String playerName = p.getName();
 		if(bsp.hasNickname())
 		{
 			playerName = bsp.getNickname();
 		}
-		fixedString = namePattern.matcher(fixedString).replaceAll(playerName);
+		fixedString = NAME_PATTERN.matcher(fixedString).replaceAll(playerName);
 		
 		//Replace # with price (if applicable).
-		Pattern pricePattern = Pattern.compile("[#]");
-		fixedString = pricePattern.matcher(fixedString).replaceAll(price);
+		fixedString = PRICE_PATTERN.matcher(fixedString).replaceAll(price);
 		
 		
 		return fixedString;
@@ -157,22 +158,16 @@ public class Broadcast implements CommandExecutor
 	{
 		//Package name is first, since the second function replaces underscores, and the player name has not been added yet.
 		//Replace @ with package name
-		Pattern packagePattern = Pattern.compile("[@]");
-		fixedString = packagePattern.matcher(fixedString).replaceAll(packageName);
+		fixedString = PACKAGE_PATTERN.matcher(fixedString).replaceAll(packageName);
 				
 		//Replace underscores with spaces (for multi worded packages).
-		Pattern spacePattern = Pattern.compile("[_]");
-		fixedString = spacePattern.matcher(fixedString).replaceAll(" ");
+		fixedString = SPACE_PATTERN.matcher(fixedString).replaceAll(" ");
 		
 		//Replace % with player name
-		Pattern namePattern = Pattern.compile("[%]");
-		String playerName = p;
-		fixedString = namePattern.matcher(fixedString).replaceAll(playerName);
+		fixedString = NAME_PATTERN.matcher(fixedString).replaceAll(p);
 		
 		//Replace # with price (if applicable).
-		Pattern pricePattern = Pattern.compile("[#]");
-		fixedString = pricePattern.matcher(fixedString).replaceAll(price);
-		
+		fixedString = PRICE_PATTERN.matcher(fixedString).replaceAll(price);
 		
 		return fixedString;
 	}

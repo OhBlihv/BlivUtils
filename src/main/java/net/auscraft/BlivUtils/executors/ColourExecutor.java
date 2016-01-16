@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 
 public class ColourExecutor implements CommandExecutor
 {
@@ -20,7 +19,7 @@ public class ColourExecutor implements CommandExecutor
 	{
 		ItemStack item = new ItemStack(Material.WOOL, 1);
 		ItemMeta meta = item.getItemMeta();
-		MaterialData woolColour = null;
+		//MaterialData woolColour = null;
 		switch(colour)
 		{
 			case "Dark Gray": item = new ItemStack(Material.WOOL, 1, DyeColor.BLACK.getData()); meta = item.getItemMeta(); meta.setDisplayName(ChatColor.DARK_GRAY + "Dark Grey"); break;
@@ -39,7 +38,7 @@ public class ColourExecutor implements CommandExecutor
 			default:
 				break;
 		}
-		item.setData(woolColour);
+		//item.setData(woolColour);
         item.setItemMeta(meta);
         return item;
 	}

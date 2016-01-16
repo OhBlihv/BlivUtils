@@ -1,6 +1,6 @@
 package net.auscraft.BlivUtils.executors;
 
-import net.auscraft.BlivUtils.utils.BUtil;
+import net.auscraft.BlivUtils.util.BUtil;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.*;
@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
 public class RankHelpExecutor implements CommandExecutor 
 {
 	
-	private final String banner = ChatColor.DARK_AQUA + "" + ChatColor.STRIKETHROUGH + "---" + ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---"
+	private final String banner = ChatColor.DARK_AQUA + "" + ChatColor.STRIKETHROUGH + "-----" + ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "------"
 								+ ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "Aus" + ChatColor.WHITE + "" + ChatColor.BOLD + "Craft " + ChatColor.WHITE + "Ranks"
-								+ ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "---" + ChatColor.DARK_AQUA + "" + ChatColor.STRIKETHROUGH + "---\n";
-	private final String footer = ChatColor.DARK_AQUA + "" + ChatColor.STRIKETHROUGH + "------"
-								+ ChatColor.WHITE + ChatColor.STRIKETHROUGH + "----------"
-								+ ChatColor.DARK_AQUA + ChatColor.STRIKETHROUGH + "------";
+								+ ChatColor.WHITE + "" + ChatColor.STRIKETHROUGH + "------" + ChatColor.DARK_AQUA + "" + ChatColor.STRIKETHROUGH + "-----\n";
+	private final String footer = ChatColor.DARK_AQUA + "" + ChatColor.STRIKETHROUGH + "-----------"
+								+ ChatColor.WHITE + ChatColor.STRIKETHROUGH + "-------------"
+								+ ChatColor.DARK_AQUA + ChatColor.STRIKETHROUGH + "-----------";
 	
 
 	public RankHelpExecutor()
@@ -30,7 +30,7 @@ public class RankHelpExecutor implements CommandExecutor
 			{
 				if (args.length == 0) 
 				{
-					sender.sendMessage(banner + ""
+					sender.sendMessage(banner
 							+ ChatColor.DARK_AQUA + "| " + ChatColor.GOLD + "Choose from the following ranks:\n"
 							+ ChatColor.WHITE + "| " + ChatColor.WHITE + "Free: " + ChatColor.GREEN + "Squid, Chicken, Sheep, Pig\n"
 							+ ChatColor.DARK_AQUA + "| " + ChatColor.WHITE + "Free: " + ChatColor.DARK_AQUA + "Cow, Mooshroom, Slime, Ocelot\n"
@@ -85,7 +85,7 @@ public class RankHelpExecutor implements CommandExecutor
 								+ ChatColor.DARK_GREEN + "Cow: " + ChatColor.GRAY + "(2 Days Playtime)\n"
 								+ ChatColor.AQUA + "Access to Disguises\nType '/d' for help\nAll future ranks get their rank as a disguise.\n"
 								+ ChatColor.DARK_GREEN + "More Info:" + ChatColor.WHITE + " wiki.aus-craft.net/ranks#Cow < Click Me!\n"
-								+ footer);;
+								+ footer);
 						return true;
 					}
 					else if (args[0].equalsIgnoreCase("Mooshroom")) 

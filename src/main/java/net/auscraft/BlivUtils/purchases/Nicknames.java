@@ -1,24 +1,19 @@
 package net.auscraft.BlivUtils.purchases;
 
-import java.util.HashMap;
-import java.util.Random;
-
+import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
+import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
+import net.auscraft.BlivUtils.util.BUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
-import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
-
-import net.auscraft.BlivUtils.utils.BUtil;
+import java.util.Random;
 
 public class Nicknames
 {
 	
-	private HashMap<Player, Integer> nick;
-	
 	public Nicknames()
 	{
-		this.nick = new HashMap<Player, Integer>();
+		
 	}
 	
 	public void nickPlayer(Player p)
@@ -93,11 +88,6 @@ public class Nicknames
 		BUtil.logInfo("Colour selected for player: " + colour.toString());
 		
 		return colour;
-	}
-	
-	public HashMap<Player, Integer> getNick()
-	{
-		return nick;
 	}
 
 }

@@ -4,7 +4,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import net.auscraft.BlivUtils.utils.BUtil;
+import net.auscraft.BlivUtils.util.BUtil;
 
 public class RemovedCommand implements CommandExecutor
 {
@@ -18,7 +18,17 @@ public class RemovedCommand implements CommandExecutor
 	//It's better than just a blank/no printout. //
 	//-------------------------------------------//
 	
-	public RemovedCommand()
+	private static RemovedCommand instance = null;
+	public static RemovedCommand getInstance()
+	{
+		if(instance == null)
+		{
+			instance = new RemovedCommand();
+		}
+		return instance;
+	}
+	
+	private RemovedCommand()
 	{
 		
 	}

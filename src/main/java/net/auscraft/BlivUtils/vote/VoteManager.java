@@ -1,37 +1,44 @@
 package net.auscraft.BlivUtils.vote;
 
+import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
+import lombok.Getter;
+import net.auscraft.BlivUtils.BlivUtils;
+import net.auscraft.BlivUtils.rewards.RewardContainer;
+import net.auscraft.BlivUtils.util.BUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import ru.tehkode.permissions.bukkit.PermissionsEx;
+
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-
-import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
-
-import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.rewards.RewardContainer;
-import net.auscraft.BlivUtils.utils.BUtil;
-
-public class VoteManager implements CommandExecutor
+public class VoteManager
 {
 
+	private static VoteManager instance = null;
+	public static VoteManager getInstance()
+	{
+		if(instance == null)
+		{
+			instance = new VoteManager();
+		}
+		return instance;
+	}
+	
 	private static final String bar = ChatColor.YELLOW + "" + ChatColor.STRIKETHROUGH + "------ " + ChatColor.DARK_AQUA + ChatColor.BOLD + "Aus" + ChatColor.WHITE + ChatColor.BOLD + "Vote"
 								+ ChatColor.YELLOW + "" + ChatColor.STRIKETHROUGH + " ------------------------------------\n";
-	private static final String barBtm = ChatColor.YELLOW + "" + ChatColor.STRIKETHROUGH + "\n&m--------------------------------------------------";
+	private static final String barBtm = ChatColor.YELLOW + "" + ChatColor.STRIKETHROUGH + "\n--------------------------------------------------";
 	private int rewardChance;
 	private int nextTrigger;
 	private RewardContainer[] voteRewards = new RewardContainer[7];
-	private static HashMap<String, RewardContainer[]> voteClaim = new HashMap<String, RewardContainer[]>();
+	@Getter
+	private static HashMap<String, RewardContainer[]> voteClaim = new HashMap<>();
 	private Random rand = new Random(System.currentTimeMillis());
 	
-	public VoteManager()
+	private VoteManager()
 	{
 		rewardChance = 15;
 		nextTrigger = 0;
@@ -48,50 +55,12 @@ public class VoteManager implements CommandExecutor
 		voteRewards[6] = new RewardContainer(5.0, "&6MageStone!", "/give % 99 1", null, null);
 	}
 	
-	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String args[]) 
-	{
-		if(cmd.getName().equalsIgnoreCase("voteclaim"))
-		{
-			if(voteClaim.containsKey(sender.getName().toLowerCase()))
-			{
-				RewardContainer[] rewardArr = voteClaim.get(sender.getName().toLowerCase());
-				String claimString = "";
-				try
-				{
-					String action = null;
-					for(RewardContainer reward : rewardArr)
-					{
-						action = reward.getAction().substring(1, reward.getAction().length());
-						action = action.replaceAll("%", sender.getName()); //Replace % with players name
-						Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), action);
-						BUtil.logInfo("Command: '" + action + "'");
-						claimString += " - " + reward.getName() + "\n";
-					}
-					voteClaim.remove(sender.getName().toLowerCase());
-				}
-				catch(NullPointerException e)
-				{
-					BUtil.logDebug("Reached end of reward bank.");
-				}
-				BUtil.printSuccess(sender, BUtil.translateColours("Your rewards have been claimed:\n" + claimString));
-				voteClaim.remove(sender.getName().toLowerCase());
-			}
-			else
-			{
-				BUtil.printError(sender, "You don't have any unclaimed rewards!");
-			}
-			return true;
-		}
-		return true;
-	}
-	
 	public boolean voteParty(CommandSender sender, String args[])
 	{
 		if(((int) (System.currentTimeMillis() / 1000L) > nextTrigger))
 		{
 			String triggerName = sender.getName();
-			int chance = 50, timeParty = 30;
+			int chance, timeParty = 30;
 			if(PlayerManager.getPlayer(sender).hasNickname())
 			{
 				triggerName = PlayerManager.getPlayer(sender).getNickname();
@@ -143,7 +112,7 @@ public class VoteManager implements CommandExecutor
 					+ ChatColor.YELLOW + "" + ChatColor.ITALIC + ChatColor.BOLD + ChatColor.stripColor(triggerName)
 					+ ChatColor.GREEN + " has triggered a " + ChatColor.YELLOW + ChatColor.ITALIC + "Vote Party" + ChatColor.YELLOW + " for " + ChatColor.AQUA + timeParty + " minutes" + ChatColor.YELLOW + "!\n"
 					+ "You are " + ChatColor.AQUA + rewardChance + "%" + ChatColor.YELLOW + " likely to receive a " + ChatColor.BOLD + "BONUS" + ChatColor.YELLOW + " upon voting!\n"
-					+ ChatColor.YELLOW + ChatColor.BOLD + "            »»  " + ChatColor.RESET + ChatColor.AQUA + ChatColor.BOLD + ChatColor.ITALIC + " /vote to participate " + ChatColor.YELLOW + "  «« " + ChatColor.RESET 
+					+ ChatColor.YELLOW + ChatColor.BOLD + "            ï¿½ï¿½  " + ChatColor.RESET + ChatColor.AQUA + ChatColor.BOLD + ChatColor.ITALIC + " /vote to participate " + ChatColor.YELLOW + "  ï¿½ï¿½ " + ChatColor.RESET 
 					+ barBtm);
 			
 			//Set the time when the next party can be triggered
@@ -175,10 +144,10 @@ public class VoteManager implements CommandExecutor
 				{
 					public void run()
 					{
-						BUtil.broadcastPlain(bar																	//OH GOD PLEASE DONT TOUCH THIS AFTER I FINISH IT
+						BUtil.broadcastPlain(bar				//OH GOD PLEASE DON'T TOUCH THIS AFTER I FINISH IT
 							+ ChatColor.YELLOW + ChatColor.ITALIC + " The Vote Party ends in" + getConversion((partyTimeFinal * 60) - (((partyTimeFinal * 60) / 4) * finalQuarter)) + "\n"
 							+ ChatColor.AQUA + " " + rewardChanceFinal + "%" + ChatColor.YELLOW + " chance of bonus reward!\n"
-							+ ChatColor.YELLOW + ChatColor.BOLD + " »»  " + ChatColor.RESET + ChatColor.AQUA + ChatColor.BOLD + ChatColor.ITALIC + " /vote to participate " + ChatColor.YELLOW + "  «« " + ChatColor.RESET 
+							+ ChatColor.YELLOW + ChatColor.BOLD + " Â»Â»  " + ChatColor.RESET + ChatColor.AQUA + ChatColor.BOLD + ChatColor.ITALIC + " /vote to participate " + ChatColor.YELLOW + "  Â«Â« " + ChatColor.RESET
 							+ barBtm);
 				}
 				}, ((timeParty * 60 * 20) / 4) * quarter);
@@ -212,9 +181,9 @@ public class VoteManager implements CommandExecutor
 			rewardChanceDiff += 10;
 		}
 		//util.logInfo("Won reward? = " + won);
-		int roll = 0;
+		int roll;
 		RewardContainer rolledReward = null;
-		BUtil.logDebug("Roll: " + won + " | Required Roll or lower: " + rewardChanceDiff);
+		//BUtil.logDebug("Roll: " + won + " | Required Roll or lower: " + rewardChanceDiff);
 		if(won <= rewardChanceDiff)
 		{
 			boolean wonPrize = false;
@@ -245,7 +214,7 @@ public class VoteManager implements CommandExecutor
 							BUtil.logDebug("Oh man, just give up. That reward is bugged");
 						}
 					}
-					if(wonPrize == true)
+					if(wonPrize)
 					{
 						break;
 					}
@@ -297,7 +266,7 @@ public class VoteManager implements CommandExecutor
 				{
 					BUtil.printInfo((CommandSender) Bukkit.getOfflinePlayer(player), BUtil.translateColours(ChatColor.GREEN + "Your reward: " + rolledGift.getName()
 							+ ChatColor.GREEN + " has been added to your reward bank.\n "
-							+ ChatColor.GOLD + ChatColor.ITALIC + "   »» " + ChatColor.GREEN + "Type " + ChatColor.AQUA + "/voteclaim" + ChatColor.GREEN + " to claim"));
+							+ ChatColor.GOLD + ChatColor.ITALIC + "   ï¿½ï¿½ " + ChatColor.GREEN + "Type " + ChatColor.AQUA + "/voteclaim" + ChatColor.GREEN + " to claim"));
 				}
 			}
 			

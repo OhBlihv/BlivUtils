@@ -1,10 +1,8 @@
 package net.auscraft.BlivUtils.purchases;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
+import lombok.Getter;
+import net.auscraft.BlivUtils.BlivUtils;
+import net.auscraft.BlivUtils.util.BUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,12 +12,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import lombok.Getter;
-import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.utils.BUtil;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class Ender implements CommandExecutor
 {
@@ -175,7 +174,7 @@ public class Ender implements CommandExecutor
 					}
 					msgArr[msgArr.length - 1] = BUtil.translateColours("&5Lore edited by &o" + sender.getName());
 					
-					List<String> lore = new ArrayList<String>(Arrays.asList(msgArr));
+					List<String> lore = new ArrayList<>(Arrays.asList(msgArr));
 					meta.setLore(lore);
 					item.setItemMeta(meta);
 					player.setItemInHand(item);
@@ -196,7 +195,7 @@ public class Ender implements CommandExecutor
 		//Once a day xp claim
 		else if (cmd.getName().equalsIgnoreCase("xpClaim") && (sender.hasPermission("blivutils.ender.xpclaim")))
 		{
-			if(!(xpClaim.containsKey(sender.getName())))
+			if(!xpClaim.containsKey(sender.getName()))
 			{
 				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "xp 500 " + sender.getName());
 				BUtil.printSuccess(sender, "500 XP claimed to your account");
@@ -240,17 +239,17 @@ public class Ender implements CommandExecutor
 		}
 		//Ender rank upgrade clumping
 		//Adds the per-rank upgrades in one simple command
-		else if (cmd.getName().equalsIgnoreCase("enderperm")	&& (sender.hasPermission("blivutils.purch"))) //Only for Console
+		else if (cmd.getName().equalsIgnoreCase("enderperm") && (sender.hasPermission("blivutils.purch"))) //Only for Console (or OPs)
 		{
 			/*
 		    EnderDragon $15-$29.99
 			/firework
-			Once a Restart /fixclaim (DONE)
-			Once a Restart /xpclaim (DONE)
+			Once a Restart /fixclaim
+			Once a Restart /xpclaim
 			30HP (1 1/2 Bars)
 
 			Wither $30.00+
-			/lore (Add lore or a name to a weapon) (DONE)
+			/lore (Add lore or a name to a weapon)
 			40HP (2 Bars)
 			 */
 			
@@ -300,6 +299,7 @@ public class Ender implements CommandExecutor
 							user.removePermission("blivutils.ender.fixclaim");
 							user.removePermission("blivutils.ender.xpclaim");
 							user.removePermission("essentials.firework.*");
+							user.removePermission("blivutils.ender.hearts");
 							user.removePermission("blivutils.ender.hearts.oneandahalf");
 						}
 						else if(args[2].equalsIgnoreCase("Wither"))
@@ -329,9 +329,9 @@ public class Ender implements CommandExecutor
 			}
 		}
 		//Base ender rank command
-		else if (cmd.getName().equalsIgnoreCase("enderrank") && (sender.hasPermission("blivutils.purch"))) //Only for Console
+		else if (cmd.getName().equalsIgnoreCase("enderrank") && (sender.hasPermission("blivutils.purch"))) //Only for Console (or OPs)
 		{
-			
+			return enderRank(args);
 		}
 		else
 		{
@@ -426,7 +426,7 @@ public class Ender implements CommandExecutor
 					}
 					long newLength = currentLength + 2592000;
 					//util.logDebug("Current: " + currentLength + " |30Days: " + thirtyDays + " |New: " + newLength);
-					user.setOption("group-" + args[1] + "-until", newLength + "");
+					user.setOption("group-" + args[1] + "-until", String.valueOf(newLength));
 					user.addGroup(args[1]);
 					BUtil.logInfo("Package " + args[1] + " successfully added to " + args[0] + "'s account");
 					return true;

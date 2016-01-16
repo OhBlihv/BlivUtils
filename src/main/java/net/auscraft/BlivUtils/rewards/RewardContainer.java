@@ -1,11 +1,18 @@
 package net.auscraft.BlivUtils.rewards;
 
+import lombok.Getter;
+
 public class RewardContainer
 {
+	@Getter
 	private double chance;
+	@Getter
 	private String name;
+	@Getter
 	private String action;
+	@Getter
 	private int[][] enchantmentOpts = null;
+	@Getter
 	private String lore = null;
 	
 	//Everything
@@ -38,30 +45,5 @@ public class RewardContainer
 		{
 			enchantmentOpts = null;
 		}
-	}
-	
-	public double getChance()
-	{
-		return chance;
-	}
-	
-	public String getName()
-	{
-		return name;
-	}
-	
-	public String getAction()
-	{
-		return action;
-	}
-	
-	public int[][] getEnchants()
-	{
-		return enchantmentOpts;
-	}
-	
-	public String getLore()
-	{
-		return lore;
 	}
 }

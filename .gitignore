@@ -1,7 +1,49 @@
-# This was done by me, so expect it to totally not work
+## Generic files to ignore ##
+*~
+*.lock
+*.swp
+*.out
+*/bin
+
+
+## Operating System Specific ##
+
+# Windows stuff
+*Thumbs.db
+*Desktop.ini
+
+# Mac OSX stuff
+*.DS_Store
+
+
+## Java specific ##
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# Maven #
+*/target/
 target/
-build.xml
-.classpath
-.gitattributes
-.project
-.settings
+
+# Others #
+*.class
+
+
+## IDE Specific ##
+
+# Eclipse
+*.classpath
+*.project
+*.jardesc
+*.settings/
+
+# Intellij
+*.idea/
+*.eml
+*.iml
+*.iws
+
+# Netbeans
+*nbproject/

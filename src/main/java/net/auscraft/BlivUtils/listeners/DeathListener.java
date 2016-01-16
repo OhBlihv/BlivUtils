@@ -9,12 +9,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 public class DeathListener implements Listener
 {
 	
-	
-	public DeathListener()
-	{
-		
-	}
-	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(PlayerDeathEvent event)
 	{

@@ -31,9 +31,6 @@ commands:
   wstop:
     description: 'Adds a delay to the /stop command. (Console Only!)'
     usage: 'Usage in Console: /<command>'
-  sudo:
-    description: 'Does that thing that stops sinny from abusing.'
-    usage: 'Usage: /<command> <string>'
   rank:
     description: 'Shows simple help for a rank, with links to the wiki for more.'
     usage: 'Usage: /<command> <rank>'
@@ -58,9 +55,6 @@ commands:
   credits:
     description: 'Utility and balance displays for Credits'
     usage: 'Usage: /<command> [arg]'
-  servers:
-    description: 'Provides information on the available servers'
-    usage: 'Usage: /<command> [args]'
   present:
     description: 'A bit of Christmas fun!'
   voteprint:
@@ -71,9 +65,6 @@ commands:
   voteparty:
     description: 'Starts a vote party, where bonus rewards are more likely to drop'
     usage: 'Usage: /<command> [chance]'
-  timedadd:
-    description: 'Adds a command to a player for a defined amount of time'
-    usage: 'Usage: /<command> <player> <time> <second[s]/minute[s]/hour[s]/day[s]> <command>'
 permissions:
   blivutils.*:
     description: Access every useless utility!

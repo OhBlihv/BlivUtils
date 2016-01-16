@@ -7,12 +7,6 @@ import org.bukkit.event.player.PlayerExpChangeEvent;
 
 public class XPListener  implements Listener
 {
-	//private Utilities util;
-	
-	public XPListener()
-	{
-		//util = instance.getUtil();
-	}
 	
 	@EventHandler
 	public void onXpPickup(PlayerExpChangeEvent event)

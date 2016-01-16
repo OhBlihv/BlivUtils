@@ -1,12 +1,8 @@
 package net.auscraft.BlivUtils.listeners;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.auscraft.BlivUtils.BlivUtils;
-import net.auscraft.BlivUtils.utils.BUtil;
+import net.auscraft.BlivUtils.util.BUtil;
 import net.milkbowl.vault.economy.Economy;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -18,25 +14,27 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ColourListener implements Listener 
 {
 	
 	private Economy econ;
 	
-	public ColourListener(BlivUtils instance)
+	public ColourListener()
 	{
-		econ = instance.setupEconomy();
+		econ = BlivUtils.setupEconomy();
 	}
 	
 	@SuppressWarnings("deprecation")
 	public ItemStack ConfirmPurchase(String colour)
 	{
-		ItemStack item = null;
-		ItemMeta meta = null;
+		ItemStack item;
+		ItemMeta meta;
         switch(colour)
         {
 	        case "Dark Grey": item = new ItemStack(Material.WOOL, 1, DyeColor.BLACK.getData()); meta = item.getItemMeta(); meta.setLore(Arrays.asList(ChatColor.DARK_GRAY + "Dark Grey")); break;
@@ -84,7 +82,6 @@ public class ColourListener implements Listener
 				//Slot was empty
 				if(event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR))
 				{
-	                return;
 				}
 				else if(event.getCurrentItem().getItemMeta().getDisplayName().equals(ChatColor.DARK_GRAY + "Dark Grey"))
 				{
