@@ -70,6 +70,7 @@ public final class BlivUtils extends JavaPlugin
 		getCommand("bu").setExecutor(new GenericExecutor());
 		getCommand("rank").setExecutor(new RankHelpExecutor());
 		getCommand("say").setExecutor(new GenericExecutor());
+		getCommand("sayplain").setExecutor(new GenericExecutor());
 		getCommand("wstop").setExecutor(new GenericExecutor());
 		getCommand("purch").setExecutor(new Broadcast());
 		getCommand("lore").setExecutor(new Ender());
