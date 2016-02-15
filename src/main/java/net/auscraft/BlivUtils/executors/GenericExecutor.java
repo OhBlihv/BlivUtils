@@ -51,7 +51,7 @@ public class GenericExecutor implements CommandExecutor
 				}
 			}
 		}
-		if (cmd.getName().equalsIgnoreCase("say"))
+		else if (cmd.getName().equalsIgnoreCase("say"))
 		{
 			if (sender.hasPermission("blivutils.say") || !(sender instanceof Player))
 			{
@@ -75,7 +75,16 @@ public class GenericExecutor implements CommandExecutor
 			BUtil.printError(sender, "You don't have sufficient permissions!");
 			return false;
 		}
-		if (cmd.getName().equalsIgnoreCase("wstop")	&& !(sender instanceof Player))
+		else if(cmd.getName().equalsIgnoreCase("sayplain") && sender.isOp())
+		{
+			StringBuilder message = new StringBuilder();
+			for(String arg : args)
+			{
+				message.append(arg).append(" ");
+			}
+			Bukkit.broadcastMessage(BUtil.translateColours(message.toString()));
+		}
+		else if (cmd.getName().equalsIgnoreCase("wstop")	&& !(sender instanceof Player))
 		{
 			sender.sendMessage(ChatColor.GOLD + "Waiting 10 seconds before stopping the server.");
 			Bukkit.broadcastMessage(ChatColor.DARK_RED + "|| "	+ ChatColor.GRAY + "[" + ChatColor.GOLD	+ ChatColor.BOLD + "Restart" + ChatColor.RESET
@@ -97,8 +106,7 @@ public class GenericExecutor implements CommandExecutor
 		    
 			return true;
 		}
-		
-		if (cmd.getName().equalsIgnoreCase("servers"))
+		else if (cmd.getName().equalsIgnoreCase("servers"))
 		{
 			if(args.length == 0)
 			{

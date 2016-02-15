@@ -10,6 +10,7 @@ commands:
   say:
     description: 'Overrides /say to look decent.'
     usage: 'Usage: /<command> <string>'
+  sayplain:
   purch:
     description: 'A printout of the recent purchase on the AusCraft Store. (CONSOLE)'
     usage: 'Usage: /<command> <string>'
