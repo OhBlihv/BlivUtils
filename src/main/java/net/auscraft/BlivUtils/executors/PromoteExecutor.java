@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import ru.tehkode.permissions.PermissionGroup;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
@@ -519,8 +520,10 @@ public class PromoteExecutor implements CommandExecutor
 
 			PermissionUser user = PermissionsEx.getUser(sender.getName());
 
-			user.setPrefix(colouredPrefix, null);
 			sender.sendMessage(ChatColor.GREEN + "Successfully set your prefix to " + ChatColor.RESET + colouredPrefix);
+
+			colouredPrefix += getArrowColour((Player) sender) + " §l»";
+			user.setPrefix(colouredPrefix, null);
 			BUtil.logInfo(sender.getName() + "'s prefix has been set to " + colouredPrefix);
 			BUtil.logtoFile(sender.getName() + "'s prefix has been set to " + colouredPrefix, null);
 		}
@@ -557,11 +560,11 @@ public class PromoteExecutor implements CommandExecutor
 			return false;
 		}
 
-		if(disallowedPrefixes.contains(STRIP_COLOUR.matcher(prefix.toLowerCase(Locale.ENGLISH)).replaceAll("")))
+		/*if(disallowedPrefixes.contains(STRIP_COLOUR.matcher(prefix.toLowerCase(Locale.ENGLISH)).replaceAll("")))
 		{
 			BUtil.printError(player, "Your prefix '" + prefix + ChatColor.RED + "' contained a disallowed word.");
 			return false;
-		}
+		}*/
 
 		if(STRIP_COLOUR.matcher(prefix.toLowerCase(Locale.ENGLISH)).replaceAll("").length() > 20)
 		{
@@ -570,6 +573,67 @@ public class PromoteExecutor implements CommandExecutor
 		}
 
 		return true;
+	}
+
+	private String getArrowColour(Player player)
+	{
+		PermissionUser user = PermissionsEx.getUser(player);
+		List<PermissionGroup> groupList = Arrays.asList(user.getGroups());
+
+		for(PermissionGroup group : groupList)
+		{
+			if(group.getName().toLowerCase().equals("enderrank"))
+			{
+				String enderRankValue = user.getOption("EnderRankValue");
+				if(enderRankValue == null)
+				{
+					return "§d";
+				}
+
+				switch(enderRankValue)
+				{
+					case "1": return "§d";
+					case "2": return "§c";
+					case "3": return "§7";
+				}
+			}
+		}
+
+		for(PermissionGroup group : groupList)
+		{
+			switch(group.getName().toLowerCase())
+			{
+				case "squid":
+				case "chicken":
+				case "sheep":
+				case "pig":
+					return "§a";
+				case "cow":
+				case "mooshroom":
+				case "slime":
+				case "ocelot":
+					return "§b";
+				case "magmaslime":
+				case "blaze":
+				case "pigzombie":
+				case "ghast":
+					return "§4";
+				case "endermite":
+					return "§d";
+				case "bmod":
+				case "mod":
+				case "admin":
+					return "§e";
+				case "trusted":
+					return "§6";
+				case "musketeer":
+					return "§5";
+				default:
+					break;
+
+			}
+		}
+		return "§f";
 	}
 
 	private boolean isAlphanumericOrAmpersand(String input)

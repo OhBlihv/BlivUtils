@@ -5,10 +5,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-
 import ru.tehkode.permissions.PermissionGroup;
 import ru.tehkode.permissions.PermissionUser;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class JoinListener implements Listener
 {
@@ -27,6 +29,23 @@ public class JoinListener implements Listener
 			if(player.hasPermission("blivutils.prefix.convert"))
 			{
 				PermissionUser user = PermissionsEx.getUser(player);
+
+				List<PermissionGroup> groups = Arrays.asList(user.getGroups());
+				boolean isValid = false;
+
+				for(PermissionGroup group : groups)
+				{
+					if(group.getName().toLowerCase().equals("EnderRank"))
+					{
+						isValid = true;
+						break;
+					}
+				}
+
+				if(!isValid)
+				{
+					return;
+				}
 
 				//If the player already has a migrated prefix, ignore.
 				if(     !user.getPrefix().equals(ENDER_PREFIX_ENDERMAN) &&

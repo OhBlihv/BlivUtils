@@ -1,7 +1,5 @@
 package net.auscraft.BlivUtils.purchases;
 
-import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
-import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
 import net.auscraft.BlivUtils.util.BUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,15 +34,6 @@ public class Broadcast implements CommandExecutor
 				}
 				String message = "% &r&ahas purchased &6@ &afor &2$&f#&a!";
 				String packageName = args[2];
-				
-				if(args[0].equals("true")) //Is a rank upgrade, requires name colour change
-				{
-					Nicknames nick = new Nicknames();
-					if(p != null)
-					{
-						nick.nickPlayer(p);
-					}
-				}
 				
 				if(args[3].equals("0.00")) //If the package is free, change the wording to suit 'redeeming'
 				{
@@ -129,7 +118,7 @@ public class Broadcast implements CommandExecutor
 									NAME_PATTERN = Pattern.compile("[%]"),
 									PRICE_PATTERN = Pattern.compile("[#]");
 	
-	private String translateVariables(String fixedString, Player p, String packageName, String price)
+	private String translateVariables(String fixedString, Player player, String packageName, String price)
 	{
 		//Package name is first, since the second function replaces underscores, and the player name has not been added yet.
 		//Replace @ with package name
@@ -139,11 +128,10 @@ public class Broadcast implements CommandExecutor
 		fixedString = SPACE_PATTERN.matcher(fixedString).replaceAll(" ");
 		
 		//Replace % with player name
-		BSPlayer bsp = PlayerManager.getPlayer(p);
-		String playerName = p.getName();
-		if(bsp.hasNickname())
+		String playerName = player.getName();
+		if(player.getDisplayName() != null && player.getDisplayName().length() != 0)
 		{
-			playerName = bsp.getNickname();
+			playerName = player.getDisplayName();
 		}
 		fixedString = NAME_PATTERN.matcher(fixedString).replaceAll(playerName);
 		

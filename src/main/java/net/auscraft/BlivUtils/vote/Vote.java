@@ -1,17 +1,14 @@
 package net.auscraft.BlivUtils.vote;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-
-import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
-import com.minecraftdimensions.bungeesuitechat.objects.BSPlayer;
-
 import net.auscraft.BlivUtils.rewards.RewardContainer;
 import net.auscraft.BlivUtils.util.BUtil;
 import net.auscraft.BlivUtils.util.FlatFile;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 
 public class Vote implements CommandExecutor
 {
@@ -51,20 +48,23 @@ public class Vote implements CommandExecutor
 		{
 			if (args.length >= 3)
 			{
-				BSPlayer player;
+				OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
 				//Assuming that the player exists, as is already checked in the vote script.
 				String playerName = args[0];
-				try
+				if(player == null)
 				{
-					player = PlayerManager.getPlayer(args[0]);
-					if(player.hasNickname())
-					{
-						playerName = player.getNickname();
-					}
+					return true;
 				}
-				catch(Exception e) //Not entirely sure which exception it is, but it should only throw one if the player is not online/misspelt.
+				else if(player.hasPlayedBefore() || player.isOnline())
 				{
-					BUtil.logInfo("Player " + args[0] + " is offline");
+					try
+					{
+						playerName = player.isOnline() ? player.getPlayer().getDisplayName() : player.getName();
+					}
+					catch(NullPointerException e)
+					{
+						//
+					}
 				}
 				
 				Bukkit.broadcastMessage(ChatColor.GRAY + "[" + ChatColor.GOLD	+ ChatColor.BOLD + "AusVote" + ChatColor.RESET

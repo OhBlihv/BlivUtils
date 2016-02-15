@@ -1,6 +1,5 @@
 package net.auscraft.BlivUtils.vote;
 
-import com.minecraftdimensions.bungeesuitechat.managers.PlayerManager;
 import lombok.Getter;
 import net.auscraft.BlivUtils.BlivUtils;
 import net.auscraft.BlivUtils.rewards.RewardContainer;
@@ -8,6 +7,7 @@ import net.auscraft.BlivUtils.util.BUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import java.util.HashMap;
@@ -61,9 +61,9 @@ public class VoteManager
 		{
 			String triggerName = sender.getName();
 			int chance, timeParty = 30;
-			if(PlayerManager.getPlayer(sender).hasNickname())
+			if(sender instanceof Player && ((Player) sender).getDisplayName() != null && ((Player) sender).getDisplayName().length() != 0)
 			{
-				triggerName = PlayerManager.getPlayer(sender).getNickname();
+				triggerName = ((Player) sender).getDisplayName();
 			}
 			if(sender.hasPermission("blivutils.vote.chance"))
 			{
@@ -112,7 +112,7 @@ public class VoteManager
 					+ ChatColor.YELLOW + "" + ChatColor.ITALIC + ChatColor.BOLD + ChatColor.stripColor(triggerName)
 					+ ChatColor.GREEN + " has triggered a " + ChatColor.YELLOW + ChatColor.ITALIC + "Vote Party" + ChatColor.YELLOW + " for " + ChatColor.AQUA + timeParty + " minutes" + ChatColor.YELLOW + "!\n"
 					+ "You are " + ChatColor.AQUA + rewardChance + "%" + ChatColor.YELLOW + " likely to receive a " + ChatColor.BOLD + "BONUS" + ChatColor.YELLOW + " upon voting!\n"
-					+ ChatColor.YELLOW + ChatColor.BOLD + "            ��  " + ChatColor.RESET + ChatColor.AQUA + ChatColor.BOLD + ChatColor.ITALIC + " /vote to participate " + ChatColor.YELLOW + "  �� " + ChatColor.RESET 
+					+ ChatColor.YELLOW + ChatColor.BOLD + "            »»  " + ChatColor.RESET + ChatColor.AQUA + ChatColor.BOLD + ChatColor.ITALIC + " /vote to participate " + ChatColor.YELLOW + "  «« " + ChatColor.RESET
 					+ barBtm);
 			
 			//Set the time when the next party can be triggered
