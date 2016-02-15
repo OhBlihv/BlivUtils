@@ -79,7 +79,7 @@ public class Broadcast implements CommandExecutor
 		//Player gets [Enderman] rank
 		if(Double.parseDouble(args[3]) < 15.00)
 		{
-			//If the user has a prefix, dont set their prefix
+			//If the user has a prefix, don't set their prefix
 			if(!(user.getPrefix().length() == 0 || user.getPrefix() == null))
 			{
 				user.setPrefix("&7[&5Enderman&7] ", null);

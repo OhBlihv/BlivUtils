@@ -28,9 +28,10 @@ public class VoteManager
 		return instance;
 	}
 	
-	private static final String bar = ChatColor.YELLOW + "" + ChatColor.STRIKETHROUGH + "------ " + ChatColor.DARK_AQUA + ChatColor.BOLD + "Aus" + ChatColor.WHITE + ChatColor.BOLD + "Vote"
-								+ ChatColor.YELLOW + "" + ChatColor.STRIKETHROUGH + " ------------------------------------\n";
-	private static final String barBtm = ChatColor.YELLOW + "" + ChatColor.STRIKETHROUGH + "\n--------------------------------------------------";
+	private static final String bar = BUtil.translateColours(
+		"&e&m------ &9&lAus&f&lVote &e&m------------------------------------\n"
+	);
+	private static final String barBtm = "&e&m\n--------------------------------------------------";
 	private int rewardChance;
 	private int nextTrigger;
 	private RewardContainer[] voteRewards = new RewardContainer[7];
